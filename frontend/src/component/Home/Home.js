@@ -1,5 +1,5 @@
 import React, { Fragment,useEffect } from "react";
-import {CgMouse} from "react-icons/all"
+import {CgMouse} from "react-icons/cg"
 import "./Home.css"
 import MetaData from "../layout/MetaData";
 import {getProduct,clearErrors} from "../../actions/productAction"

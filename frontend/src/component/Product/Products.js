@@ -5,10 +5,12 @@ import { clearErrors,getProduct } from '../../actions/productAction'
 import Loader from '../layout/Loader'
 import ProductCard from '../Home/ProductCard'
 import Pagination from "react-js-pagination"
-import Slider from "@material-ui/core/Slider"
-import Typography from "@material-ui/core/Typography"
+import Slider from "@mui/material/Slider"
+import Typography from "@mui/material/Typography"
 import MetaData from "../layout/MetaData";
 import { useAlert } from "react-alert";
+import { useParams } from 'react-router-dom';
+
 const categories = [
     "Laptop",
     "Footwear",
@@ -20,7 +22,7 @@ const categories = [
 ]
 
 
-const Products = ({match}) => {
+const Products = () => {
     const dispatch = useDispatch()
 
     const alert = useAlert();
@@ -31,7 +33,7 @@ const Products = ({match}) => {
     const {products,loading,error,productsCount,resultPerPage,
         // filteredProductsCount
     } = useSelector((state)=>state.products)
-    const keyword = match.params.keyword;
+    const { keyword } = useParams();
     const setCurrentPageNo = (e)=>{
         setCurrentPage(e)
     }

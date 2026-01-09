@@ -1,21 +1,21 @@
 import React, { Fragment, useState } from 'react'
 import "./Header.css"
-import { SpeedDial,SpeedDialAction } from '@material-ui/lab'
-import DashBoardIcon from "@material-ui/icons/Dashboard"
-import PersonIcon from "@material-ui/icons/Person"
-import ExitToAppIcon from "@material-ui/icons/ExitToApp"
-import ListAltIcon from "@material-ui/icons/ListAlt"
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart"
-import {useHistory} from "react-router-dom"
+import { SpeedDial,SpeedDialAction } from "@mui/material"
+import DashBoardIcon from "@mui/icons-material/Dashboard"
+import PersonIcon from "@mui/icons-material/Person"
+import ExitToAppIcon from "@mui/icons-material/ExitToApp"
+import ListAltIcon from "@mui/icons-material/ListAlt"
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
+import {useNavigate} from "react-router-dom"
 import { useAlert } from 'react-alert'
 import { logout } from '../../../actions/userAction'
 import { useDispatch,useSelector} from 'react-redux'
-import Backdrop from "@material-ui/core/Backdrop"
+import Backdrop from "@mui/material/Backdrop"
 const UserOptions = ({user}) => {
     const {cartItems}= useSelector((state)=>state.cart)
     const dispatch = useDispatch()
     const [ open,setOpen] = useState(false)
-    const history = useHistory()
+    const navigate = useNavigate()
     const alert = useAlert()
     const options =[
         {icon:<PersonIcon/>, name:"Profile",func:account},
@@ -27,19 +27,19 @@ const UserOptions = ({user}) => {
         options.unshift({icon:<DashBoardIcon/>, name:"DashBoard",func:dashboard})
     }
     function dashboard() {
-        history.push("/admin/dashboard")
+        navigate("/admin/dashboard")
     }
     function account() {
-        history.push("/account")
+        navigate("/account")
     }
     function cart() {
-        history.push("/cart")
+        navigate("/cart")
     }
     function orders() {
-        history.push('/orders')
+        navigate('/orders')
     }
     function logoutuser() {
-        history.push("/")
+        navigate("/")
         dispatch(logout());
         alert.success("Logged out successfully")
     }

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import "./productReviews.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -8,10 +8,10 @@ import {
   deleteReviews,
 } from "../../actions/productAction";
 import { useAlert } from "react-alert";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Star from "@material-ui/icons/Star";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Star from "@mui/icons-material/Star";
 
 import SideBar from "./Sidebar";
 import { DELETE_REVIEW_RESET } from "../../constants/productConstants";

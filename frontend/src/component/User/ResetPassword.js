@@ -5,8 +5,8 @@ import { clearErrors, resetPassword } from "../../actions/userAction";
 import { useAlert } from "react-alert";
 import Loader from "../layout/Loader";
 import MetaData from "../layout/MetaData";
-import LockOpenIcon from  "@material-ui/icons/LockOpen"
-import LockIcon from  "@material-ui/icons/Lock"
+import LockOpenIcon from "@mui/icons-material/LockOpen"
+import LockIcon from "@mui/icons-material/Lock"
 const ResetPassword = ({history,match}) => {
     const dispatch = useDispatch();
     const alert = useAlert();
