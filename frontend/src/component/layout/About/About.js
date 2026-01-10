@@ -5,7 +5,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 const About = () => {
   const visitGitHub = () => {
-    window.location = "https://github.com/Thunderer0";
+    window.location = "https://github.com/parilsanghvi";
   };
   return (
     <div className="aboutSection">
@@ -32,13 +32,13 @@ const About = () => {
           <div className="aboutSectionContainer2">
             <Typography component="h2">Contact Me</Typography>
             <a
-              href="https://www.linkedin.com/in/paril-sanghvi-38627b217/"
+              href="https://www.linkedin.com/in/paril-sanghvi/"
               target="blank"
             >
               <LinkedInIcon className="youtubeSvgIcon" />
             </a>
 
-            <a href="https://github.com/Thunderer0" target="blank">
+            <a href="https://github.com/parilsanghvi" target="blank">
               <GitHubIcon className="instagramSvgIcon" />
             </a>
           </div>
