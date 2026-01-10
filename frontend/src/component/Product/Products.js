@@ -8,7 +8,7 @@ import Pagination from "react-js-pagination"
 import Slider from "@mui/material/Slider"
 import Typography from "@mui/material/Typography"
 import MetaData from "../layout/MetaData";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { useParams } from 'react-router-dom';
 
 const categories = [
@@ -25,7 +25,7 @@ const categories = [
 const Products = () => {
     const dispatch = useDispatch()
 
-    const alert = useAlert();
+    const { enqueueSnackbar } = useSnackbar();
     const [ratings,setRating]=useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [price, setPrice] = useState([0,25000])
@@ -50,11 +50,11 @@ const Products = () => {
         }
     useEffect(() => {
         if (error) {
-            alert.error(error);
+            enqueueSnackbar(error, { variant: "error" });
             dispatch(clearErrors());
           }
         dispatch(getProduct(keyword,currentPage,price,category,ratings))
-    }, [dispatch,keyword,currentPage,price,category,ratings,alert,error])
+    }, [dispatch,keyword,currentPage,price,category,ratings,error])
     // let count = filteredProductsCount
     return (
        <Fragment>

@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
@@ -16,7 +16,7 @@ const UsersList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { error, users } = useSelector((state) => state.allUsers);
 
@@ -32,23 +32,23 @@ const UsersList = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (deleteError) {
-      alert.error(deleteError);
+      enqueueSnackbar(deleteError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isDeleted) {
-      alert.success(message);
+      enqueueSnackbar(message, { variant: "success" });
       navigate("/admin/users");
       dispatch({ type: DELETE_USER_RESET });
     }
 
     dispatch(getAllUsers());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted, message]);
+  }, [dispatch,  error, deleteError, navigate, isDeleted, message]);
 
   const columns = [
     { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },

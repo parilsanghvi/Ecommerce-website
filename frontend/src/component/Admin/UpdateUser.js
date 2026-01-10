@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -18,7 +18,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateUser = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -45,21 +45,21 @@ const UpdateUser = () => {
       setRole(user.role);
     }
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (updateError) {
-      alert.error(updateError);
+      enqueueSnackbar(updateError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
-      alert.success("User Updated Successfully");
+      enqueueSnackbar("User Updated Successfully", { variant: "success" });
       navigate("/admin/users");
       dispatch({ type: UPDATE_USER_RESET });
     }
-  }, [dispatch, alert, error, navigate, isUpdated, updateError, user, userId]);
+  }, [dispatch,  error, navigate, isUpdated, updateError, user, userId]);
 
   const updateUserSubmitHandler = (e) => {
     e.preventDefault();

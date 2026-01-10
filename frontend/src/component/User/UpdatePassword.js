@@ -3,7 +3,7 @@ import "./UpdatePassword.css";
 import Loader from "../layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, updatePassword } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { UPDATE_PASSWORD_RESET } from "../../constants/userConstants";
 import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 const UpdatePassword = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
 
@@ -36,18 +36,18 @@ const UpdatePassword = () => {
 
   useEffect(() => { 
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
     navigate("/account");
-    alert.success("Profile Updated Successfully");
+    enqueueSnackbar("Profile Updated Successfully", { variant: "success" });
     dispatch({
     type: UPDATE_PASSWORD_RESET,
     });
     }
-  }, [dispatch, error, alert, navigate,isUpdated]);
+  }, [dispatch, error,  navigate,isUpdated]);
   return (
     <Fragment>
       {loading ? (

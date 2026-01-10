@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react'
 import "./ResetPassword.css";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, resetPassword } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import Loader from "../layout/Loader";
 import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const ResetPassword = () => {
     const dispatch = useDispatch();
-    const alert = useAlert();
+    const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const params = useParams();
   
@@ -32,15 +32,15 @@ const ResetPassword = () => {
   
     useEffect(() => { 
       if (error) {
-        alert.error(error);
+        enqueueSnackbar(error, { variant: "error" });
         dispatch(clearErrors());
       }
   
       if (success) {
       navigate("/login");
-      alert.success("Password Updated Successfully");
+      enqueueSnackbar("Password Updated Successfully", { variant: "success" });
       }
-    }, [dispatch, error, alert, navigate,success]);
+    }, [dispatch, error,  navigate,success]);
     return (
       <Fragment>
         {loading ? (

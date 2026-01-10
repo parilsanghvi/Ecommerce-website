@@ -7,11 +7,11 @@ import LockOpenIcon from "@mui/icons-material/LockOpen"
 import FaceIcon from "@mui/icons-material/Face"
 import {useDispatch,useSelector} from "react-redux"
 import {clearErrors,login,register} from "../../actions/userAction"
-import {useAlert} from "react-alert"
+import { useSnackbar } from "notistack"
 
 const LoginSignup = () => {
     const dispatch = useDispatch();
-    const alert = useAlert()
+    const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -62,13 +62,13 @@ const LoginSignup = () => {
     const redirect = location.search ? location.search.split("=")[1] : "/account";
     useEffect(() => {
         if (error) {
-            alert.error(error)
+            enqueueSnackbar(error, { variant: "error" })
             dispatch(clearErrors)
         }
         if (isAuthenticated) {
             navigate(redirect)
         }
-    }, [dispatch,error,alert,navigate,isAuthenticated,redirect])
+    }, [dispatch,error,navigate,isAuthenticated,redirect])
 
 
     const switchTabs = (e,tab) =>{

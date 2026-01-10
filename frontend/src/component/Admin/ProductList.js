@@ -8,7 +8,7 @@ import {
   deleteProduct,
 } from "../../actions/productAction";
 import { Link, useNavigate } from "react-router-dom";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,7 +20,7 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { error, products } = useSelector((state) => state.products);
 
@@ -34,23 +34,23 @@ const ProductList = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (deleteError) {
-      alert.error(deleteError);
+      enqueueSnackbar(deleteError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isDeleted) {
       navigate("/admin/dashboard");
-      alert.success("Product Deleted Successfully");
+      enqueueSnackbar("Product Deleted Successfully", { variant: "success" });
       dispatch({ type: DELETE_PRODUCT_RESET });
     }
 
     dispatch(getAdminProduct());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted]);
+  }, [dispatch,  error, deleteError, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Product ID", minWidth: 200, flex: 0.5 },

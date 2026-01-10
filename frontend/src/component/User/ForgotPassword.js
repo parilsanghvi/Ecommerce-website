@@ -4,11 +4,11 @@ import Loader from "../layout/Loader";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, forgotPassword } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 const ForgotPassword = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { error, message, loading } = useSelector((state) => state.forgotPassword);
 
@@ -22,14 +22,14 @@ const ForgotPassword = () => {
   }; 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (message) {
-    alert.success(message);
+    enqueueSnackbar(message, { variant: "success" });
     }
-  }, [dispatch, error, alert,message]);
+  }, [dispatch, error, message]);
     return (
         <Fragment>
         {loading ? (

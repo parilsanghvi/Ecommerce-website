@@ -5,21 +5,21 @@ import MetaData from "../layout/MetaData";
 import {getProduct,clearErrors} from "../../actions/productAction"
 import {useDispatch,useSelector} from "react-redux"
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import ProductCard from "./ProductCard.js";
 
 const Home = () => {
-    const alert= useAlert()
+    const { enqueueSnackbar } = useSnackbar()
 
     const dispatch = useDispatch();
     const {loading,error,products}= useSelector((state)=>state.products)
     useEffect(() => {
         if (error) {
-            alert.error(error);
+            enqueueSnackbar(error, { variant: "error" });
             dispatch(clearErrors());
         }
         dispatch(getProduct())
-    }, [dispatch,error,alert])
+    }, [dispatch,error])
     return (<Fragment>
         {loading?(<Loader/>):(<Fragment>
         <MetaData title="ECOMMERCE"/>

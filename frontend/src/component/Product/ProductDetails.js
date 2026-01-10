@@ -9,7 +9,7 @@ import {
 } from "../../actions/productAction";
 import ReviewCard from "./ReviewCard.js";
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../actions/cartAction";
 import {
@@ -26,7 +26,7 @@ import { useParams } from "react-router-dom";
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
@@ -64,7 +64,7 @@ const ProductDetails = () => {
 
   const addToCartHandler = () => {
     dispatch(addItemsToCart(id, quantity));
-    alert.success("Item Added To Cart");
+    enqueueSnackbar("Item Added To Cart", { variant: "success" });
   };
 
   const submitReviewToggle = () => {
@@ -85,21 +85,21 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (reviewError) {
-      alert.error(reviewError);
+      enqueueSnackbar(reviewError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (success) {
-      alert.success("Review Submitted Successfully");
+      enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch({ type: NEW_REVIEW_RESET });
     }
     dispatch(getProductDetails(id));
-  }, [dispatch, id, error, alert, reviewError, success]);
+  }, [dispatch, id, error,  reviewError, success]);
 
   return (
     <Fragment>

@@ -5,7 +5,7 @@ import {
   updateProduct,
   getProductDetails,
 } from "../../actions/productAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
@@ -19,7 +19,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -64,23 +64,23 @@ const UpdateProduct = () => {
       setOldImages(product.images);
     }
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (updateError) {
-      alert.error(updateError);
+      enqueueSnackbar(updateError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
-      alert.success("Product Updated Successfully");
+      enqueueSnackbar("Product Updated Successfully", { variant: "success" });
       navigate("/admin/products");
       dispatch({ type: UPDATE_PRODUCT_RESET });
     }
   }, [
     dispatch,
-    alert,
+
     error,
     navigate,
     isUpdated,

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, myOrders } from "../../actions/orderAction";
 import Loader from "../layout/Loader";
 import { Link } from "react-router-dom";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
 import MetaData from "../layout/MetaData";
 import LaunchIcon from "@mui/icons-material/Launch";
@@ -13,7 +13,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 const MyOrders = () => {
   const dispatch = useDispatch();
 
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { loading, error, orders } = useSelector((state) => state.myOrders);
   const { user } = useSelector((state) => state.user);
@@ -77,12 +77,12 @@ const MyOrders = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     dispatch(myOrders());
-  }, [dispatch, alert, error]);
+  }, [dispatch,  error]);
 
   return (
     <Fragment>

@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import "./newProduct.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, createProduct } from "../../actions/productAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const NewProduct = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const { loading, error, success } = useSelector((state) => state.newProduct);
@@ -41,16 +41,16 @@ const NewProduct = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (success) {
-      alert.success("Product Created Successfully");
+      enqueueSnackbar("Product Created Successfully", { variant: "success" });
       navigate("/admin/dashboard");
       dispatch({ type: NEW_PRODUCT_RESET });
     }
-  }, [dispatch, alert, error, navigate, success]);
+  }, [dispatch,  error, navigate, success]);
 
   const createProductSubmitHandler = (e) => {
     e.preventDefault();

@@ -5,14 +5,14 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import FaceIcon from "@mui/icons-material/Face";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, updateProfile, loadUser } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { UPDATE_PROFILE_RESET } from "../../constants/userConstants";
 import MetaData from "../layout/MetaData";
 import { useNavigate } from "react-router-dom";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.user);
@@ -54,12 +54,12 @@ const UpdateProfile = () => {
     }
 
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
-      alert.success("Profile Updated Successfully");
+      enqueueSnackbar("Profile Updated Successfully", { variant: "success" });
       dispatch(loadUser());
 
       navigate("/account");
@@ -68,7 +68,7 @@ const UpdateProfile = () => {
         type: UPDATE_PROFILE_RESET,
       });
     }
-  }, [dispatch, error, alert, navigate, user, isUpdated,avatar]);
+  }, [dispatch, error,  navigate, user, isUpdated,avatar]);
   return (
     <Fragment>
       {loading ? (
