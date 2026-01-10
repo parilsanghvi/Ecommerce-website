@@ -7,21 +7,19 @@ import {
   getAllReviews,
   deleteReviews,
 } from "../../actions/productAction";
-import { useAlert } from "react-alert";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Star from "@mui/icons-material/Star";
-
 import SideBar from "./Sidebar";
 import { DELETE_REVIEW_RESET } from "../../constants/productConstants";
-import { useNavigate } from "react-router-dom";
 
 const ProductReviews = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { error: deleteError, isDeleted } = useSelector(
     (state) => state.review
@@ -47,21 +45,21 @@ const ProductReviews = () => {
       dispatch(getAllReviews(productId));
     }
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (deleteError) {
-      alert.error(deleteError);
+      enqueueSnackbar(deleteError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isDeleted) {
-      alert.success("Review Deleted Successfully");
+      enqueueSnackbar("Review Deleted Successfully", { variant: "success" });
       navigate("/admin/reviews");
       dispatch({ type: DELETE_REVIEW_RESET });
     }
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted, productId]);
+  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted, productId]);
 
   const columns = [
     { field: "id", headerName: "Review ID", minWidth: 200, flex: 0.5 },

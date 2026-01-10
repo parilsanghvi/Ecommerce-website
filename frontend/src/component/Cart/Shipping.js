@@ -10,13 +10,13 @@ import PublicIcon from "@mui/icons-material/Public";
 import PhoneIcon from "@mui/icons-material/Phone";
 import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
 import { Country, State } from "country-state-city";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useNavigate } from "react-router-dom";
 
 const Shipping = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { shippingInfo } = useSelector((state) => state.cart);
 
@@ -31,14 +31,14 @@ const Shipping = () => {
     e.preventDefault();
 
     if (phoneNo.length < 10 || phoneNo.length > 10) {
-      alert.error("Phone Number should be 10 digits long");
+      enqueueSnackbar("Phone Number should be 10 digits long", { variant: "error" });
       return;
     }
     dispatch(
       saveShippingInfo({ address, city, state, country, pinCode, phoneNo })
     );
     navigate("/order/confirm");
-  }; 
+  };
 
   return (
     <Fragment>

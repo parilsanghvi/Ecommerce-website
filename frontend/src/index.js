@@ -1,23 +1,24 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import {Provider} from "react-redux"
+import { Provider } from "react-redux"
 import store from "./store"
-import {positions,transitions,Provider as AlertProvider} from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
-const options={
-  timeout:5000,
-  positions:positions.BOTTOM_CENTER,
-  transitions:transitions.SCALE,
-}
+import { SnackbarProvider } from 'notistack';
+import { HelmetProvider } from 'react-helmet-async';
+import axios from 'axios';
+
+axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.withCredentials = true;
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
   <Provider store={store}>
-    <AlertProvider template={AlertTemplate}{...options}>
-    <App />
-    </AlertProvider>
+    <HelmetProvider>
+      <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <App />
+      </SnackbarProvider>
+    </HelmetProvider>
   </Provider>
 );

@@ -10,7 +10,7 @@ import {
 } from "../../actions/orderAction";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { Button } from "@mui/material";
 import { UPDATE_ORDER_RESET } from "../../constants/orderConstants";
@@ -32,26 +32,26 @@ const ProcessOrder = () => {
   };
 
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
     if (updateError) {
-      alert.error(updateError);
+      enqueueSnackbar(updateError, { variant: "error" });
       dispatch(clearErrors());
     }
     if (isUpdated) {
-      alert.success("Order Updated Successfully");
+      enqueueSnackbar("Order Updated Successfully", { variant: "success" });
       dispatch({ type: UPDATE_ORDER_RESET });
     }
 
     dispatch(getOrderDetails(params.id));
-  }, [dispatch, alert, error, params.id, isUpdated, updateError]);
+  }, [dispatch, enqueueSnackbar, error, params.id, isUpdated, updateError]);
 
   return (
     <Fragment>
@@ -97,13 +97,13 @@ const ProcessOrder = () => {
                       <p
                         className={
                           order.paymentInfo &&
-                          order.paymentInfo.status === "succeeded"
+                            order.paymentInfo.status === "succeeded"
                             ? "greenColor"
                             : "redColor"
                         }
                       >
                         {order.paymentInfo &&
-                        order.paymentInfo.status === "succeeded"
+                          order.paymentInfo.status === "succeeded"
                           ? "PAID"
                           : "NOT PAID"}
                       </p>

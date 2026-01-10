@@ -14,11 +14,11 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   const { products } = useSelector((state) => state.products);
-// error
+  // error
   const { orders } = useSelector((state) => state.allOrders);
-// error
+  // error
   const { users } = useSelector((state) => state.allUsers);
-// console.log(orders.length);
+  // console.log(orders.length);
   let outOfStock = 0;
   products &&
     products.forEach((item) => {
@@ -57,7 +57,7 @@ const Dashboard = () => {
       {
         backgroundColor: ["#00A6B4", "#6800B4"],
         hoverBackgroundColor: ["#4B5000", "#35014F"],
-        data: [outOfStock, products.length - outOfStock],
+        data: [outOfStock, products ? products.length - outOfStock : 0],
       },
     ],
   };

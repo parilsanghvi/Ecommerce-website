@@ -3,7 +3,7 @@ import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
 import { Typography } from "@mui/material";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import {
   CardNumberElement,
   CardCvcElement,
@@ -26,7 +26,7 @@ const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
 
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const stripe = useStripe();
   const elements = useElements();
   const payBtn = useRef(null);
@@ -90,7 +90,7 @@ const Payment = () => {
       if (result.error) {
         payBtn.current.disabled = false;
 
-        alert.error(result.error.message);
+        enqueueSnackbar(result.error.message, { variant: "error" });
       } else {
         if (result.paymentIntent.status === "succeeded") {
           order.paymentInfo = {
@@ -105,21 +105,21 @@ const Payment = () => {
           }
           navigate("/success");
         } else {
-          alert.error("There's some issue while processing payment ");
+          enqueueSnackbar("There's some issue while processing payment ", { variant: "error" });
         }
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      alert.error(error.response.data.message);
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
     }
   };
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
-  }, [dispatch, error, alert]);
+  }, [dispatch, error, enqueueSnackbar]);
 
   return (
     <Fragment>

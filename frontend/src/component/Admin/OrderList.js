@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,7 +20,7 @@ const OrderList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { error, orders } = useSelector((state) => state.allOrders);
 
@@ -32,23 +32,23 @@ const OrderList = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (deleteError) {
-      alert.error(deleteError);
+      enqueueSnackbar(deleteError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isDeleted) {
-      alert.success("Order Deleted Successfully");
+      enqueueSnackbar("Order Deleted Successfully", { variant: "success" });
       navigate("/admin/orders");
       dispatch({ type: DELETE_ORDER_RESET });
     }
 
     dispatch(getAllOrders());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted]);
+  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },

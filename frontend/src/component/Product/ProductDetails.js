@@ -1,5 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
-import Carousel from "react-material-ui-carousel";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -9,7 +11,7 @@ import {
 } from "../../actions/productAction";
 import ReviewCard from "./ReviewCard.js";
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../actions/cartAction";
 import {
@@ -26,7 +28,7 @@ import { useParams } from "react-router-dom";
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
@@ -64,7 +66,7 @@ const ProductDetails = () => {
 
   const addToCartHandler = () => {
     dispatch(addItemsToCart(id, quantity));
-    alert.success("Item Added To Cart");
+    enqueueSnackbar("Item Added To Cart", { variant: "success" });
   };
 
   const submitReviewToggle = () => {
@@ -72,11 +74,11 @@ const ProductDetails = () => {
   };
 
   const reviewSubmitHandler = () => {
-    const myForm = new FormData();
-
-    myForm.set("rating", rating);
-    myForm.set("comment", comment);
-    myForm.set("productId", id);
+    const myForm = {
+      rating: rating,
+      comment: comment,
+      productId: id,
+    };
 
     dispatch(newReview(myForm));
 
@@ -85,21 +87,21 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (reviewError) {
-      alert.error(reviewError);
+      enqueueSnackbar(reviewError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (success) {
-      alert.success("Review Submitted Successfully");
+      enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch({ type: NEW_REVIEW_RESET });
     }
     dispatch(getProductDetails(id));
-  }, [dispatch, id, error, alert, reviewError, success]);
+  }, [dispatch, id, error, enqueueSnackbar, reviewError, success]);
 
   return (
     <Fragment>
@@ -110,17 +112,21 @@ const ProductDetails = () => {
           <MetaData title={`${product.name} -- ECOMMERCE`} />
           <div className="ProductDetails">
             <div>
-              <Carousel>
-                {product.images &&
-                  product.images.map((item, i) => (
-                    <img
-                      className="CarouselImage"
-                      key={i}
-                      src={item.url}
-                      alt={`${i} Slide`}
-                    />
-                  ))}
-              </Carousel>
+              <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
+                <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
+                  {product.images &&
+                    product.images.map((item, i) => (
+                      <div key={i}>
+                        <img
+                          className="CarouselImage"
+                          src={item.url}
+                          alt={`${i} Slide`}
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </div>
+                    ))}
+                </Slider>
+              </div>
             </div>
 
             <div>
