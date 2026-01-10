@@ -9,10 +9,12 @@ import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import LockIcon from "@mui/icons-material/Lock"
 import VpnKeyIcon from "@mui/icons-material/VpnKey"
+import { useNavigate } from "react-router-dom";
 
-const UpdatePassword = ({history}) => {
+const UpdatePassword = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
+  const navigate = useNavigate();
 
 
   const { error, isUpdated, loading } = useSelector((state) => state.profile);
@@ -39,13 +41,13 @@ const UpdatePassword = ({history}) => {
     }
 
     if (isUpdated) {
-    history.push("/account");
+    navigate("/account");
     alert.success("Profile Updated Successfully");
     dispatch({
     type: UPDATE_PASSWORD_RESET,
     });
     }
-  }, [dispatch, error, alert, history,isUpdated]);
+  }, [dispatch, error, alert, navigate,isUpdated]);
   return (
     <Fragment>
       {loading ? (

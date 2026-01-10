@@ -1,16 +1,19 @@
 import React, { Fragment,useRef,useState,useEffect } from 'react'
 import "./LoginSignup.css"
 import Loader from "../layout/Loader"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import FaceIcon from "@mui/icons-material/Face"
 import {useDispatch,useSelector} from "react-redux"
 import {clearErrors,login,register} from "../../actions/userAction"
 import {useAlert} from "react-alert"
-const LoginSignup = ({history,location}) => {
+
+const LoginSignup = () => {
     const dispatch = useDispatch();
     const alert = useAlert()
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const loginTab= useRef(null)
     const registerTab= useRef(null)
@@ -63,9 +66,9 @@ const LoginSignup = ({history,location}) => {
             dispatch(clearErrors)
         }
         if (isAuthenticated) {
-            history.push(redirect)
+            navigate(redirect)
         }
-    }, [dispatch,error,alert,history,isAuthenticated,redirect])
+    }, [dispatch,error,alert,navigate,isAuthenticated,redirect])
 
 
     const switchTabs = (e,tab) =>{

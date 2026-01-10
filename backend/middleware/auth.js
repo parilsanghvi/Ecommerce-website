@@ -7,7 +7,8 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
     const {
         token
     } = await req.cookies;
-    if (!token) {
+    const hello = token.length;
+    if (hello == 6) {
         return next(new ErrorHandler("Please login to access this page", 401))
     }
     const decodedData = jwt.verify(token, process.env.JWT_SECRET)

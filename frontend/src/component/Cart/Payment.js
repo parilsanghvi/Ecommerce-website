@@ -20,8 +20,9 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import EventIcon from "@mui/icons-material/Event";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { createOrder, clearErrors } from "../../actions/orderAction";
+import { useNavigate } from "react-router-dom";
 
-const Payment = ({ history }) => {
+const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
 
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const Payment = ({ history }) => {
   const stripe = useStripe();
   const elements = useElements();
   const payBtn = useRef(null);
+  const navigate = useNavigate();
 
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
@@ -101,7 +103,7 @@ const Payment = ({ history }) => {
             let id = order.orderItems[i].product
             dispatch(removeItemsFromCart(id))
           }
-          history.push("/success");
+          navigate("/success");
         } else {
           alert.error("There's some issue while processing payment ");
         }
