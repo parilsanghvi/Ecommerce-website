@@ -7,7 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import { HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
 
-axios.defaults.baseURL = "http://localhost:4000";
+
 axios.defaults.withCredentials = true;
 
 const container = document.getElementById('root');
