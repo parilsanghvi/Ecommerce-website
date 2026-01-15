@@ -1,3 +1,18 @@
+import React, { Fragment, useState } from "react";
+import "./Header.css";
+import { SpeedDial, SpeedDialAction } from "@mui/material";
+import Backdrop from "@mui/material/Backdrop";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PersonIcon from "@mui/icons-material/Person";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { logout } from "../../../actions/userAction";
+import { useDispatch, useSelector } from "react-redux";
+import { Tooltip, IconButton, Avatar, Menu, MenuItem, ListItemIcon } from "@mui/material";
+
 const UserOptions = ({ user }) => {
     const { cartItems } = useSelector((state) => state.cart);
 
