@@ -3,12 +3,13 @@ import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector } from "react-redux";
 import MetaData from "../layout/MetaData";
 import "./ConfirmOrder.css";
-import { Link } from "react-router-dom";
-import { Typography } from "@material-ui/core";
+import { Link, useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
 
-const ConfirmOrder = ({ history }) => {
+const ConfirmOrder = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.quantity * item.price,
@@ -33,7 +34,7 @@ const ConfirmOrder = ({ history }) => {
 
     sessionStorage.setItem("orderInfo", JSON.stringify(data));
 
-    history.push("/process/payment");
+    navigate("/process/payment");
   };
 
   return (

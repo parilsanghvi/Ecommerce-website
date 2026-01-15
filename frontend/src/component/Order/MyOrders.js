@@ -1,19 +1,19 @@
 import React, { Fragment, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import "./myOrders.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, myOrders } from "../../actions/orderAction";
 import Loader from "../layout/Loader";
 import { Link } from "react-router-dom";
-import { useAlert } from "react-alert";
-import Typography from "@material-ui/core/Typography";
+import { useSnackbar } from "notistack";
+import Typography from "@mui/material/Typography";
 import MetaData from "../layout/MetaData";
-import LaunchIcon from "@material-ui/icons/Launch";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 const MyOrders = () => {
   const dispatch = useDispatch();
 
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { loading, error, orders } = useSelector((state) => state.myOrders);
   const { user } = useSelector((state) => state.user);
@@ -28,7 +28,7 @@ const MyOrders = () => {
       flex: 0.5,
       cellClassName: (params) => {
         return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor": "redColor";
+          ? "greenColor" : "redColor";
       },
     },
     {
@@ -77,12 +77,12 @@ const MyOrders = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     dispatch(myOrders());
-  }, [dispatch, alert, error]);
+  }, [dispatch, enqueueSnackbar, error]);
 
   return (
     <Fragment>

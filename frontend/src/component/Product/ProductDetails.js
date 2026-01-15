@@ -1,5 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
-import Carousel from "react-material-ui-carousel";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -9,7 +11,7 @@ import {
 } from "../../actions/productAction";
 import ReviewCard from "./ReviewCard.js";
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../actions/cartAction";
 import {
@@ -18,13 +20,15 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-} from "@material-ui/core";
-import { Rating } from "@material-ui/lab";
+} from "@mui/material";
+import { Rating } from "@mui/material";
 import { NEW_REVIEW_RESET } from "../../constants/productConstants";
+import { useParams } from "react-router-dom";
 
-const ProductDetails = ({ match }) => {
+const ProductDetails = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
@@ -61,8 +65,8 @@ const ProductDetails = ({ match }) => {
   };
 
   const addToCartHandler = () => {
-    dispatch(addItemsToCart(match.params.id, quantity));
-    alert.success("Item Added To Cart");
+    dispatch(addItemsToCart(id, quantity));
+    enqueueSnackbar("Item Added To Cart", { variant: "success" });
   };
 
   const submitReviewToggle = () => {
@@ -70,11 +74,11 @@ const ProductDetails = ({ match }) => {
   };
 
   const reviewSubmitHandler = () => {
-    const myForm = new FormData();
-
-    myForm.set("rating", rating);
-    myForm.set("comment", comment);
-    myForm.set("productId", match.params.id);
+    const myForm = {
+      rating: rating,
+      comment: comment,
+      productId: id,
+    };
 
     dispatch(newReview(myForm));
 
@@ -83,21 +87,21 @@ const ProductDetails = ({ match }) => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (reviewError) {
-      alert.error(reviewError);
+      enqueueSnackbar(reviewError, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (success) {
-      alert.success("Review Submitted Successfully");
+      enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch({ type: NEW_REVIEW_RESET });
     }
-    dispatch(getProductDetails(match.params.id));
-  }, [dispatch, match.params.id, error, alert, reviewError, success]);
+    dispatch(getProductDetails(id));
+  }, [dispatch, id, error, enqueueSnackbar, reviewError, success]);
 
   return (
     <Fragment>
@@ -108,17 +112,21 @@ const ProductDetails = ({ match }) => {
           <MetaData title={`${product.name} -- ECOMMERCE`} />
           <div className="ProductDetails">
             <div>
-              <Carousel>
-                {product.images &&
-                  product.images.map((item, i) => (
-                    <img
-                      className="CarouselImage"
-                      key={i}
-                      src={item.url}
-                      alt={`${i} Slide`}
-                    />
-                  ))}
-              </Carousel>
+              <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
+                <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
+                  {product.images &&
+                    product.images.map((item, i) => (
+                      <div key={i}>
+                        <img
+                          className="CarouselImage"
+                          src={item.url}
+                          alt={`${i} Slide`}
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </div>
+                    ))}
+                </Slider>
+              </div>
             </div>
 
             <div>

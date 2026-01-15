@@ -20,17 +20,31 @@ class Apifeatures {
         return this;
     }
     filter() {
-        const queryCopy = {
-            ...this.querystr
-        }
+        const queryCopy = { ...this.querystr };
         // remove some fields for category
-        const removeFields = ["keyword", "page", "limit"]
-        removeFields.forEach(key => delete queryCopy[key])
-        // filter for price and rating
-        let queryStr = JSON.stringify(queryCopy)
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, key => `$${key}`)
+        const removeFields = ["keyword", "page", "limit"];
 
-        this.query = this.query.find(JSON.parse(queryStr));
+        removeFields.forEach((key) => delete queryCopy[key]);
+
+        // Filter For Price and Rating
+        let queryStr = JSON.stringify(queryCopy);
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+
+        let queryObj = JSON.parse(queryStr);
+
+        // Convert numeric strings to numbers for filtering
+        for (let key in queryObj) {
+            if (typeof queryObj[key] === 'object') {
+                for (let op in queryObj[key]) {
+                    if (!isNaN(queryObj[key][op])) {
+                        queryObj[key][op] = Number(queryObj[key][op]);
+                    }
+                }
+            }
+        }
+
+        this.query = this.query.find(queryObj);
+
         return this;
     }
     pagiNation(resultPerPage) {
