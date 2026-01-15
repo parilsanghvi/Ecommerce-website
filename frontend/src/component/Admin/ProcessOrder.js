@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import MetaData from "../layout/MetaData";
-import { Link } from "react-router-dom";
-import { Typography } from "@material-ui/core";
+import { Link, useParams } from "react-router-dom";
+import { Typography } from "@mui/material";
 import SideBar from "./Sidebar";
 import {
   getOrderDetails,
@@ -10,15 +10,16 @@ import {
 } from "../../actions/orderAction";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
-import AccountTreeIcon from "@material-ui/icons/AccountTree";
-import { Button } from "@material-ui/core";
+import { useSnackbar } from "notistack";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import { Button } from "@mui/material";
 import { UPDATE_ORDER_RESET } from "../../constants/orderConstants";
 import "./processOrder.css";
 
-const ProcessOrder = ({ history, match }) => {
+const ProcessOrder = () => {
   const { order, error, loading } = useSelector((state) => state.orderDetails);
   const { error: updateError, isUpdated } = useSelector((state) => state.order);
+  const params = useParams();
 
   const updateOrderSubmitHandler = (e) => {
     e.preventDefault();
@@ -27,30 +28,30 @@ const ProcessOrder = ({ history, match }) => {
 
     myForm.set("status", status);
 
-    dispatch(updateOrder(match.params.id, myForm));
+    dispatch(updateOrder(params.id, myForm));
   };
 
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
     if (updateError) {
-      alert.error(updateError);
+      enqueueSnackbar(updateError, { variant: "error" });
       dispatch(clearErrors());
     }
     if (isUpdated) {
-      alert.success("Order Updated Successfully");
+      enqueueSnackbar("Order Updated Successfully", { variant: "success" });
       dispatch({ type: UPDATE_ORDER_RESET });
     }
 
-    dispatch(getOrderDetails(match.params.id));
-  }, [dispatch, alert, error, match.params.id, isUpdated, updateError]);
+    dispatch(getOrderDetails(params.id));
+  }, [dispatch, enqueueSnackbar, error, params.id, isUpdated, updateError]);
 
   return (
     <Fragment>
@@ -96,13 +97,13 @@ const ProcessOrder = ({ history, match }) => {
                       <p
                         className={
                           order.paymentInfo &&
-                          order.paymentInfo.status === "succeeded"
+                            order.paymentInfo.status === "succeeded"
                             ? "greenColor"
                             : "redColor"
                         }
                       >
                         {order.paymentInfo &&
-                        order.paymentInfo.status === "succeeded"
+                          order.paymentInfo.status === "succeeded"
                           ? "PAID"
                           : "NOT PAID"}
                       </p>

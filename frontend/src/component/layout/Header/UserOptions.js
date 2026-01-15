@@ -1,78 +1,133 @@
-import React, { Fragment, useState } from 'react'
-import "./Header.css"
-import { SpeedDial,SpeedDialAction } from '@material-ui/lab'
-import DashBoardIcon from "@material-ui/icons/Dashboard"
-import PersonIcon from "@material-ui/icons/Person"
-import ExitToAppIcon from "@material-ui/icons/ExitToApp"
-import ListAltIcon from "@material-ui/icons/ListAlt"
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart"
-import {useHistory} from "react-router-dom"
-import { useAlert } from 'react-alert'
-import { logout } from '../../../actions/userAction'
-import { useDispatch,useSelector} from 'react-redux'
-import Backdrop from "@material-ui/core/Backdrop"
-const UserOptions = ({user}) => {
-    const {cartItems}= useSelector((state)=>state.cart)
-    const dispatch = useDispatch()
-    const [ open,setOpen] = useState(false)
-    const history = useHistory()
-    const alert = useAlert()
-    const options =[
-        {icon:<PersonIcon/>, name:"Profile",func:account},
-        {icon:<ListAltIcon/>, name:"Orders",func:orders},
-        {icon:<ShoppingCartIcon style={{color:cartItems.length>0?"tomato":"unset"}}/>, name:`Cart(${cartItems.length})`,func:cart},
-        {icon:<ExitToAppIcon/>, name:"LogOut",func:logoutuser},
-    ]
-    if (user.role==="admin") {
-        options.unshift({icon:<DashBoardIcon/>, name:"DashBoard",func:dashboard})
+const UserOptions = ({ user }) => {
+    const { cartItems } = useSelector((state) => state.cart);
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const options = [
+        { icon: <PersonIcon />, name: "Profile", func: account },
+        { icon: <ListAltIcon />, name: "Orders", func: orders },
+        {
+            icon: (
+                <ShoppingCartIcon
+                    style={{ color: cartItems.length > 0 ? "tomato" : "unset" }}
+                />
+            ),
+            name: `Cart(${cartItems.length})`,
+            func: cart,
+        },
+        { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
+    ];
+
+    if (user.role === "admin") {
+        options.unshift({
+            icon: <DashboardIcon />,
+            name: "Dashboard",
+            func: dashboard,
+        });
     }
+
     function dashboard() {
-        history.push("/admin/dashboard")
+        navigate("/admin/dashboard");
+        handleClose();
     }
+
     function account() {
-        history.push("/account")
+        navigate("/account");
+        handleClose();
     }
+
     function cart() {
-        history.push("/cart")
+        navigate("/cart");
+        handleClose();
     }
+
     function orders() {
-        history.push('/orders')
+        navigate("/orders");
+        handleClose();
     }
-    function logoutuser() {
-        history.push("/")
+
+    function logoutUser() {
         dispatch(logout());
-        alert.success("Logged out successfully")
+        enqueueSnackbar("Logged out successfully", { variant: "success" });
+        navigate("/");
+        handleClose();
     }
+
     return (
         <Fragment>
-            <Backdrop open={open} style={{zIndex:"10"}}/>
-            <SpeedDial
-            ariaLabel="SpeedDial tooltip example"
-            onClose={()=>setOpen(false)}
-            onOpen={()=>setOpen(true)}
-            style={{ zIndex: "11" }}
-            open={open} 
-            direction='down'
-            className="speedDial"
-            icon={
-                <img
-                className='speedDialIcon'
-                src={user.avatar.url}
-                alt='Profile'
-                />}
-            >
-                {options.map((item)=>(
-                    <SpeedDialAction 
-                    key={item.name} 
-                    icon={item.icon} 
-                    tooltipTitle={item.name} 
-                    onClick={item.func}
-                    tooltipOpen={window.innerWidth<=600?true:false}
+            <Tooltip title="Account settings">
+                <IconButton
+                    onClick={handleClick}
+                    size="small"
+                    sx={{ ml: 2 }}
+                    aria-controls={open ? "account-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                >
+                    <Avatar
+                        alt={user.name}
+                        src={user.avatar.url ? user.avatar.url : "/Profile.png"}
+                        sx={{ width: 40, height: 40 }}
                     />
+                </IconButton>
+            </Tooltip>
+            <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: "visible",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                        "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                        },
+                    },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+                {options.map((item) => (
+                    <MenuItem key={item.name} onClick={item.func}>
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        {item.name}
+                    </MenuItem>
                 ))}
-            </SpeedDial>
+            </Menu>
         </Fragment>
-    )
-}
+    );
+};
 
-export default UserOptions
+export default UserOptions;

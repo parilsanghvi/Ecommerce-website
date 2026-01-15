@@ -1,17 +1,19 @@
 import React, { Fragment, useRef, useState, useEffect } from "react";
 import "./LoginSignUp.css";
 import Loader from "../layout/Loader";
-import { Link } from "react-router-dom";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import FaceIcon from "@material-ui/icons/Face";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import FaceIcon from "@mui/icons-material/Face";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 
-const LoginSignUp = ({ history, location }) => {
+const LoginSignUp = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { error, loading, isAuthenticated } = useSelector(
     (state) => state.user
@@ -50,7 +52,7 @@ const LoginSignUp = ({ history, location }) => {
     myForm.set("password", password);
     myForm.set("avatar", avatar);
     dispatch(register(myForm));
-    history.push("/login")
+    navigate("/login")
   };
 
   const registerDataChange = (e) => {
@@ -74,14 +76,14 @@ const LoginSignUp = ({ history, location }) => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
     if (isAuthenticated) {
-      history.push(redirect);
+      navigate(redirect);
     }
-  }, [dispatch, error, alert, history, isAuthenticated, redirect]);
+  }, [dispatch, error, enqueueSnackbar, navigate, isAuthenticated, redirect]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {
@@ -193,7 +195,7 @@ const LoginSignUp = ({ history, location }) => {
             </div>
           </div>
         </Fragment>
-      )} 
+      )}
     </Fragment>
   );
 };

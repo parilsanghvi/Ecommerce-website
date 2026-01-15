@@ -2,8 +2,8 @@ import React, { Fragment, useEffect, useRef } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
-import { Typography } from "@material-ui/core";
-import { useAlert } from "react-alert";
+import { Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
 import {
   CardNumberElement,
   CardCvcElement,
@@ -16,19 +16,21 @@ import {
 } from "../../actions/cartAction"
 import axios from "axios";
 import "./payment.css";
-import CreditCardIcon from "@material-ui/icons/CreditCard";
-import EventIcon from "@material-ui/icons/Event";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import EventIcon from "@mui/icons-material/Event";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { createOrder, clearErrors } from "../../actions/orderAction";
+import { useNavigate } from "react-router-dom";
 
-const Payment = ({ history }) => {
+const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
 
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
   const stripe = useStripe();
   const elements = useElements();
   const payBtn = useRef(null);
+  const navigate = useNavigate();
 
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
@@ -88,7 +90,7 @@ const Payment = ({ history }) => {
       if (result.error) {
         payBtn.current.disabled = false;
 
-        alert.error(result.error.message);
+        enqueueSnackbar(result.error.message, { variant: "error" });
       } else {
         if (result.paymentIntent.status === "succeeded") {
           order.paymentInfo = {
@@ -101,23 +103,23 @@ const Payment = ({ history }) => {
             let id = order.orderItems[i].product
             dispatch(removeItemsFromCart(id))
           }
-          history.push("/success");
+          navigate("/success");
         } else {
-          alert.error("There's some issue while processing payment ");
+          enqueueSnackbar("There's some issue while processing payment ", { variant: "error" });
         }
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      alert.error(error.response.data.message);
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
     }
   };
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
-  }, [dispatch, error, alert]);
+  }, [dispatch, error, enqueueSnackbar]);
 
   return (
     <Fragment>

@@ -105,7 +105,6 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     }
     product = await Product.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
-        useFindAndModify: false
     })
     res.status(200).json({
         success: true,
@@ -223,11 +222,10 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
         reviews,
         ratings,
         numOfReviews
-    }), {
+    }, {
         new: true,
         runValidators: true,
-        userFindAndModify: false
-    }
+    })
 
     res.status(200).json({
         success: true,

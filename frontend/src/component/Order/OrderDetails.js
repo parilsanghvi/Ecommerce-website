@@ -2,26 +2,27 @@ import React, { Fragment, useEffect } from "react";
 import "./orderDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
-import { Link } from "react-router-dom";
-import { Typography } from "@material-ui/core";
+import { Link, useParams } from "react-router-dom";
+import { Typography } from "@mui/material";
 import { getOrderDetails, clearErrors } from "../../actions/orderAction";
 import Loader from "../layout/Loader";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
 
-const OrderDetails = ({ match }) => {
+const OrderDetails = () => {
   const { order, error, loading } = useSelector((state) => state.orderDetails);
 
   const dispatch = useDispatch();
-  const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
+  const params = useParams();
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
 
-    dispatch(getOrderDetails(match.params.id));
-  }, [dispatch, alert, error, match.params.id]);
+    dispatch(getOrderDetails(params.id));
+  }, [dispatch, enqueueSnackbar, error, params.id]);
   return (
     <Fragment>
       {loading ? (
@@ -60,13 +61,13 @@ const OrderDetails = ({ match }) => {
                   <p
                     className={
                       order.paymentInfo &&
-                      order.paymentInfo.status === "succeeded"
+                        order.paymentInfo.status === "succeeded"
                         ? "greenColor"
                         : "redColor"
                     }
                   >
                     {order.paymentInfo &&
-                    order.paymentInfo.status === "succeeded"
+                      order.paymentInfo.status === "succeeded"
                       ? "PAID"
                       : "NOT PAID"}
                   </p>

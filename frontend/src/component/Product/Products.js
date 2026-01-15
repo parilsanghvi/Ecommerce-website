@@ -1,14 +1,16 @@
-import React, { Fragment ,useEffect, useState} from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import "./Products.css"
-import { useSelector,useDispatch } from 'react-redux'
-import { clearErrors,getProduct } from '../../actions/productAction'
+import { useSelector, useDispatch } from 'react-redux'
+import { clearErrors, getProduct } from '../../actions/productAction'
 import Loader from '../layout/Loader'
 import ProductCard from '../Home/ProductCard'
-import Pagination from "react-js-pagination"
-import Slider from "@material-ui/core/Slider"
-import Typography from "@material-ui/core/Typography"
+import Pagination from "@mui/material/Pagination"
+import Slider from "@mui/material/Slider"
+import Typography from "@mui/material/Typography"
 import MetaData from "../layout/MetaData";
-import { useAlert } from "react-alert";
+import { useSnackbar } from "notistack";
+import { useParams } from 'react-router-dom';
+
 const categories = [
     "Laptop",
     "Footwear",
@@ -20,71 +22,71 @@ const categories = [
 ]
 
 
-const Products = ({match}) => {
+const Products = () => {
     const dispatch = useDispatch()
 
-    const alert = useAlert();
-    const [ratings,setRating]=useState(0)
+    const { enqueueSnackbar } = useSnackbar();
+    const [ratings, setRating] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
-    const [price, setPrice] = useState([0,25000])
-    const [category,setCategory] = useState("")
-    const {products,loading,error,productsCount,resultPerPage,
+    const [price, setPrice] = useState([0, 25000])
+    const [category, setCategory] = useState("")
+    const { products, loading, error, productsCount, resultPerPage,
         // filteredProductsCount
-    } = useSelector((state)=>state.products)
-    const keyword = match.params.keyword;
-    const setCurrentPageNo = (e)=>{
-        setCurrentPage(e)
+    } = useSelector((state) => state.products)
+    const { keyword } = useParams();
+    const setCurrentPageNo = (e, value) => {
+        setCurrentPage(value)
     }
-    const priceHandler = (event,newPrice)=>{
+    const priceHandler = (event, newPrice) => {
         setPrice(newPrice);
     }
-        if (products.length>0) {
-            // dispatch(logger(products.length))
-            for (let i = 0; i < products.length; i++) {
-                if (products[i].stock===0) {
-                    products.splice(i,1)
-                }
+    if (products.length > 0) {
+        // dispatch(logger(products.length))
+        for (let i = 0; i < products.length; i++) {
+            if (products[i].stock === 0) {
+                products.splice(i, 1)
             }
         }
+    }
     useEffect(() => {
         if (error) {
-            alert.error(error);
+            enqueueSnackbar(error, { variant: "error" });
             dispatch(clearErrors());
-          }
-        dispatch(getProduct(keyword,currentPage,price,category,ratings))
-    }, [dispatch,keyword,currentPage,price,category,ratings,alert,error])
+        }
+        dispatch(getProduct(keyword, currentPage, price, category, ratings))
+    }, [dispatch, keyword, currentPage, price, category, ratings, enqueueSnackbar, error])
     // let count = filteredProductsCount
     return (
-       <Fragment>
-          {loading?<Loader/>:(
-            <Fragment>
-                <MetaData title="PRODUCTS -- ECOMMERCE" />
-                <h2 className='productsHeading'>Products</h2>
-                <div className='products'>
-                    {products&&
-                      products.map((product)=>(
-                          <ProductCard key={product._id} product={product}/>
-                      ))}
-                </div>
-                <div className='filterBox'>
+        <Fragment>
+            {loading ? <Loader /> : (
+                <Fragment>
+                    <MetaData title="PRODUCTS -- ECOMMERCE" />
+                    <h2 className='productsHeading'>Products</h2>
+                    <div className='products'>
+                        {products &&
+                            products.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
+                    </div>
+                    <div className='filterBox'>
 
-                    <Typography>Price</Typography>
-                    <Slider
-                    value={price}
-                    onChange={priceHandler}
-                    valueLabelDisplay='auto'
-                    aria-labelledby='range-slider'
-                    min={0}
-                    max={25000}
-                    />
-                    <Typography>
-                        Categories
-                    </Typography>
+                        <Typography>Price</Typography>
+                        <Slider
+                            value={price}
+                            onChange={priceHandler}
+                            valueLabelDisplay='auto'
+                            aria-labelledby='range-slider'
+                            min={0}
+                            max={25000}
+                        />
+                        <Typography>
+                            Categories
+                        </Typography>
                         <ul className='category-box'>
-                            {categories.map((category)=>(
+                            {categories.map((category) => (
                                 <li className='category-link'
-                                key={category}
-                                onClick={()=>setCategory(category)}>
+                                    key={category}
+                                    onClick={() => setCategory(category)}>
                                     {category}
                                 </li>
                             ))}
@@ -92,44 +94,36 @@ const Products = ({match}) => {
                         <fieldset>
                             <Typography component="legend">
                                 Ratings
-                                </Typography>
-                                <Slider
+                            </Typography>
+                            <Slider
                                 value={ratings}
-                                onChange={(e,newRating)=>{
+                                onChange={(e, newRating) => {
                                     setRating(newRating)
                                 }}
                                 aria-labelledby="continous-slider"
                                 min={0}
                                 max={5}
                                 valueLabelDisplay='auto'
-                                />
+                            />
 
                         </fieldset>
-                </div>
+                    </div>
 
 
 
-                {/* {resultPerPage<=count &&( */}
-                                    <div className='paginationBox'>
-                                    <Pagination
-                                    activePage={currentPage}
-                                    itemsCountPerPage={resultPerPage}
-                                    totalItemsCount={productsCount}
-                                    onChange={setCurrentPageNo}
-                                    nextPageText="Next"
-                                    previosPageText="Previous"
-                                    firstPageText="1st"
-                                    lastPageText="Last"
-                                    itemClass='page-item'
-                                    linkClass='page-link'
-                                    activeClass='pageItemActive'
-                                    activeLinkClass='pageLinkActive'
-                                    />
-                                </div>
-                {/* )} */}
-            </Fragment>
-           )}
-       </Fragment>
+                    {/* {resultPerPage<=count &&( */}
+                    <div className='paginationBox'>
+                        <Pagination
+                            count={Math.ceil(productsCount / resultPerPage)}
+                            page={currentPage}
+                            onChange={setCurrentPageNo}
+                            color="primary"
+                        />
+                    </div>
+                    {/* )} */}
+                </Fragment>
+            )}
+        </Fragment>
     )
 }
 
