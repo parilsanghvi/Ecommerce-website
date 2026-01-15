@@ -80,10 +80,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         images = req.body.images
     }
     if (images !== undefined) {
-        await Promise.all(product.images.map(image =>
-            cloudinary.v2.uploader.destroy(image.public_id)
-        ));
-
+        await Promise.all(product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
         const imagesLink = await Promise.all(images.map(async (image) => {
             const result = await cloudinary.v2.uploader.upload(image, {
                 folder: "products",
@@ -114,9 +111,7 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
-    await Promise.all(product.images.map(image =>
-        cloudinary.v2.uploader.destroy(image.public_id)
-    ));
+    await Promise.all(product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
     await product.deleteOne();
     res.status(200).json({
         success: true,
