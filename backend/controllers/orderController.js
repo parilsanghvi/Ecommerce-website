@@ -2,6 +2,7 @@ const Order = require("../models/orderModel")
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const Apifeatures = require("../utlis/apifeatures");
 
 // create new order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
@@ -55,15 +56,37 @@ exports.myOrders = catchAsyncErrors(async (req, res, next) => {
 });
 // get all orders --admin
 exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
-    const orders = await Order.find()
-    let totalAmount = 0;
-    orders.forEach(order => {
-        totalAmount += order.totalPrice
-    })
+    const resultPerPage = 10;
+    const ordersCountPromise = Order.countDocuments();
+
+    const aggregatePromise = Order.aggregate([
+        {
+            $group: {
+                _id: null,
+                totalAmount: { $sum: "$totalPrice" }
+            }
+        }
+    ]);
+
+    const apifeature = new Apifeatures(Order.find(), req.query)
+        .pagiNation(resultPerPage);
+
+    const ordersPromise = apifeature.query;
+
+    const [ordersCount, aggregateResult, orders] = await Promise.all([
+        ordersCountPromise,
+        aggregatePromise,
+        ordersPromise
+    ]);
+
+    const totalAmount = aggregateResult.length > 0 ? aggregateResult[0].totalAmount : 0;
+
     res.status(200).json({
         success: true,
         totalAmount,
         orders,
+        totalOrders: ordersCount,
+        resultPerPage,
     });
 });
 // update order status --admin

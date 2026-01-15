@@ -5,17 +5,39 @@ import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { Doughnut, Line } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 import { getAdminProduct } from "../../actions/productAction";
 import { getAllOrders } from "../../actions/orderAction.js";
 import { getAllUsers } from "../../actions/userAction.js";
 import MetaData from "../layout/MetaData";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   const { products } = useSelector((state) => state.products);
   // error
-  const { orders } = useSelector((state) => state.allOrders);
+  const { totalAmount = 0, totalOrders } = useSelector((state) => state.allOrders);
   // error
   const { users } = useSelector((state) => state.allUsers);
   // console.log(orders.length);
@@ -32,12 +54,6 @@ const Dashboard = () => {
     dispatch(getAllOrders());
     dispatch(getAllUsers());
   }, [dispatch]);
-
-  let totalAmount = 0;
-  orders &&
-    orders.forEach((item) => {
-      totalAmount += item.totalPrice;
-    });
 
   const lineState = {
     labels: ["Initial Amount", "Amount Earned"],
@@ -83,7 +99,7 @@ const Dashboard = () => {
             </Link>
             <Link to="/admin/orders">
               <p>Orders</p>
-              <p>{orders && orders.length}</p>
+              <p>{totalOrders && totalOrders}</p>
             </Link>
             <Link to="/admin/users">
               <p>Users</p>
