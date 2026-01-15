@@ -102,6 +102,15 @@ const LoginSignUp = () => {
     }
   };
 
+  const handleTabKey = (e, tab) => {
+    if (e.key === "Enter" || e.key === " ") {
+      if (e.key === " ") {
+        e.preventDefault();
+      }
+      switchTabs(e, tab);
+    }
+  };
+
   return (
     <Fragment>
       {loading ? (
@@ -112,8 +121,8 @@ const LoginSignUp = () => {
             <div className="LoginSignUpBox">
               <div>
                 <div className="login_signUp_toggle">
-                  <p onClick={(e) => switchTabs(e, "login")}>LOGIN</p>
-                  <p onClick={(e) => switchTabs(e, "register")}>REGISTER</p>
+                  <p onClick={(e) => switchTabs(e, "login")} tabIndex="0" role="button" onKeyDown={(e) => handleTabKey(e, "login")}>LOGIN</p>
+                  <p onClick={(e) => switchTabs(e, "register")} tabIndex="0" role="button" onKeyDown={(e) => handleTabKey(e, "register")}>REGISTER</p>
                 </div>
                 <button ref={switcherTab}></button>
               </div>
@@ -126,6 +135,7 @@ const LoginSignUp = () => {
                     required
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
+                    aria-label="Login Email"
                   />
                 </div>
                 <div className="loginPassword">
@@ -136,6 +146,7 @@ const LoginSignUp = () => {
                     required
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
+                    aria-label="Login Password"
                   />
                 </div>
                 <Link to="/password/forgot">Forget Password ?</Link>
@@ -156,6 +167,7 @@ const LoginSignUp = () => {
                     name="name"
                     value={name}
                     onChange={registerDataChange}
+                    aria-label="Register Name"
                   />
                 </div>
                 <div className="signUpEmail">
@@ -167,6 +179,7 @@ const LoginSignUp = () => {
                     name="email"
                     value={email}
                     onChange={registerDataChange}
+                    aria-label="Register Email"
                   />
                 </div>
                 <div className="signUpPassword">
@@ -178,6 +191,7 @@ const LoginSignUp = () => {
                     name="password"
                     value={password}
                     onChange={registerDataChange}
+                    aria-label="Register Password"
                   />
                 </div>
 
@@ -188,6 +202,7 @@ const LoginSignUp = () => {
                     name="avatar"
                     accept="image/*"
                     onChange={registerDataChange}
+                    aria-label="Upload Avatar"
                   />
                 </div>
                 <input type="submit" value="Register" className="signUpBtn" />
