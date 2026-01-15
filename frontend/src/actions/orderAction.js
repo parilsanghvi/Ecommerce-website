@@ -60,13 +60,13 @@ export const myOrders = () => async (dispatch) => {
 };
 
 // Get All Orders (admin)
-export const getAllOrders = () => async (dispatch) => {
+export const getAllOrders = (page = 1) => async (dispatch) => {
   try {
     dispatch({ type: ALL_ORDERS_REQUEST });
 
-    const { data } = await axios.get("/api/v1/admin/orders");
+    const { data } = await axios.get(`/api/v1/admin/orders?page=${page}`);
 
-    dispatch({ type: ALL_ORDERS_SUCCESS, payload: data.orders });
+    dispatch({ type: ALL_ORDERS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: ALL_ORDERS_FAIL,

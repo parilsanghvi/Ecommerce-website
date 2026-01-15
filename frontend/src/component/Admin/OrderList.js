@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/material";
+import { Button, Pagination } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,12 +22,18 @@ const OrderList = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, orders } = useSelector((state) => state.allOrders);
+  const { error, orders, totalOrders, resultPerPage } = useSelector((state) => state.allOrders);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { error: deleteError, isDeleted } = useSelector((state) => state.order);
 
   const deleteOrderHandler = (id) => {
     dispatch(deleteOrder(id));
+  };
+
+  const setCurrentPageNo = (e, value) => {
+    setCurrentPage(value);
   };
 
   useEffect(() => {
@@ -47,8 +53,8 @@ const OrderList = () => {
       dispatch({ type: DELETE_ORDER_RESET });
     }
 
-    dispatch(getAllOrders());
-  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted]);
+    dispatch(getAllOrders(currentPage));
+  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted, currentPage]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
@@ -59,9 +65,7 @@ const OrderList = () => {
       minWidth: 150,
       flex: 0.5,
       cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
+        return params.row.status === "Delivered" ? "greenColor" : "redColor";
       },
     },
     {
@@ -90,15 +94,11 @@ const OrderList = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/order/${params.getValue(params.id, "id")}`}>
+            <Link to={`/admin/order/${params.row.id}`}>
               <EditIcon />
             </Link>
 
-            <Button
-              onClick={() =>
-                deleteOrderHandler(params.getValue(params.id, "id"))
-              }
-            >
+            <Button onClick={() => deleteOrderHandler(params.row.id)}>
               <DeleteIcon />
             </Button>
           </Fragment>
@@ -135,7 +135,19 @@ const OrderList = () => {
             disableSelectionOnClick
             className="productListTable"
             autoHeight
+            hideFooterPagination
           />
+
+          {resultPerPage < totalOrders && (
+            <div className="paginationBox">
+              <Pagination
+                count={Math.ceil(totalOrders / resultPerPage)}
+                page={currentPage}
+                onChange={setCurrentPageNo}
+                color="primary"
+              />
+            </div>
+          )}
         </div>
       </div>
     </Fragment>
