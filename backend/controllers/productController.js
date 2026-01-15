@@ -80,9 +80,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         images = req.body.images
     }
     if (images !== undefined) {
-        for (let i = 0; i < product.images.length; i++) {
-            await cloudinary.v2.uploader.destroy(product.images[i].public_id);
-        }
+        await Promise.all(product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
         const imagesLink = []
         for (let i = 0; i < images.length; i++) {
             const result = await cloudinary.v2.uploader.upload(images[i], {
