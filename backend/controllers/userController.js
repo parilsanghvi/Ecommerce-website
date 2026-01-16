@@ -106,9 +106,9 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     const resetPasswordToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
     const user = await User.findOne({
         resetPasswordToken,
-        // resetPasswordExpire: {
-        //     $gt: Date.now()
-        // }
+        resetPasswordExpire: {
+            $gt: Date.now()
+        }
     })
     if (!user) {
         return next(new ErrorHandler("reset password token is invalid or has been expired", 404))
