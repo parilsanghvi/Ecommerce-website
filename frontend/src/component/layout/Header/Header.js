@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Box, Drawer, List, ListItem, ListItemButton, ListItemText, Container, Button } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, Drawer, List, ListItem, ListItemButton, ListItemText, Container, Button, Tooltip } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -95,18 +95,24 @@ const Header = () => {
 
                     {/* Icons (Right) */}
                     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                        <IconButton color="inherit" onClick={() => navigate("/search")}>
-                            <SearchIcon />
-                        </IconButton>
-                        <IconButton color="inherit" onClick={() => navigate("/cart")}>
-                            <ShoppingCartIcon />
-                        </IconButton>
+                        <Tooltip title="Search">
+                            <IconButton color="inherit" onClick={() => navigate("/search")} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Cart">
+                            <IconButton color="inherit" onClick={() => navigate("/cart")} aria-label="cart">
+                                <ShoppingCartIcon />
+                            </IconButton>
+                        </Tooltip>
                         {isAuthenticated ? (
                             <UserOptions user={user} />
                         ) : (
-                            <IconButton color="inherit" onClick={() => navigate("/login")}>
-                                <PersonIcon />
-                            </IconButton>
+                            <Tooltip title="Login">
+                                <IconButton color="inherit" onClick={() => navigate("/login")} aria-label="login">
+                                    <PersonIcon />
+                                </IconButton>
+                            </Tooltip>
                         )}
                     </Box>
 
