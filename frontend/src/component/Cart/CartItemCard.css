@@ -16,19 +16,19 @@
 }
 
 .CartItemCard > div > a {
-  font: 300 0.9vmax cursive;
+  font: 300 0.9vmax "Roboto", sans-serif;
   color: rgba(24, 24, 24, 0.815);
   text-decoration: none;
 }
 
 .CartItemCard > div > span {
-  font: 300 0.9vmax "Roboto";
+  font: 300 0.9vmax "Roboto", sans-serif;
   color: rgba(24, 24, 24, 0.815);
 }
 
 .CartItemCard > div > p {
   color: tomato;
-  font: 100 0.8vmax "Roboto";
+  font: 100 0.8vmax "Roboto", sans-serif;
   cursor: pointer;
 }
 
@@ -46,14 +46,14 @@
   }
 
   .CartItemCard > div > a {
-    font: 300 2vmax cursive;
+    font: 300 2vmax "Roboto", sans-serif;
   }
 
   .CartItemCard > div > span {
-    font: 300 1.9vmax "Roboto";
+    font: 300 1.9vmax "Roboto", sans-serif;
   }
 
   .CartItemCard > div > p {
-    font: 100 1.8vmax "Roboto";
+    font: 100 1.8vmax "Roboto", sans-serif;
   }
 }

@@ -28,12 +28,12 @@
 
 .detailsBlock-1 > h2 {
   color: rgb(54, 54, 54);
-  font: 600 1.6vmax "Roboto";
+  font: 600 1.6vmax "Roboto", sans-serif;
 }
 
 .detailsBlock-1 > p {
   color: rgba(54, 54, 54, 0.582);
-  font: 200 0.6vmax cursive;
+  font: 200 0.6vmax "Roboto", sans-serif;
 }
 
 .detailsBlock-2 {
@@ -47,7 +47,7 @@
 }
 
 .detailsBlock-2-span {
-  font: 200 0.8vmax cursive;
+  font: 200 0.8vmax "Roboto", sans-serif;
   color: rgba(0, 0, 0, 0.699);
 }
 
@@ -57,7 +57,7 @@
 
 .detailsBlock-3 > h1 {
   color: rgba(17, 17, 17, 0.795);
-  font: 400 1.8vmax "Franklin Gothic Medium";
+  font: 400 1.8vmax "Roboto", sans-serif;
   margin: 1vmax 0;
 }
 .detailsBlock-3-1 {
@@ -83,7 +83,7 @@
   width: 1vmax;
   text-align: center;
   outline: none;
-  font: 400 0.8vmax "Roboto";
+  font: 400 0.8vmax "Roboto", sans-serif;
   color: rgba(0, 0, 0, 0.74);
 }
 
@@ -93,7 +93,7 @@
   color: white;
   transition: all 0.5s;
   background-color: tomato;
-  font: 500 0.7vmax "Roboto";
+  font: 500 0.7vmax "Roboto", sans-serif;
   border-radius: 20px;
   padding: 0.5vmax 2vmax;
   margin: 1vmax;
@@ -109,24 +109,24 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.205);
   padding: 1vmax 0;
   color: rgba(0, 0, 0, 0.651);
-  font: 400 1vmax "Roboto";
+  font: 400 1vmax "Roboto", sans-serif;
   margin: 1vmax 0;
 }
 
 .detailsBlock-4 {
   color: rgba(0, 0, 0, 0.897);
-  font: 500 1.2vmax sans-serif;
+  font: 500 1.2vmax "Roboto", sans-serif;
 }
 
 .detailsBlock-4 > p {
   color: rgba(0, 0, 0, 0.534);
-  font: 300 0.8vmax sans-serif;
+  font: 300 0.8vmax "Roboto", sans-serif;
 }
 
 .submitReview {
   border: none;
   background-color: tomato;
-  font: 500 0.7vmax "Roboto";
+  font: 500 0.7vmax "Roboto", sans-serif;
   border-radius: 20px;
   padding: 0.6vmax 2vmax;
   margin: 1vmax 0;
@@ -149,12 +149,12 @@
   margin: 1vmax 0;
   outline: none;
   padding: 1rem;
-  font: 300 1rem "Roboto";
+  font: 300 1rem "Roboto", sans-serif;
 }
 
 .reviewsHeading {
   color: #000000be;
-  font: 500 1.4vmax "Roboto";
+  font: 500 1.4vmax "Roboto", sans-serif;
   text-align: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.226);
   padding: 1vmax;
@@ -184,15 +184,15 @@
 }
 .reviewCard > p {
   color: rgba(0, 0, 0, 0.836);
-  font: 600 0.9vmax "Roboto";
+  font: 600 0.9vmax "Roboto", sans-serif;
 }
 .reviewCardComment {
   color: rgba(0, 0, 0, 0.445);
-  font: 300 0.8vmax cursive;
+  font: 300 0.8vmax "Roboto", sans-serif;
 }
 
 .noReviews {
-  font: 400 1.3vmax "Gill Sans";
+  font: 400 1.3vmax "Roboto", sans-serif;
   text-align: center;
   color: rgba(0, 0, 0, 0.548);
 }
@@ -225,7 +225,7 @@
   }
 
   .detailsBlock-3 > h1 {
-    font: 700 3vmax "Franklin Gothic Medium";
+    font: 700 3vmax "Roboto", sans-serif;
     text-align: center;
   }
 
@@ -244,11 +244,11 @@
   .detailsBlock-3-1-1 > input {
     padding: 1.5vmax;
     width: 3vmax;
-    font: 400 1.8vmax "Roboto";
+    font: 400 1.8vmax "Roboto", sans-serif;
   }
 
   .detailsBlock-3-1 > button:last-child {
-    font: 500 1.7vmax "Roboto";
+    font: 500 1.7vmax "Roboto", sans-serif;
     padding: 1.5vmax;
     width: 20vmax;
     margin: 3vmax 0;
@@ -257,28 +257,28 @@
   .detailsBlock-3 > p {
     padding: 2.5vmax 0;
     text-align: center;
-    font: 400 2vmax "Roboto";
+    font: 400 2vmax "Roboto", sans-serif;
   }
 
   .detailsBlock-4 {
-    font: 500 2.5vmax sans-serif;
+    font: 500 2.5vmax "Roboto", sans-serif;
   }
 
   .detailsBlock-4 > p {
-    font: 300 1.8vmax sans-serif;
+    font: 300 1.8vmax "Roboto", sans-serif;
   }
 
   .submitReview {
-    font: 500 1.7vmax "Roboto";
+    font: 500 1.7vmax "Roboto", sans-serif;
     padding: 1.5vmax;
     width: 20vmax;
     margin: 3vmax 0;
   }
 
   .reviewCard > p {
-    font: 600 3vw "Roboto";
+    font: 600 3vw "Roboto", sans-serif;
   }
   .reviewCardComment {
-    font: 300 5vw cursive;
+    font: 300 5vw "Roboto", sans-serif;
   }
 }

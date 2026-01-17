@@ -22,7 +22,7 @@
   .updateProfileHeading {
     text-align: center;
     color: rgba(0, 0, 0, 0.664);
-    font: 400 1.3vmax "Roboto";
+    font: 400 1.3vmax "Roboto", sans-serif;
     padding: 1.3vmax;
     border-bottom: 1px solid rgba(0, 0, 0, 0.205);
     width: 50%;
@@ -53,7 +53,7 @@
     box-sizing: border-box;
     border: 1px solid rgba(0, 0, 0, 0.267);
     border-radius: 4px;
-    font: 300 0.9vmax cursive;
+    font: 300 0.9vmax "Roboto", sans-serif;
     outline: none;
   }
   
@@ -81,7 +81,7 @@
     height: 5vh;
     border: none;
     margin: 0%;
-    font: 400 0.8vmax cursive;
+    font: 400 0.8vmax "Roboto", sans-serif;
     transition: all 0.5s;
     padding: 0 1vmax;
     color: rgba(0, 0, 0, 0.623);
@@ -96,7 +96,7 @@
     border: none;
     background-color: tomato;
     color: white;
-    font: 300 0.9vmax "Roboto";
+    font: 300 0.9vmax "Roboto", sans-serif;
     width: 100%;
     padding: 0.8vmax;
     cursor: pointer;
@@ -125,7 +125,7 @@
   
     .updateProfileForm > div > input {
       padding: 2.5vmax 5vmax;
-      font: 300 1.7vmax cursive;
+      font: 300 1.7vmax "Roboto", sans-serif;
     }
   
     .updateProfileForm > div > svg {
@@ -139,11 +139,11 @@
   
     #updateProfileImage > input::file-selector-button {
       height: 7vh;
-      font: 400 1.8vmax cursive;
+      font: 400 1.8vmax "Roboto", sans-serif;
     }
   
     .updateProfileBtn {
-      font: 300 1.9vmax "Roboto";
+      font: 300 1.9vmax "Roboto", sans-serif;
       padding: 1.8vmax;
     }
   }

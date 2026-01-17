@@ -3,7 +3,7 @@
 }
 
 .orderDetailsContainer > h1 {
-  font: 300 3vmax "Roboto";
+  font: 300 3vmax "Roboto", sans-serif;
   margin: 4vmax 0;
   color: tomato;
 }
@@ -14,7 +14,7 @@
 }
 
 .orderDetailsContainer > p {
-  font: 400 1.8vmax "Roboto";
+  font: 400 1.8vmax "Roboto", sans-serif;
 }
 
 .orderDetailsContainerBox,
@@ -28,17 +28,17 @@
 }
 
 .orderDetailsContainerBox > div > p {
-  font: 400 1vmax "Roboto";
+  font: 400 1vmax "Roboto", sans-serif;
   color: black;
 }
 .orderDetailsContainerBox > div > span {
   margin: 0 1vmax;
-  font: 100 1vmax "Roboto";
+  font: 100 1vmax "Roboto", sans-serif;
   color: #575757;
 }
 
 .orderDetailsCartItems > p {
-  font: 400 1.8vmax "Roboto";
+  font: 400 1.8vmax "Roboto", sans-serif;
 }
 
 .orderDetailsCartItems {
@@ -48,7 +48,7 @@
 
 .orderDetailsCartItemsContainer > div {
   display: flex;
-  font: 400 1vmax "Roboto";
+  font: 400 1vmax "Roboto", sans-serif;
   align-items: center;
   margin: 2vmax 0;
 }
@@ -65,13 +65,13 @@
 }
 
 .orderDetailsCartItemsContainer > div > span {
-  font: 100 1vmax "Roboto";
+  font: 100 1vmax "Roboto", sans-serif;
   color: #5e5e5e;
 }
 
 @media screen and (max-width: 600px) {
   .orderDetailsContainer > p {
-    font: 400 6vw "Roboto";
+    font: 400 6vw "Roboto", sans-serif;
   }
 
   .orderDetailsContainerBox > div {
@@ -79,18 +79,18 @@
   }
 
   .orderDetailsContainerBox > div > p {
-    font: 400 4vw "Roboto";
+    font: 400 4vw "Roboto", sans-serif;
   }
   .orderDetailsContainerBox > div > span {
-    font: 100 4vw "Roboto";
+    font: 100 4vw "Roboto", sans-serif;
   }
 
   .orderDetailsCartItems > p {
-    font: 400 6vw "Roboto";
+    font: 400 6vw "Roboto", sans-serif;
   }
 
   .orderDetailsCartItemsContainer > div {
-    font: 400 4vw "Roboto";
+    font: 400 4vw "Roboto", sans-serif;
     margin: 4vw 0;
   }
 
@@ -104,6 +104,6 @@
   }
 
   .orderDetailsCartItemsContainer > div > span {
-    font: 100 4vw "Roboto";
+    font: 100 4vw "Roboto", sans-serif;
   }
 }
