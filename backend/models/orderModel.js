@@ -54,6 +54,7 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
         required: true,
+        index: true // Optimize: Index for finding orders by user
     },
     paymentInfo: {
         id: {
