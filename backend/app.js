@@ -14,11 +14,16 @@ app.use(express.urlencoded({
   extended: true
 }))
 const cors = require('cors');
+const mongoSanitize = require('./middleware/mongoSanitize');
 app.use(fileUpload())
 app.use(cors({
   origin: true,
   credentials: true
 }));
+
+// Sanitize data to prevent NoSQL injection
+app.use(mongoSanitize);
+
 // import route from productroute
 const product = require("./routes/productRoute");
 const user = require("./routes/userRoute")
