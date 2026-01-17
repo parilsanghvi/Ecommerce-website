@@ -14,7 +14,8 @@ const productSchema = mongoose.Schema({
         // throws error if object field is empty [true,(if it is false it will give message after comma)"blah blah blah"]
         required: [true, "Please enter product name"],
         // dunno this 
-        trim: true
+        trim: true,
+        index: true // Optimize: Index for faster name search
     },
     description: {
         type: String,
@@ -24,12 +25,14 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: [true, "Please enter product price"],
         // maxlength : if input is greater than 8 it will throw error
-        maxLength: [8, "Price cannot be greater than 8 figures"]
+        maxLength: [8, "Price cannot be greater than 8 figures"],
+        index: true // Optimize: Index for price range filtering
     },
     ratings: {
         type: Number,
         // we can also give default value
-        default: 0
+        default: 0,
+        index: true // Optimize: Index for sorting and filtering by rating
     },
     images: [{
         // use [] to create an array of objects inside an object 
@@ -44,7 +47,8 @@ const productSchema = mongoose.Schema({
     }],
     category: {
         type: String,
-        required: [true, "please enter product category"]
+        required: [true, "please enter product category"],
+        index: true // Optimize: Index for category filtering
     },
     stock: {
         type: Number,

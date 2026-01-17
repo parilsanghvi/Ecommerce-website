@@ -1,6 +1,10 @@
 
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+
+// Mock catchAsyncErrors to allow awaiting the controller function
+jest.mock('../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next));
+
 const productController = require('../controllers/productController');
 const Product = require('../models/productModel');
 
