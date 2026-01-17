@@ -7,6 +7,7 @@ import ProductCard from '../Home/ProductCard'
 import Pagination from "@mui/material/Pagination"
 import Slider from "@mui/material/Slider"
 import Typography from "@mui/material/Typography"
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import MetaData from "../layout/MetaData";
 import { useSnackbar } from "notistack";
 import { useParams } from 'react-router-dom';
@@ -61,10 +62,16 @@ const Products = () => {
                     <MetaData title="PRODUCTS -- ECOMMERCE" />
                     <h2 className='productsHeading'>Products</h2>
                     <div className='products'>
-                        {filteredProducts &&
+                        {filteredProducts && filteredProducts.length > 0 ? (
                             filteredProducts.map((product) => (
                                 <ProductCard key={product._id} product={product} />
-                            ))}
+                            ))
+                        ) : (
+                            <div className="noProducts">
+                                <SearchOffIcon />
+                                <Typography>No Products Found</Typography>
+                            </div>
+                        )}
                     </div>
                     <div className='filterBox'>
 
