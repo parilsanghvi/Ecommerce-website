@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import "./Products.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { clearErrors, getProduct } from '../../actions/productAction'
@@ -40,14 +40,12 @@ const Products = () => {
     const priceHandler = (event, newPrice) => {
         setPrice(newPrice);
     }
-    if (products.length > 0) {
-        // dispatch(logger(products.length))
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].stock === 0) {
-                products.splice(i, 1)
-            }
-        }
-    }
+
+    const filteredProducts = useMemo(() => {
+        if (!products) return [];
+        return products.filter((product) => product.stock !== 0);
+    }, [products]);
+
     useEffect(() => {
         if (error) {
             enqueueSnackbar(error, { variant: "error" });
@@ -63,8 +61,8 @@ const Products = () => {
                     <MetaData title="PRODUCTS -- ECOMMERCE" />
                     <h2 className='productsHeading'>Products</h2>
                     <div className='products'>
-                        {products &&
-                            products.map((product) => (
+                        {filteredProducts &&
+                            filteredProducts.map((product) => (
                                 <ProductCard key={product._id} product={product} />
                             ))}
                     </div>
