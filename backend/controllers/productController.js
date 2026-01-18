@@ -63,7 +63,8 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     })
 })
 exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
-    const products = await Product.find()
+    // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
+    const products = await Product.find().lean()
     res.status(200).json({
         success: true,
         products,
