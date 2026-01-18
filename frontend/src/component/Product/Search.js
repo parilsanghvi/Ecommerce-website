@@ -21,10 +21,12 @@ const Search = () => {
             <form className='searchBox' onSubmit={searchSubmitHandler}>
                 <input
                 type="text"
-                placeholder="Search the Product"
+                placeholder="Search products..."
+                aria-label="Search products"
+                title="Search products"
                 onChange={(e)=> setKeyword(e.target.value)}
                 />
-                <input type="submit" value="Search"/>
+                <input type="submit" value="Search" aria-label="Submit search" />
             </form>
         </Fragment>
     )
