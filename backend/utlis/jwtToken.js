@@ -3,10 +3,12 @@ const sendToken = (user, statusCode, res) => {
     const token = user.getJWTToken();
     // options for cookie
     const options = {
-        expire: new Date(
+        expires: new Date(
             Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
         ),
-        httpOnly: true
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'PRODUCTION',
+        sameSite: 'strict',
     }
     res.status(statusCode).cookie("token",token,options).json({
         success:true,
