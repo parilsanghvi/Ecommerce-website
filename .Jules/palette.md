@@ -5,3 +5,7 @@
 ## 2025-02-18 - Component-Specific CSS
 **Learning:** This codebase uses CSS files associated with specific components (e.g. `Products.css` for `Products.js`). When adding new UI states (like empty states), it's better to add a new class to the existing component CSS file rather than using inline styles, to maintain separation of concerns and keep the JSX clean.
 **Action:** Always check for an existing `.css` file for the component and append new styles there.
+
+## 2025-02-18 - Form Input Labeling
+**Learning:** Found input fields (specifically search) relying solely on placeholders, which is a common accessibility failure.
+**Action:** Always ensure inputs have an associated `<label>` or `aria-label`. When using `placeholder`, it should provide an example of expected input, not serve as the label itself.
