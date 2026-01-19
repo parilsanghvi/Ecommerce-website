@@ -49,7 +49,7 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
         .filter()
         .pagiNation(resultPerPage)
 
-    const productsPromise = apifeature.query;
+    const productsPromise = apifeature.query.lean();
 
     const [productsCount, products] = await Promise.all([productsCountPromise, productsPromise]);
 
