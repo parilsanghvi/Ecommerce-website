@@ -120,7 +120,7 @@ const ProductDetails = () => {
                         <img
                           className="CarouselImage"
                           src={item.url}
-                          alt={`${i} Slide`}
+                          alt={`${product.name} - View ${i + 1}`}
                           style={{ width: "100%", height: "auto" }}
                         />
                       </div>
@@ -145,9 +145,9 @@ const ProductDetails = () => {
                 <h1>{`₹${product.price}`}</h1>
                 <div className="detailsBlock-3-1">
                   <div className="detailsBlock-3-1-1">
-                    <button onClick={decreaseQuantity}>-</button>
-                    <input readOnly type="number" value={quantity} />
-                    <button onClick={increaseQuantity}>+</button>
+                    <button onClick={decreaseQuantity} disabled={quantity <= 1} aria-label="Decrease quantity">-</button>
+                    <input readOnly type="number" value={quantity} aria-label="Product quantity" />
+                    <button onClick={increaseQuantity} disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
                   </div>
                   <button
                     disabled={product.stock < 1 ? true : false}
@@ -196,6 +196,7 @@ const ProductDetails = () => {
                 rows="5"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                aria-label="Review comment"
               ></textarea>
             </DialogContent>
             <DialogActions>
