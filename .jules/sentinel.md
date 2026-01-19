@@ -9,3 +9,8 @@
 **Vulnerability:** The password reset token expiration was failing because `Date.now` (function) was used instead of `Date.now()` (timestamp) in `userModel.js`, resulting in `undefined` expiration dates. Consequently, the expiration check in `userController.js` was commented out, allowing tokens to be used indefinitely.
 **Learning:** Typos in critical security logic (like missing parentheses) can lead to complete security failures. Commented-out security checks are a major red flag indicating underlying broken logic.
 **Prevention:** Use TypeScript or linting rules that catch arithmetic operations on functions. Always investigate *why* a security check is commented out rather than ignoring it.
+
+## 2025-02-15 - Broken Logout Functionality
+**Vulnerability:** The `logout` function in `userController.js` used `expires: new Date(Date.now)` (function) instead of `Date.now()` (timestamp). This resulted in an `Invalid Date` for the cookie expiration, potentially causing the logout to fail or behave unpredictably across browsers.
+**Learning:** The pattern of missing parentheses for `Date.now()` appeared multiple times in the codebase, suggesting a copy-paste error or systemic misunderstanding.
+**Prevention:** Add a linting rule or manual check for `new Date(Date.now)` vs `new Date(Date.now())`. Verify cookie attributes in tests.
