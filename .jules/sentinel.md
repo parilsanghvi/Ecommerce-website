@@ -14,3 +14,8 @@
 **Vulnerability:** The `logout` function in `userController.js` used `expires: new Date(Date.now)` (function) instead of `Date.now()` (timestamp). This resulted in an `Invalid Date` for the cookie expiration, potentially causing the logout to fail or behave unpredictably across browsers.
 **Learning:** The pattern of missing parentheses for `Date.now()` appeared multiple times in the codebase, suggesting a copy-paste error or systemic misunderstanding.
 **Prevention:** Add a linting rule or manual check for `new Date(Date.now)` vs `new Date(Date.now())`. Verify cookie attributes in tests.
+
+## 2025-02-15 - Login Authentication Bypass via Control Flow
+**Vulnerability:** The `loginUser` controller failed to `return` after calling `next(error)` when a password mismatch occurred. This allowed execution to proceed to `sendToken`, logging the user in despite an invalid password. Additionally, status codes were passed to `next()` instead of the `ErrorHandler` constructor, causing errors to potentially default to 500.
+**Learning:** Missing `return` statements in Express middleware/controllers are a silent but deadly pattern that can completely negate authentication checks.
+**Prevention:** Enforce consistent use of `return next(err)` pattern. Use linting rules (e.g., `eslint-plugin-express`) that detect code execution after `next(err)`.
