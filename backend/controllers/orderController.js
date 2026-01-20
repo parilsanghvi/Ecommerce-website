@@ -35,7 +35,8 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
 // get single order
 exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
-    const order = await Order.findById(req.params.id).populate("user", "name email");
+    // Optimized: Use lean() for faster read-only access to order details
+    const order = await Order.findById(req.params.id).populate("user", "name email").lean();
     if (!order) {
         return next(new ErrorHandler("order not found with this id", 404))
     }
@@ -46,9 +47,10 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
 })
 // get loggedin user order
 exports.myOrders = catchAsyncErrors(async (req, res, next) => {
+    // Optimized: Use lean() to improve performance when fetching multiple orders
     const orders = await Order.find({
         user: req.user._id
-    })
+    }).lean()
     res.status(200).json({
         success: true,
         orders,

@@ -126,7 +126,8 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
 // get one product
 exports.getProductDetails = catchAsyncErrors(async (req, res, next) => {
     // takes id as input finds it and if such object exists it returns object 
-    const product = await Product.findById(req.params.id)
+    // Optimized: Use lean() to return a plain JavaScript object, avoiding Mongoose document overhead for read-only operation
+    const product = await Product.findById(req.params.id).lean()
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
@@ -174,7 +175,8 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
 })
 // get all reviews of single product
 exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
-    const product = await Product.findById(req.query.id)
+    // Optimized: Use lean() for faster read access to reviews
+    const product = await Product.findById(req.query.id).lean()
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
