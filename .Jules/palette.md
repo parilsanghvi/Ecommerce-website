@@ -9,3 +9,7 @@
 ## 2025-02-18 - Form Input Labeling
 **Learning:** Found input fields (specifically search) relying solely on placeholders, which is a common accessibility failure.
 **Action:** Always ensure inputs have an associated `<label>` or `aria-label`. When using `placeholder`, it should provide an example of expected input, not serve as the label itself.
+
+## 2025-02-18 - Interactive Lists and Class Name Verification
+**Learning:** Found a typo in class name (`category-box` vs `categoryBox`) preventing styles from applying, and interactive list items lacking keyboard support.
+**Action:** When refactoring interactive lists, ensure `li` elements have `role="button"`, `tabIndex="0"`, and `onKeyDown` handlers. Always verify class names against the imported CSS file.

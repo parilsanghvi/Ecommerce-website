@@ -75,7 +75,7 @@ const Products = () => {
                     </div>
                     <div className='filterBox'>
 
-                        <Typography>Price</Typography>
+                        <Typography id="range-slider">Price</Typography>
                         <Slider
                             value={price}
                             onChange={priceHandler}
@@ -87,17 +87,26 @@ const Products = () => {
                         <Typography>
                             Categories
                         </Typography>
-                        <ul className='category-box'>
+                        <ul className='categoryBox'>
                             {categories.map((category) => (
                                 <li className='category-link'
                                     key={category}
-                                    onClick={() => setCategory(category)}>
+                                    onClick={() => setCategory(category)}
+                                    tabIndex="0"
+                                    role="button"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setCategory(category);
+                                        }
+                                    }}
+                                >
                                     {category}
                                 </li>
                             ))}
                         </ul>
                         <fieldset>
-                            <Typography component="legend">
+                            <Typography component="legend" id="continuous-slider">
                                 Ratings
                             </Typography>
                             <Slider
@@ -105,7 +114,7 @@ const Products = () => {
                                 onChange={(e, newRating) => {
                                     setRating(newRating)
                                 }}
-                                aria-labelledby="continous-slider"
+                                aria-labelledby="continuous-slider"
                                 min={0}
                                 max={5}
                                 valueLabelDisplay='auto'
