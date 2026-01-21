@@ -19,3 +19,8 @@
 **Vulnerability:** The `loginUser` controller failed to `return` after calling `next(error)` when a password mismatch occurred. This allowed execution to proceed to `sendToken`, logging the user in despite an invalid password. Additionally, status codes were passed to `next()` instead of the `ErrorHandler` constructor, causing errors to potentially default to 500.
 **Learning:** Missing `return` statements in Express middleware/controllers are a silent but deadly pattern that can completely negate authentication checks.
 **Prevention:** Enforce consistent use of `return next(err)` pattern. Use linting rules (e.g., `eslint-plugin-express`) that detect code execution after `next(err)`.
+
+## 2025-02-18 - Host Header Injection in Password Reset
+**Vulnerability:** The `forgotPassword` controller used `req.get("host")` to construct the password reset link. This allows an attacker to inject a malicious Host header, potentially causing the victim to receive a reset link pointing to an attacker-controlled domain.
+**Learning:** Trusting `Host` header for generating absolute URLs is insecure, especially for sensitive actions like password resets.
+**Prevention:** Always use a trusted server-side configuration variable (like `FRONTEND_URL`) to construct absolute URLs. Implement a fallback only if strictly necessary and understood.
