@@ -32,18 +32,18 @@ const About = () => {
                   src="https://res.cloudinary.com/ecommerce0510/image/upload/v1643263274/avatars/271132470_506892223917314_2788328017502867722_n_k8rny8.jpg"
                   alt="Founder"
                 />
-                <Typography variant="h4" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-primary)' }}>Paril Sanghvi</Typography>
+                <Typography variant="h4" component="h2" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-primary)', background: 'transparent', width: '100%' }}>Paril Sanghvi</Typography>
                 <Button onClick={visitGitHub} style={{ color: 'var(--color-text)', fontFamily: 'var(--font-body)', marginTop: '10px', border: '1px solid var(--color-border)' }}>
                   Visit GitHub
                 </Button>
-                <span style={{ display: 'block', marginTop: '20px', color: 'var(--color-muted)', fontFamily: 'var(--font-body)' }}>
+                <span style={{ display: 'block', marginTop: '20px', color: 'var(--color-text)', fontFamily: 'var(--font-body)' }}>
                   This is a sample wesbite made by Paril Sanghvi.
                 </span>
             </motion.div>
           </div>
 
           <div className="aboutSectionContainer2">
-            <Typography component="h2" style={{ fontFamily: 'var(--font-heading)', marginBottom: '20px' }}>Connect</Typography>
+            <h2 style={{ fontFamily: 'var(--font-heading)', marginBottom: '20px', color: 'var(--color-text)', fontSize: '2rem', textTransform: 'uppercase' }}>Connect</h2>
             <div className="socialIcons">
                 <a
                   href="https://www.linkedin.com/in/paril-sanghvi-38627b217/"

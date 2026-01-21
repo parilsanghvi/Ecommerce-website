@@ -8,6 +8,7 @@ import FaceIcon from "@mui/icons-material/Face";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
 import { useSnackbar } from "notistack";
+import { motion } from "framer-motion";
 
 const LoginSignUp = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const LoginSignUp = () => {
     myForm.set("password", password);
     myForm.set("avatar", avatar);
     dispatch(register(myForm));
-    navigate("/login")
+    // navigate("/login")
   };
 
   const registerDataChange = (e) => {
@@ -104,9 +105,7 @@ const LoginSignUp = () => {
 
   const handleTabKey = (e, tab) => {
     if (e.key === "Enter" || e.key === " ") {
-      if (e.key === " ") {
         e.preventDefault();
-      }
       switchTabs(e, tab);
     }
   };
@@ -118,7 +117,12 @@ const LoginSignUp = () => {
       ) : (
         <Fragment>
           <div className="LoginSignUpContainer">
-            <div className="LoginSignUpBox">
+            <motion.div
+                className="LoginSignUpBox"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+            >
               <div>
                 <div className="login_signUp_toggle">
                   <p onClick={(e) => switchTabs(e, "login")} tabIndex="0" role="button" onKeyDown={(e) => handleTabKey(e, "login")}>LOGIN</p>
@@ -207,7 +211,7 @@ const LoginSignUp = () => {
                 </div>
                 <input type="submit" value="Register" className="signUpBtn" />
               </form>
-            </div>
+            </motion.div>
           </div>
         </Fragment>
       )}

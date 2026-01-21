@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
           transition: 'all 0.3s ease'
         }}
       >
-        <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', marginBottom: '16px', background: '#000' }}>
+        <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', marginBottom: '16px', background: 'transparent' }}>
             <img
               src={product.images[0].url}
               alt={product.name}
@@ -36,12 +36,8 @@ const ProductCard = ({ product }) => {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                filter: 'grayscale(100%) contrast(1.2)',
-                transition: 'filter 0.3s ease'
+                objectFit: 'cover'
               }}
-              onMouseOver={e => e.currentTarget.style.filter = 'none'}
-              onMouseOut={e => e.currentTarget.style.filter = 'grayscale(100%) contrast(1.2)'}
             />
         </div>
 
