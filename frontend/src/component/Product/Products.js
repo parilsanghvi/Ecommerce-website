@@ -11,6 +11,7 @@ import SearchOffIcon from "@mui/icons-material/SearchOff";
 import MetaData from "../layout/MetaData";
 import { useSnackbar } from "notistack";
 import { useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const categories = [
     "Laptop",
@@ -22,19 +23,16 @@ const categories = [
     "SmartPhones",
 ]
 
-
 const Products = () => {
     const dispatch = useDispatch()
-
     const { enqueueSnackbar } = useSnackbar();
     const [ratings, setRating] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [price, setPrice] = useState([0, 25000])
     const [category, setCategory] = useState("")
-    const { products, loading, error, productsCount, resultPerPage,
-        // filteredProductsCount
-    } = useSelector((state) => state.products)
+    const { products, loading, error, productsCount, resultPerPage } = useSelector((state) => state.products)
     const { keyword } = useParams();
+
     const setCurrentPageNo = (e, value) => {
         setCurrentPage(value)
     }
@@ -54,87 +52,102 @@ const Products = () => {
         }
         dispatch(getProduct(keyword, currentPage, price, category, ratings))
     }, [dispatch, keyword, currentPage, price, category, ratings, enqueueSnackbar, error])
-    // let count = filteredProductsCount
+
     return (
         <Fragment>
             {loading ? <Loader /> : (
                 <Fragment>
                     <MetaData title="PRODUCTS -- ECOMMERCE" />
-                    <h2 className='productsHeading'>Products</h2>
-                    <div className='products'>
-                        {filteredProducts && filteredProducts.length > 0 ? (
-                            filteredProducts.map((product) => (
-                                <ProductCard key={product._id} product={product} />
-                            ))
-                        ) : (
-                            <div className="noProducts">
-                                <SearchOffIcon />
-                                <Typography>No Products Found</Typography>
-                            </div>
-                        )}
-                    </div>
-                    <div className='filterBox'>
+                    <h2 className='productsHeading'>Inventory</h2>
 
-                        <Typography id="range-slider">Price</Typography>
-                        <Slider
-                            value={price}
-                            onChange={priceHandler}
-                            valueLabelDisplay='auto'
-                            aria-labelledby='range-slider'
-                            min={0}
-                            max={25000}
-                        />
-                        <Typography>
-                            Categories
-                        </Typography>
-                        <ul className='categoryBox'>
-                            {categories.map((category) => (
-                                <li className='category-link'
-                                    key={category}
-                                    onClick={() => setCategory(category)}
-                                    tabIndex="0"
-                                    role="button"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            setCategory(category);
-                                        }
-                                    }}
-                                >
-                                    {category}
-                                </li>
-                            ))}
-                        </ul>
-                        <fieldset>
-                            <Typography component="legend" id="continuous-slider">
-                                Ratings
-                            </Typography>
+                    <div className="products-container">
+                        <motion.div
+                            className='filterBox'
+                            initial={{ x: -50, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <Typography style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase'}}>Price Range</Typography>
                             <Slider
-                                value={ratings}
-                                onChange={(e, newRating) => {
-                                    setRating(newRating)
-                                }}
-                                aria-labelledby="continuous-slider"
-                                min={0}
-                                max={5}
+                                value={price}
+                                onChange={priceHandler}
                                 valueLabelDisplay='auto'
+                                aria-labelledby='range-slider'
+                                min={0}
+                                max={25000}
+                                sx={{
+                                    color: 'var(--color-primary)',
+                                    '& .MuiSlider-thumb': {
+                                        borderRadius: '0',
+                                        border: '1px solid var(--color-primary)',
+                                        backgroundColor: 'black'
+                                    }
+                                }}
                             />
 
-                        </fieldset>
+                            <Typography style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase', marginTop: '24px'}}>
+                                Categories
+                            </Typography>
+                            <ul className='categoryBox'>
+                                {categories.map((cat) => (
+                                    <li className='category-link'
+                                        key={cat}
+                                        onClick={() => setCategory(cat)}
+                                        tabIndex="0"
+                                        style={{ color: category === cat ? 'var(--color-primary)' : '' }}
+                                    >
+                                        {cat}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <fieldset>
+                                <Typography component="legend" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase'}}>
+                                    Rating
+                                </Typography>
+                                <Slider
+                                    value={ratings}
+                                    onChange={(e, newRating) => {
+                                        setRating(newRating)
+                                    }}
+                                    min={0}
+                                    max={5}
+                                    valueLabelDisplay='auto'
+                                    sx={{
+                                        color: 'var(--color-primary)',
+                                        '& .MuiSlider-thumb': {
+                                            borderRadius: '0',
+                                            border: '1px solid var(--color-primary)',
+                                            backgroundColor: 'black'
+                                        }
+                                    }}
+                                />
+                            </fieldset>
+                        </motion.div>
+
+                        <div className='products'>
+                            {filteredProducts && filteredProducts.length > 0 ? (
+                                filteredProducts.map((product) => (
+                                    <ProductCard key={product._id} product={product} />
+                                ))
+                            ) : (
+                                <div className="noProducts">
+                                    <SearchOffIcon />
+                                    <Typography>No Products Found</Typography>
+                                </div>
+                            )}
+
+                            <div className='paginationBox' style={{ gridColumn: '1 / -1' }}>
+                                <Pagination
+                                    count={Math.ceil(productsCount / resultPerPage)}
+                                    page={currentPage}
+                                    onChange={setCurrentPageNo}
+                                    color="primary"
+                                    shape="rounded"
+                                />
+                            </div>
+                        </div>
                     </div>
-
-
-
-                    {/* {resultPerPage<=count &&( */}
-                    <div className='paginationBox'>
-                        <Pagination
-                            count={Math.ceil(productsCount / resultPerPage)}
-                            page={currentPage}
-                            onChange={setCurrentPageNo}
-                            color="primary"
-                        />
-                    </div>
-                    {/* )} */}
                 </Fragment>
             )}
         </Fragment>

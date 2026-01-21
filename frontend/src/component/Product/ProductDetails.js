@@ -4,39 +4,24 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  clearErrors,
-  getProductDetails,
-  newReview,
-} from "../../actions/productAction";
+import { clearErrors, getProductDetails, newReview } from "../../actions/productAction";
 import ReviewCard from "./ReviewCard.js";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../actions/cartAction";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
-} from "@mui/material";
-import { Rating } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating } from "@mui/material";
 import { NEW_REVIEW_RESET } from "../../constants/productConstants";
 import { useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { product, loading, error } = useSelector(
-    (state) => state.productDetails
-  );
-
-  const { success, error: reviewError } = useSelector(
-    (state) => state.newReview
-  );
+  const { product, loading, error } = useSelector((state) => state.productDetails);
+  const { success, error: reviewError } = useSelector((state) => state.newReview);
 
   const options = {
     size: "large",
@@ -52,16 +37,12 @@ const ProductDetails = () => {
 
   const increaseQuantity = () => {
     if (product.stock <= quantity) return;
-
-    const qty = quantity + 1;
-    setQuantity(qty);
+    setQuantity(quantity + 1);
   };
 
   const decreaseQuantity = () => {
     if (1 >= quantity) return;
-
-    const qty = quantity - 1;
-    setQuantity(qty);
+    setQuantity(quantity - 1);
   };
 
   const addToCartHandler = () => {
@@ -74,14 +55,8 @@ const ProductDetails = () => {
   };
 
   const reviewSubmitHandler = () => {
-    const myForm = {
-      rating: rating,
-      comment: comment,
-      productId: id,
-    };
-
+    const myForm = { rating, comment, productId: id };
     dispatch(newReview(myForm));
-
     setOpen(false);
   };
 
@@ -90,12 +65,10 @@ const ProductDetails = () => {
       enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
     }
-
     if (reviewError) {
       enqueueSnackbar(reviewError, { variant: "error" });
       dispatch(clearErrors());
     }
-
     if (success) {
       enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch({ type: NEW_REVIEW_RESET });
@@ -110,9 +83,14 @@ const ProductDetails = () => {
       ) : (
         <Fragment>
           <MetaData title={`${product.name} -- ECOMMERCE`} />
-          <div className="ProductDetails">
+          <motion.div
+            className="ProductDetails"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <div>
-              <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
+              <div style={{ width: "100%", overflow: 'hidden', border: '1px solid var(--color-border)' }}>
                 <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
                   {product.images &&
                     product.images.map((item, i) => (
@@ -121,7 +99,6 @@ const ProductDetails = () => {
                           className="CarouselImage"
                           src={item.url}
                           alt={`${product.name} - View ${i + 1}`}
-                          style={{ width: "100%", height: "auto" }}
                         />
                       </div>
                     ))}
@@ -132,13 +109,15 @@ const ProductDetails = () => {
             <div>
               <div className="detailsBlock-1">
                 <h2>{product.name}</h2>
-                <p>Product # {product._id}</p>
+                <p>PRODUCT ID: {product._id}</p>
               </div>
               <div className="detailsBlock-2">
-                <Rating {...options} />
+                <Rating {...options} sx={{
+                    "& .MuiRating-iconFilled": { color: "var(--color-primary)" },
+                    "& .MuiRating-iconEmpty": { color: "#333" }
+                }} />
                 <span className="detailsBlock-2-span">
-                  {" "}
-                  ({product.numOfReviews} Reviews)
+                  ({product.numOfReviews} REVIEWS)
                 </span>
               </div>
               <div className="detailsBlock-3">
@@ -153,14 +132,14 @@ const ProductDetails = () => {
                     disabled={product.stock < 1 ? true : false}
                     onClick={addToCartHandler}
                   >
-                    Add to Cart
+                    ADD TO CART
                   </button>
                 </div>
 
-                <p>
-                  Status:
-                  <b className={product.stock < 1 ? "redColor" : "greenColor"}>
-                    {product.stock < 1 ? "OutOfStock" : "InStock"}
+                <p style={{fontFamily: 'var(--font-heading)'}}>
+                  STATUS:
+                  <b className={product.stock < 1 ? "redColor" : "greenColor"} style={{marginLeft: '8px'}}>
+                    {product.stock < 1 ? "OUT OF STOCK" : "IN STOCK"}
                   </b>
                 </p>
               </div>
@@ -170,10 +149,10 @@ const ProductDetails = () => {
               </div>
 
               <button onClick={submitReviewToggle} className="submitReview">
-                Submit Review
+                LOG A REVIEW
               </button>
             </div>
-          </div>
+          </motion.div>
 
           <h3 className="reviewsHeading">REVIEWS</h3>
 
@@ -189,14 +168,12 @@ const ProductDetails = () => {
                 value={rating}
                 size="large"
               />
-
               <textarea
                 className="submitDialogTextArea"
                 cols="30"
                 rows="5"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                aria-label="Review comment"
               ></textarea>
             </DialogContent>
             <DialogActions>
@@ -217,7 +194,7 @@ const ProductDetails = () => {
                 ))}
             </div>
           ) : (
-            <p className="noReviews">No Reviews Yet</p>
+            <p className="noReviews">NO REVIEWS YET</p>
           )}
         </Fragment>
       )}
