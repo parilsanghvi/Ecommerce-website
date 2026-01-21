@@ -26,14 +26,6 @@ class Apifeatures {
 
         removeFields.forEach((key) => delete queryCopy[key]);
 
-        // Case insensitive filter for category
-        if (queryCopy.category) {
-            queryCopy.category = {
-                $regex: queryCopy.category,
-                $options: "i",
-            };
-        }
-
         // Filter For Price and Rating
         let queryStr = JSON.stringify(queryCopy);
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
@@ -49,6 +41,14 @@ class Apifeatures {
                     }
                 }
             }
+        }
+
+        // Case insensitive filter for category
+        if (queryObj.category && typeof queryObj.category === 'string') {
+            queryObj.category = {
+                $regex: queryObj.category,
+                $options: "i",
+            };
         }
 
         this.query = this.query.find(queryObj);
