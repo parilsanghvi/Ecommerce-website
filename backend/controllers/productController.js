@@ -52,7 +52,8 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
     apifeature.pagiNation(resultPerPage);
 
-    const products = await apifeature.query;
+    // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
+    const products = await apifeature.query.lean();
 
     res.status(200).json({
         success: true,
