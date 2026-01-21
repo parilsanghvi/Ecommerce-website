@@ -43,6 +43,14 @@ class Apifeatures {
             }
         }
 
+        // Case insensitive filter for category
+        if (queryObj.category && typeof queryObj.category === 'string') {
+            queryObj.category = {
+                $regex: queryObj.category,
+                $options: "i",
+            };
+        }
+
         this.query = this.query.find(queryObj);
 
         return this;

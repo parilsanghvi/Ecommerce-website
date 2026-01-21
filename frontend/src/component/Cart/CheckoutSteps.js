@@ -8,21 +8,24 @@ import "./CheckoutSteps.css";
 const CheckoutSteps = ({ activeStep }) => {
   const steps = [
     {
-      label: <Typography>Shipping Details</Typography>,
+      label: <Typography style={{ fontFamily: 'var(--font-heading)', fontWeight: 'bold' }}>SHIPPING</Typography>,
       icon: <LocalShippingIcon />,
     },
     {
-      label: <Typography>Confirm Order</Typography>,
+      label: <Typography style={{ fontFamily: 'var(--font-heading)', fontWeight: 'bold' }}>CONFIRM</Typography>,
       icon: <LibraryAddCheckIcon />,
     },
     {
-      label: <Typography>Payment</Typography>,
+      label: <Typography style={{ fontFamily: 'var(--font-heading)', fontWeight: 'bold' }}>PAYMENT</Typography>,
       icon: <AccountBalanceIcon />,
     },
   ];
 
   const stepStyles = {
     boxSizing: "border-box",
+    marginTop: "2rem",
+    marginBottom: "2rem",
+    backgroundColor: "transparent",
   };
 
   return (
@@ -35,8 +38,14 @@ const CheckoutSteps = ({ activeStep }) => {
             completed={activeStep >= index ? true : false}
           >
             <StepLabel
+              StepIconProps={{
+                style: {
+                    color: activeStep >= index ? "var(--color-primary)" : "var(--color-muted)",
+                    fontSize: "2rem"
+                }
+              }}
               style={{
-                color: activeStep >= index ? "tomato" : "rgba(0, 0, 0, 0.649)",
+                color: activeStep >= index ? "var(--color-primary)" : "var(--color-muted)",
               }}
               icon={item.icon}
             >

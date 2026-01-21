@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Box, Drawer, List, ListItem, ListItemButton, ListItemText, Container, Button, Tooltip } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Tooltip } from '@mui/material';
+import { motion } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from "../../../images/logo.png";
 import UserOptions from "./UserOptions";
 import { useSelector } from 'react-redux';
+import "./Header.css";
 
 const Header = () => {
     const { isAuthenticated, user } = useSelector((state) => state.user);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+    };
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -28,11 +41,9 @@ const Header = () => {
         { text: 'About', path: '/about' },
     ];
 
-
-
     const renderDrawer = () => (
         <Box
-            sx={{ width: 250 }}
+            sx={{ width: 250, backgroundColor: 'var(--color-bg)', height: '100%', color: 'var(--color-text)', borderRight: '1px solid var(--color-primary)' }}
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -40,8 +51,10 @@ const Header = () => {
             <List>
                 {navLinks.map((item) => (
                     <ListItem key={item.text} disablePadding>
-                        <ListItemButton component={Link} to={item.path}>
-                            <ListItemText primary={item.text} />
+                        <ListItemButton component={Link} to={item.path} sx={{
+                            '&:hover': { backgroundColor: 'var(--color-primary)', color: 'black' }
+                        }}>
+                            <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'var(--font-heading)' }} />
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -50,16 +63,28 @@ const Header = () => {
     );
 
     return (
-        <AppBar position="sticky" sx={{ backgroundColor: "white", color: "black", boxShadow: "0px 2px 4px rgba(0,0,0,0.1)" }}>
+        <motion.header
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', stiffness: 100 }}
+            style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 1000,
+                backgroundColor: 'var(--color-bg)',
+                borderBottom: '1px solid var(--color-border)',
+                backdropFilter: 'blur(10px)',
+            }}
+        >
             <Container maxWidth="xl">
-                <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-                    {/* Mobile Menu Icon (Left) */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '80px' }}>
+
+                    {/* Mobile Menu Icon */}
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
-                            aria-label="menu"
                             onClick={toggleDrawer(true)}
-                            color="inherit"
+                            sx={{ color: 'var(--color-primary)' }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -72,53 +97,86 @@ const Header = () => {
                         </Drawer>
                     </Box>
 
-                    {/* Logo (Center on Mobile, Left on Desktop) */}
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Link to="/">
-                            <img src={logo} alt="Ecommerce" style={{ height: '50px', objectFit: 'contain' }} />
-                        </Link>
-                    </Box>
+                    {/* Logo */}
+                    <Link to="/" style={{ textDecoration: 'none' }}>
+                        <motion.div
+                            className="header-logo"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            ECOMMERCE
+                        </motion.div>
+                    </Link>
 
-                    {/* Desktop Nav (Center) */}
+                    {/* Desktop Nav */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4 }}>
                         {navLinks.map((page) => (
-                            <Button
+                            <Link
                                 key={page.text}
-                                component={Link}
                                 to={page.path}
-                                sx={{ my: 2, color: 'black', display: 'block', textTransform: 'none', fontSize: '1rem', fontWeight: 500, '&:hover': { color: '#eb4034' } }}
+                                style={{ textDecoration: 'none' }}
                             >
-                                {page.text}
-                            </Button>
+                                <motion.div
+                                    whileHover={{ y: -2, color: 'var(--color-primary)' }}
+                                    style={{
+                                        color: 'var(--color-text)',
+                                        fontFamily: 'var(--font-heading)',
+                                        fontSize: '1rem',
+                                        position: 'relative'
+                                    }}
+                                >
+                                    {page.text}
+                                </motion.div>
+                            </Link>
                         ))}
                     </Box>
 
-                    {/* Icons (Right) */}
-                    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    {/* Icons */}
+                    <Box sx={{ display: "flex", gap: { xs: 0.5, md: 2 }, alignItems: "center" }}>
+                        <Tooltip title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+                            <motion.div whileHover={{ scale: 1.1 }}>
+                                <IconButton onClick={toggleTheme} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                    {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                                </IconButton>
+                            </motion.div>
+                        </Tooltip>
                         <Tooltip title="Search">
-                            <IconButton color="inherit" onClick={() => navigate("/search")} aria-label="search">
-                                <SearchIcon />
-                            </IconButton>
+                            <motion.div whileHover={{ scale: 1.1 }}>
+                                <IconButton onClick={() => navigate("/search")} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                    <SearchIcon />
+                                </IconButton>
+                            </motion.div>
                         </Tooltip>
                         <Tooltip title="Cart">
-                            <IconButton color="inherit" onClick={() => navigate("/cart")} aria-label="cart">
-                                <ShoppingCartIcon />
-                            </IconButton>
+                            <motion.div whileHover={{ scale: 1.1 }}>
+                                <IconButton onClick={() => navigate("/cart")} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                    <ShoppingCartIcon />
+                                </IconButton>
+                            </motion.div>
                         </Tooltip>
                         {isAuthenticated ? (
                             <UserOptions user={user} />
                         ) : (
                             <Tooltip title="Login">
-                                <IconButton color="inherit" onClick={() => navigate("/login")} aria-label="login">
-                                    <PersonIcon />
-                                </IconButton>
+                                <motion.div whileHover={{ scale: 1.1 }}>
+                                    <IconButton
+                                        onClick={() => navigate("/login")}
+                                        sx={{
+                                            color: 'var(--color-primary)',
+                                            border: '1px solid var(--color-primary)',
+                                            borderRadius: '4px',
+                                            padding: { xs: '4px', md: '8px' }
+                                        }}
+                                    >
+                                        <PersonIcon />
+                                    </IconButton>
+                                </motion.div>
                             </Tooltip>
                         )}
                     </Box>
-
-                </Toolbar>
+                </Box>
             </Container>
-        </AppBar>
+        </motion.header>
     );
 };
 

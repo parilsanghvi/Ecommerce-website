@@ -1,0 +1,78 @@
+.aboutSection {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  padding: 4rem 2rem;
+}
+
+.aboutSectionContainer {
+  width: 100%;
+  max-width: 1000px;
+  text-align: center;
+}
+
+.aboutSectionContainer h1 {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 3rem;
+  font-size: 3rem;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 1rem;
+  display: inline-block;
+}
+
+.aboutCard {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 3rem;
+    box-shadow: 8px 8px 0 var(--color-primary);
+}
+
+.profileSection {
+    flex: 1;
+    min-width: 300px;
+    border-right: 1px solid var(--color-border);
+    padding-right: 2rem;
+}
+
+.aboutSectionContainer2 {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.socialIcons {
+    display: flex;
+    gap: 2rem;
+}
+
+.socialIcons a {
+    color: var(--color-text);
+    transition: all 0.3s ease;
+}
+
+.socialIcons a:hover {
+    color: var(--color-primary);
+    transform: scale(1.2);
+}
+
+@media screen and (max-width: 768px) {
+    .profileSection {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+        padding-right: 0;
+        padding-bottom: 2rem;
+    }
+}

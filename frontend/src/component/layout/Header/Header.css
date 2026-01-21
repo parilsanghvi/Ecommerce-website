@@ -1,13 +1,31 @@
+.header-logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--color-text);
+    border: 2px solid var(--color-text);
+    padding: 4px 12px;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .header-logo {
+        font-size: 1.1rem;
+        padding: 4px 8px;
+        border-width: 1.5px;
+    }
+}
+
 .speedDial {
     position: fixed;
     right: 3vmax;
     top: 3vmax;
-  }
+}
   
-  .speedDialIcon {
+.speedDialIcon {
     width: 50px;
     height: 50px;
     border-radius: 100%;
     object-fit: cover;
-  }
-  
+}

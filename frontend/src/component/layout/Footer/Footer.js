@@ -1,28 +1,33 @@
 import React from "react";
-import playstore from  "../../../images/playstore.png"
-import appstore from  "../../../images/Appstore.png"
-import "./Footer.css"
-const Footer = () =>{
-    return (
-        <footer id="footer">
-        <div className="leftFooter">
-            <h4>Download our App</h4>
-            <p>Download our App for Android and Iphone</p>
-            <img src={playstore} alt="playstore"/>
-            <img src={appstore} alt="appstore"/>
+import playStore from "../../../images/playstore.png";
+import appStore from "../../../images/Appstore.png";
+import "./Footer.css";
+
+const Footer = () => {
+  return (
+    <footer id="footer">
+      <div className="leftFooter">
+        <h4>DOWNLOAD OUR APP</h4>
+        <p>Download App for Android and IOS mobile phone</p>
+        <div style={{display: 'flex', gap: '10px', marginTop: '10px', justifyContent: 'center'}}>
+            <img src={playStore} alt="playstore" style={{width: '120px', border: '1px solid #333'}} />
+            <img src={appStore} alt="Appstore" style={{width: '120px', border: '1px solid #333'}} />
         </div>
-        <div className="midFooter">
-            <h1>Ecommerce Website</h1>
-            <p>Quality over Quantity</p>
-            <p>Copyrights 2021 &copy; ParilSanghvi</p>
-        </div>
-        <div className="rightFooter">
-            <h4>Hope you like my website</h4>
-            <a href="https://github.com/Thunderer0">Github</a>
-            <a href="https://www.linkedin.com/in/paril-sanghvi-38627b217/">Linkedin</a>
-        </div>
-        </footer>
-    );
+      </div>
+
+      <div className="midFooter">
+        <h1>ECOMMERCE</h1>
+        <p>High Quality is our first priority</p>
+        <p>Copyrights 2026 &copy; Paril Sanghvi</p>
+      </div>
+
+      <div className="rightFooter">
+        <h4>Follow Us</h4>
+        <a href="https://www.instagram.com/parilsanghvi" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.linkedin.com/in/paril-sanghvi/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+    </footer>
+  );
 };
 
-export default Footer
+export default Footer;

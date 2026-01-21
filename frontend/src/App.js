@@ -1,8 +1,10 @@
 import './App.css';
+import "@fontsource/archivo-black";
+import "@fontsource/space-mono";
 import { useEffect, useState } from "react";
 import Header from "./component/layout/Header/Header.js"
 import Footer from "./component/layout/Footer/Footer.js"
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import React from 'react';
 import Home from "./component/Home/Home.js"
@@ -12,7 +14,6 @@ import Search from "./component/Product/Search.js"
 import LoginSignup from './component/Product/LoginSignUp';
 import store from "./store"
 import { loadUser } from "./actions/userAction"
-import { useSelector } from 'react-redux';
 import Profile from "./component/User/Profile.js"
 import ProtectedRoute from './component/Route/ProtectedRoute';
 import UpdateProfile from './component/User/UpdateProfile.js'
@@ -44,7 +45,6 @@ import NotFound from "./component/layout/Not Found/NotFound";
 
 function App() {
 
-  const { user, isAuthenticated } = useSelector((state) => state.user)
   const [stripeApiKey, setStripeApiKey] = useState("");
 
   async function getStripeApiKey() {
