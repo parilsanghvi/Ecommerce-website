@@ -40,7 +40,7 @@
   border: 2px solid var(--color-text);
   border-radius: 0;
   outline: none;
-  background: var(--color-bg);
+  background: #ffffff; /* Force white background for Stripe Elements to match black text */
   font-family: var(--font-body);
 }
 
@@ -48,7 +48,7 @@
   position: absolute;
   left: 1rem;
   font-size: 1.2rem;
-  color: var(--color-text);
+  color: #000000; /* Force black icon to match white input */
   pointer-events: none;
   z-index: 1;
 }

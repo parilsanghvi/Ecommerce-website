@@ -130,15 +130,54 @@ const Payment = () => {
           <Typography>Card Info</Typography>
           <div>
             <CreditCardIcon />
-            <CardNumberElement className="paymentInput" />
+            <CardNumberElement className="paymentInput" options={{
+                style: {
+                    base: {
+                        color: '#000000',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a',
+                    },
+                },
+            }} />
           </div>
           <div>
             <EventIcon />
-            <CardExpiryElement className="paymentInput" />
+            <CardExpiryElement className="paymentInput" options={{
+                style: {
+                    base: {
+                        color: '#000000',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a',
+                    },
+                },
+            }} />
           </div>
           <div>
             <VpnKeyIcon />
-            <CardCvcElement className="paymentInput" />
+            <CardCvcElement className="paymentInput" options={{
+                style: {
+                    base: {
+                        color: '#000000',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a',
+                    },
+                },
+            }} />
           </div>
 
           <input
