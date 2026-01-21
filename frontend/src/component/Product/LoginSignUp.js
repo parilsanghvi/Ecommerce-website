@@ -74,6 +74,8 @@ const LoginSignUp = () => {
   };
 
   const redirect = location.search ? location.search.split("=")[1] : "/account";
+  // Ensure redirect path starts with /
+  const redirectPath = redirect.startsWith("/") ? redirect : `/${redirect}`;
 
   useEffect(() => {
     if (error) {
@@ -82,9 +84,9 @@ const LoginSignUp = () => {
     }
 
     if (isAuthenticated) {
-      navigate(redirect);
+      navigate(redirectPath);
     }
-  }, [dispatch, error, enqueueSnackbar, navigate, isAuthenticated, redirect]);
+  }, [dispatch, error, enqueueSnackbar, navigate, isAuthenticated, redirectPath]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {
@@ -105,7 +107,7 @@ const LoginSignUp = () => {
 
   const handleTabKey = (e, tab) => {
     if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
+      e.preventDefault();
       switchTabs(e, tab);
     }
   };
@@ -118,10 +120,10 @@ const LoginSignUp = () => {
         <Fragment>
           <div className="LoginSignUpContainer">
             <motion.div
-                className="LoginSignUpBox"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
+              className="LoginSignUpBox"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
             >
               <div>
                 <div className="login_signUp_toggle">
@@ -154,7 +156,7 @@ const LoginSignUp = () => {
                   />
                 </div>
                 <Link to="/password/forgot">Forget Password ?</Link>
-                <input type="submit" value="Login" className="loginBtn" />
+                <input type="submit" value="Login" className="primary-btn loginBtn" />
               </form>
               <form
                 className="signUpForm"
@@ -209,7 +211,7 @@ const LoginSignUp = () => {
                     aria-label="Upload Avatar"
                   />
                 </div>
-                <input type="submit" value="Register" className="signUpBtn" />
+                <input type="submit" value="Register" className="primary-btn signUpBtn" />
               </form>
             </motion.div>
           </div>

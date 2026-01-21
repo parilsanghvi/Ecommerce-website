@@ -11,7 +11,9 @@ footer {
   gap: 2rem;
 }
 
-.leftFooter, .midFooter, .rightFooter {
+.leftFooter,
+.midFooter,
+.rightFooter {
   flex: 1;
   min-width: 250px;
 }
@@ -65,13 +67,57 @@ footer {
   color: var(--color-primary);
 }
 
-@media screen and (max-width: 768px) {
-    footer {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .rightFooter {
-        align-items: center;
-    }
+@media screen and (max-width: 900px) {
+  footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .midFooter h1 {
+    font-size: 2rem;
+  }
+
+  .leftFooter,
+  .midFooter,
+  .rightFooter {
+    min-width: 100%;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .rightFooter {
+    align-items: center;
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  footer {
+    padding: 2rem 0.5rem;
+    gap: 1rem;
+  }
+
+  .midFooter h1 {
+    font-size: 1.5rem;
+  }
+
+  .leftFooter h4,
+  .rightFooter h4 {
+    font-size: 0.9rem;
+  }
+
+  .leftFooter p,
+  .rightFooter a {
+    font-size: 0.85rem;
+  }
+
+  .leftFooter,
+  .midFooter,
+  .rightFooter {
+    margin-bottom: 1rem;
+  }
 }

@@ -27,7 +27,7 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.login_signUp_toggle > p {
+.login_signUp_toggle>p {
   color: var(--color-text);
   font-family: var(--font-heading);
   transition: all 0.3s;
@@ -37,11 +37,11 @@
   width: 100%;
 }
 
-.login_signUp_toggle > p:hover {
+.login_signUp_toggle>p:hover {
   color: var(--color-primary);
 }
 
-.LoginSignUpBox > div > button {
+.LoginSignUpBox>div>button {
   background-color: var(--color-primary);
   height: 3px;
   width: 50%;
@@ -66,16 +66,16 @@
   transform: translateY(-100%) translateX(-100vw);
 }
 
-.loginForm > div,
-.signUpForm > div {
+.loginForm>div,
+.signUpForm>div {
   display: flex;
   width: 100%;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.loginForm > div > input,
-.signUpForm > div > input {
+.loginForm>div>input,
+.signUpForm>div>input {
   padding: 1rem 3rem;
   width: 100%;
   box-sizing: border-box;
@@ -87,20 +87,20 @@
   color: var(--color-text);
 }
 
-.loginForm > div > input:focus,
-.signUpForm > div > input:focus {
-    border-color: var(--color-primary);
+.loginForm>div>input:focus,
+.signUpForm>div>input:focus {
+  border-color: var(--color-primary);
 }
 
-.loginForm > div > svg,
-.signUpForm > div > svg {
+.loginForm>div>svg,
+.signUpForm>div>svg {
   position: absolute;
   transform: translateX(1rem);
   font-size: 1.2rem;
   color: var(--color-muted);
 }
 
-.loginForm > a {
+.loginForm>a {
   color: var(--color-muted);
   text-decoration: none;
   align-self: flex-end;
@@ -110,11 +110,11 @@
   margin-bottom: 1rem;
 }
 
-.loginForm > a:hover {
+.loginForm>a:hover {
   color: var(--color-primary);
 }
 
-#registerImage > img {
+#registerImage>img {
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
@@ -122,14 +122,14 @@
   border: 1px solid var(--color-border);
 }
 
-#registerImage > input {
+#registerImage>input {
   display: flex;
   padding: 0;
   border: none;
   background: transparent;
 }
 
-#registerImage > input::file-selector-button {
+#registerImage>input::file-selector-button {
   cursor: pointer;
   width: 100%;
   z-index: 2;
@@ -144,26 +144,17 @@
   margin-left: 1rem;
 }
 
-#registerImage > input::file-selector-button:hover {
+#registerImage>input::file-selector-button:hover {
   background-color: var(--color-primary);
   color: black;
 }
 
+/* Login/Signup buttons now extend .primary-btn from App.css */
+/* Only override properties specific to this context */
 .loginBtn,
 .signUpBtn {
-  border: none;
-  background-color: var(--color-primary);
-  color: black;
-  font-family: var(--font-heading);
-  text-transform: uppercase;
-  width: 100%;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  border-radius: 0;
-  outline: none;
-  box-shadow: none;
   margin-top: 1rem;
+  border-radius: 0;
 }
 
 .loginBtn:hover,
@@ -174,6 +165,7 @@
 .shiftToLeft {
   transform: translateX(-100%);
 }
+
 .shiftToNeutral {
   transform: translateX(0%);
 }

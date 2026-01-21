@@ -62,7 +62,12 @@ const UpdateProduct = () => {
       setPrice(product.price);
       setCategory(product.category);
       setStock(product.stock);
-      setOldImages(product.images);
+
+      // Initialize images with existing URLs
+      const existingImages = product.images.map(img => img.url);
+      setOldImages(product.images); // Keep full objects if needed (for IDs), but URLs suffice for mixed list
+      setImages(existingImages); // Initialize submission list with URLs
+      setImagesPreview(existingImages); // Initialize preview with URLs
     }
     if (error) {
       enqueueSnackbar(error, { variant: "error" });
@@ -110,9 +115,7 @@ const UpdateProduct = () => {
   const updateProductImagesChange = (e) => {
     const files = Array.from(e.target.files);
 
-    setImages([]);
-    setImagesPreview([]);
-    setOldImages([]);
+    // Don't clear images, append new ones
 
     files.forEach((file) => {
       const reader = new FileReader();
@@ -128,9 +131,20 @@ const UpdateProduct = () => {
     });
   };
 
+  const removeImage = (index) => {
+    const newImages = [...images];
+    const newImagesPreview = [...imagesPreview];
+
+    newImages.splice(index, 1);
+    newImagesPreview.splice(index, 1);
+
+    setImages(newImages);
+    setImagesPreview(newImagesPreview);
+  };
+
   return (
     <Fragment>
-      <MetaData title="Create Product" />
+      <MetaData title="Update Product" />
       <div className="dashboard">
         <SideBar />
         <div className="newProductContainer">
@@ -138,8 +152,15 @@ const UpdateProduct = () => {
             className="createProductForm"
             encType="multipart/form-data"
             onSubmit={updateProductSubmitHandler}
+            style={{
+              height: "auto",
+              padding: "2rem",
+              boxShadow: "8px 8px 0 var(--color-primary)",
+              border: "2px solid var(--color-text)",
+              backgroundColor: "var(--color-surface)"
+            }}
           >
-            <h1>Create Product</h1>
+            <h1 className="section-heading" style={{ borderBottom: 'none', marginBottom: '1rem' }}>Update Product</h1>
 
             <div>
               <SpellcheckIcon />
@@ -211,15 +232,32 @@ const UpdateProduct = () => {
             </div>
 
             <div id="createProductFormImage">
-              {oldImages &&
-                oldImages.map((image, index) => (
-                  <img key={index} src={image.url} alt="Old Product Preview" />
-                ))}
-            </div>
-
-            <div id="createProductFormImage">
               {imagesPreview.map((image, index) => (
-                <img key={index} src={image} alt="Product Preview" />
+                <div key={index} style={{ position: 'relative', display: 'inline-block', margin: '0.5rem' }}>
+                  <img src={image} alt="Product Preview" style={{ border: '2px solid var(--color-border)', width: '5vmax', height: '5vmax', objectFit: 'cover' }} />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    style={{
+                      position: 'absolute',
+                      top: '-10px',
+                      right: '-10px',
+                      background: 'var(--color-error)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '12px'
+                    }}
+                  >
+                    X
+                  </button>
+                </div>
               ))}
             </div>
 
@@ -227,8 +265,10 @@ const UpdateProduct = () => {
               id="createProductBtn"
               type="submit"
               disabled={loading ? true : false}
+              className="primary-btn"
+              style={{ marginTop: '2rem' }}
             >
-              Create
+              Update
             </Button>
           </form>
         </div>

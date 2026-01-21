@@ -1,97 +1,149 @@
 .dashboard {
-  width: 100vw;
+  width: 100%;
   max-width: 100%;
   display: grid;
-  grid-template-columns: 1fr 5fr;
-  position: absolute;
+  grid-template-columns: 250px 1fr;
+  min-height: calc(100vh - 80px);
+  background-color: var(--color-bg);
 }
 
 .dashboardContainer {
-  border-left: 1px solid rgba(0, 0, 0, 0.13);
-  background-color: rgb(255, 255, 255);
-  padding: 3rem 0;
+  border-left: 2px solid var(--color-border);
+  background-color: var(--color-bg);
+  padding: 2rem;
 }
 
-.dashboardContainer > h1 {
-  color: rgba(0, 0, 0, 0.733);
-  font: 300 2rem "Roboto", sans-serif;
-  text-align: center;
-  width: 50%;
-  padding: 1.5rem;
-  margin: auto;
+.dashboardContainer>h1 {
+  color: var(--color-text);
+  font: 900 2rem var(--font-heading);
+  text-transform: uppercase;
+  text-align: left;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 4px solid var(--color-primary);
 }
 
 .dashboardSummary {
   margin: 2rem 0;
 }
 
-.dashboardSummary > div {
+/* Total Amount - Now Card Style */
+.dashboardSummary>div:first-child {
   display: flex;
-  background-color: white;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
 }
-.dashboardSummary > div > p {
-  background-color: rgba(70, 117, 218, 0.932);
-  color: white;
-  font: 300 1.3rem "Roboto", sans-serif;
+
+.dashboardSummary>div:first-child>p {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: 900 1.5rem var(--font-heading);
   text-align: center;
-  padding: 1.5rem;
-  width: 100%;
-  margin: 0 2rem;
+  padding: 2rem 3rem;
+  border: 2px solid var(--color-text);
+  box-shadow: 8px 8px 0 var(--color-primary);
+  text-transform: uppercase;
 }
-.dashboardSummaryBox2 > a {
-  color: rgb(0, 0, 0);
-  font: 300 2rem "Roboto", sans-serif;
+
+/* Stats Cards */
+.dashboardSummaryBox2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.dashboardSummaryBox2>a {
+  color: var(--color-text);
+  font: 700 1rem var(--font-body);
   text-align: center;
-  background-color: rgb(255, 233, 174);
+  background-color: var(--color-surface);
   text-decoration: none;
-  padding: 1.5rem;
-  width: 10vmax;
-  height: 10vmax;
-  margin: 2rem;
-  border-radius: 100%;
+  padding: 1.5rem 2rem;
+  min-width: 150px;
+  border: 2px solid var(--color-text);
+  box-shadow: 4px 4px 0 var(--color-primary);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
 }
 
-.dashboardSummaryBox2 > a:first-child {
-  background-color: rgb(255, 110, 110);
-  color: rgb(255, 255, 255);
+.dashboardSummaryBox2>a:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-primary);
 }
 
-.dashboardSummaryBox2 > a:last-child {
-  background-color: rgb(51, 51, 51);
-  color: rgb(255, 255, 255);
+.dashboardSummaryBox2>a>p:first-child {
+  font: 900 1rem var(--font-heading);
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
 
+.dashboardSummaryBox2>a>p:last-child {
+  font: 900 2rem var(--font-heading);
+  color: var(--color-primary);
+}
+
+/* Charts */
 .lineChart {
-  width: 80%;
-  margin: auto;
+  width: 100%;
+  max-width: 800px;
+  margin: 3rem 0;
+  padding: 2rem;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
 }
 
 .doughnutChart {
-  width: 30vmax;
-  margin: auto;
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 900px) {
   .dashboard {
     grid-template-columns: 1fr;
   }
 
   .dashboardContainer {
     border-left: none;
+    padding: 1rem;
   }
 
-  .dashboardSummary > div > p {
-    margin: 0;
+  .dashboardContainer>h1 {
+    font-size: 1.5rem;
+    text-align: center;
   }
 
-  .dashboardSummaryBox2 > a {
-    padding: 0.5rem;
-    margin: 1rem;
-    font: 300 0.9rem "Roboto", sans-serif;
+  .dashboardSummary>div:first-child {
+    justify-content: center;
+  }
+
+  .dashboardSummary>div:first-child>p {
+    font-size: 1.2rem;
+    padding: 1.5rem 2rem;
+  }
+
+  .dashboardSummaryBox2 {
+    justify-content: center;
+  }
+
+  .dashboardSummaryBox2>a {
+    min-width: 120px;
+    padding: 1rem;
+  }
+
+  .dashboardSummaryBox2>a>p:last-child {
+    font-size: 1.5rem;
+  }
+
+  .lineChart,
+  .doughnutChart {
+    padding: 1rem;
   }
 }

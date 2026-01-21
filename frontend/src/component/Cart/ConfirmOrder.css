@@ -16,7 +16,7 @@
   margin-bottom: 2rem;
 }
 
-.confirmshippingArea > p {
+.confirmshippingArea>p {
   font: 900 1.5rem var(--font-heading);
   text-transform: uppercase;
   margin-bottom: 1rem;
@@ -27,19 +27,20 @@
   margin: 1rem 0;
 }
 
-.confirmshippingAreaBox > div {
+.confirmshippingAreaBox>div {
   display: flex;
   margin: 0.5rem 0;
   align-items: center;
 }
 
-.confirmshippingAreaBox > div > p {
+.confirmshippingAreaBox>div>p {
   font: 700 1rem var(--font-body);
   color: var(--color-text);
   margin-right: 1rem;
   min-width: 80px;
 }
-.confirmshippingAreaBox > div > span {
+
+.confirmshippingAreaBox>div>span {
   font: 400 1rem var(--font-body);
   color: var(--color-muted);
 }
@@ -50,7 +51,7 @@
   background: var(--color-surface);
 }
 
-.confirmCartItems > p {
+.confirmCartItems>p {
   font: 900 1.5rem var(--font-heading);
   text-transform: uppercase;
   margin-bottom: 2rem;
@@ -63,7 +64,7 @@
   gap: 1rem;
 }
 
-.confirmCartItemsContainer > div {
+.confirmCartItemsContainer>div {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -71,11 +72,11 @@
   border-bottom: 1px dashed var(--color-border);
 }
 
-.confirmCartItemsContainer > div:last-child {
+.confirmCartItemsContainer>div:last-child {
   border-bottom: none;
 }
 
-.confirmCartItemsContainer > div > img {
+.confirmCartItemsContainer>div>img {
   width: 5rem;
   height: 5rem;
   object-fit: contain;
@@ -84,7 +85,7 @@
   background: white;
 }
 
-.confirmCartItemsContainer > div > a {
+.confirmCartItemsContainer>div>a {
   color: var(--color-text);
   margin: 0 1rem;
   width: 50%;
@@ -92,12 +93,13 @@
   font: 600 1rem var(--font-heading);
   text-transform: uppercase;
 }
-.confirmCartItemsContainer > div > a:hover {
+
+.confirmCartItemsContainer>div>a:hover {
   color: var(--color-primary);
   text-decoration: underline;
 }
 
-.confirmCartItemsContainer > div > span {
+.confirmCartItemsContainer>div>span {
   font: 400 1rem var(--font-body);
   color: var(--color-muted);
 }
@@ -111,7 +113,7 @@
   height: fit-content;
 }
 
-.orderSummary > p {
+.orderSummary>p {
   text-align: center;
   font: 900 1.5rem var(--font-heading);
   border-bottom: 4px solid var(--color-primary);
@@ -122,19 +124,19 @@
   color: var(--color-text);
 }
 
-.orderSummary > div > div {
+.orderSummary>div>div {
   display: flex;
   justify-content: space-between;
   margin: 1.5rem 0;
   font-family: var(--font-body);
 }
 
-.orderSummary > div > div > p {
+.orderSummary>div>div>p {
   font-weight: 600;
   color: var(--color-text);
 }
 
-.orderSummary > div > div > span {
+.orderSummary>div>div>span {
   color: var(--color-muted);
 }
 
@@ -146,35 +148,19 @@
   margin-top: 1rem;
 }
 
-.orderSummaryTotal > p {
-    font: 900 1.2rem var(--font-heading);
-    color: var(--color-text);
-}
-
-.orderSummaryTotal > span {
-    font: 900 1.2rem var(--font-heading) !important;
-    color: var(--color-primary) !important;
-}
-
-.orderSummary > button {
-  background-color: var(--color-text);
-  color: var(--color-surface);
-  width: 100%;
-  padding: 1rem;
-  border: none;
-  margin: 1rem auto 0;
-  cursor: pointer;
-  transition: all 0.2s;
-  font: 900 1.1rem var(--font-heading);
-  text-transform: uppercase;
-  box-shadow: 4px 4px 0 var(--color-muted);
-}
-
-.orderSummary > button:hover {
-  background-color: var(--color-primary);
+.orderSummaryTotal>p {
+  font: 900 1.2rem var(--font-heading);
   color: var(--color-text);
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--color-muted);
+}
+
+.orderSummaryTotal>span {
+  font: 900 1.2rem var(--font-heading) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Proceed to Payment button extends .primary-btn from App.css */
+.orderSummary>button {
+  margin: 1rem auto 0;
 }
 
 @media screen and (max-width: 900px) {

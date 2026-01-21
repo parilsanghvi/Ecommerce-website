@@ -30,7 +30,7 @@
   box-shadow: 4px 4px 0 var(--color-text);
 }
 
-.cartHeader > p:last-child {
+.cartHeader>p:last-child {
   text-align: right;
 }
 
@@ -56,7 +56,7 @@
   height: 2.5rem;
 }
 
-.cartInput > button {
+.cartInput>button {
   border: 2px solid var(--color-text);
   background-color: var(--color-surface);
   padding: 0 1rem;
@@ -69,12 +69,12 @@
   font-size: 1.2rem;
 }
 
-.cartInput > button:hover {
+.cartInput>button:hover {
   background-color: var(--color-primary);
   color: white;
 }
 
-.cartInput > input {
+.cartInput>input {
   border-top: 2px solid var(--color-text);
   border-bottom: 2px solid var(--color-text);
   border-left: none;
@@ -90,8 +90,9 @@
   /* Remove arrows */
   -moz-appearance: textfield;
 }
-.cartInput > input::-webkit-outer-spin-button,
-.cartInput > input::-webkit-inner-spin-button {
+
+.cartInput>input::-webkit-outer-spin-button,
+.cartInput>input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -142,36 +143,60 @@
 .emptyCart {
   margin: auto;
   text-align: center;
-  padding: 10vh;
-  height: 50vh;
+  padding: 4rem 2rem;
+  min-height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  max-width: 500px;
 }
-.emptyCart > svg {
-  font-size: 5rem;
+
+.emptyCart>svg {
+  font-size: 6rem;
   color: var(--color-primary);
   margin-bottom: 2rem;
+  animation: float 3s ease-in-out infinite;
 }
-.emptyCart > h5 {
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.emptyCart>h5 {
   font-family: var(--font-heading);
+  font-size: 1.5rem;
   margin-bottom: 2rem !important;
+  color: var(--color-text);
 }
-.emptyCart > a {
-  background-color: var(--color-text);
-  color: white;
+
+.emptyCart>a {
+  background-color: var(--color-primary);
+  color: #0a0a0a;
   border: none;
   padding: 1rem 3rem;
   cursor: pointer;
-  font: 900 1.2rem var(--font-heading);
+  font: 900 1rem var(--font-heading);
   text-decoration: none;
   text-transform: uppercase;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  box-shadow: 4px 4px 0 var(--color-text);
 }
-.emptyCart > a:hover {
-  background-color: var(--color-primary);
-  color: var(--color-text);
+
+.emptyCart>a:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-text);
+  background-color: var(--color-secondary);
 }
 
 @media screen and (max-width: 600px) {
@@ -180,7 +205,8 @@
   }
 
   .cartHeader {
-    display: none; /* Hide header on mobile, stack items */
+    display: none;
+    /* Hide header on mobile, stack items */
   }
 
   .cartContainer {

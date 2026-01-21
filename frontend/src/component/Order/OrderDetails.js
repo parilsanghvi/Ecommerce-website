@@ -32,10 +32,10 @@ const OrderDetails = () => {
           <MetaData title="Order Details" />
           <div className="orderDetailsPage">
             <div className="orderDetailsContainer">
-              <Typography component="h1">
+              <Typography component="h1" className="order-id-heading">
                 Order #{order && order._id}
               </Typography>
-              <Typography>Shipping Info</Typography>
+              <Typography className="section-heading">Shipping Info</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
                   <p>Name:</p>
@@ -55,7 +55,7 @@ const OrderDetails = () => {
                   </span>
                 </div>
               </div>
-              <Typography>Payment</Typography>
+              <Typography className="section-heading">Payment</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
                   <p
@@ -79,7 +79,7 @@ const OrderDetails = () => {
                 </div>
               </div>
 
-              <Typography>Order Status</Typography>
+              <Typography className="section-heading">Order Status</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
                   <p
@@ -96,7 +96,7 @@ const OrderDetails = () => {
             </div>
 
             <div className="orderDetailsCartItems">
-              <Typography>Order Items:</Typography>
+              <Typography className="section-heading">Order Items:</Typography>
               <div className="orderDetailsCartItemsContainer">
                 {order.orderItems &&
                   order.orderItems.map((item) => (

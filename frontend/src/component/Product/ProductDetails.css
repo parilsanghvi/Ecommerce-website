@@ -9,8 +9,30 @@
   min-height: 80vh;
 }
 
+/* Slick Slider Container Fix */
+.ProductDetails>div:first-child {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.ProductDetails .slick-slider {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ProductDetails .slick-slide img {
+  width: 100%;
+  height: 500px;
+  object-fit: contain;
+  margin: 0 auto;
+  background-color: var(--color-surface);
+  /* Optional: fills space if image is very narrow */
+}
+
 .CarouselImage {
   width: 100%;
+  height: 500px;
+  object-fit: contain;
   display: block;
   border: 1px solid var(--color-border);
 }
@@ -37,8 +59,8 @@
 }
 
 .detailsBlock-2-span {
-    margin-left: 1rem;
-    font-family: var(--font-body);
+  margin-left: 1rem;
+  font-family: var(--font-body);
 }
 
 .detailsBlock-3 h1 {
@@ -58,7 +80,7 @@
 .detailsBlock-3-1-1 {
   display: flex;
   align-items: center;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-text);
 }
 
 .detailsBlock-3-1-1 button {
@@ -88,22 +110,24 @@
   color: var(--color-text);
 }
 
-.detailsBlock-3-1 > button:last-child {
+.detailsBlock-3-1>button:last-child {
   background: var(--color-primary);
-  color: black;
+  color: #0a0a0a;
   border: none;
-  padding: 12px 32px;
+  padding: 14px 36px;
   font-family: var(--font-heading);
   text-transform: uppercase;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 900;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 4px 4px 0 var(--color-text);
 }
 
-.detailsBlock-3-1 > button:last-child:hover {
+.detailsBlock-3-1>button:last-child:hover {
   background: var(--color-secondary);
-  box-shadow: 4px 4px 0px rgba(255,255,255,0.5);
-  transform: translateY(-2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-text);
 }
 
 .detailsBlock-4 {
@@ -164,35 +188,35 @@
 }
 
 .reviewCard:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
-.reviewCard > img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--color-primary);
+.reviewCard>img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
 }
 
-.reviewCard > p {
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    margin: 0;
-    color: var(--color-text);
+.reviewCard>p {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--color-text);
 }
 
 .reviewCardComment {
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    color: var(--color-muted);
-    text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  text-align: center;
 }
 
 .noReviews {
-    font-family: var(--font-body);
-    text-align: center;
-    color: var(--color-muted);
+  font-family: var(--font-body);
+  text-align: center;
+  color: var(--color-muted);
 }
 
 @media screen and (max-width: 768px) {
@@ -224,6 +248,7 @@
 .submitDialogTextArea:focus {
   border-color: var(--color-primary);
 }
+
 .submitReview {
   background: var(--color-surface);
   border: 2px solid var(--color-text);
@@ -240,7 +265,8 @@
 
 .submitReview:hover {
   background: var(--color-primary);
-  color: var(--color-text); /* Use dark text on bright primary */
+  color: var(--color-text);
+  /* Use dark text on bright primary */
   border-color: var(--color-text);
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--color-text);

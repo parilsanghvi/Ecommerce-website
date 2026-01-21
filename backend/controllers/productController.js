@@ -72,26 +72,47 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 })
 // update product --admin
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
-    // takes json and product id as input finds object by that id if such object exists it again finds by id and updates it and returns success with modified object
     let product = await Product.findById(req.params.id);
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
-    // images update
-    let images = []
-    if (typeof req.body.images === "string") {
-        images.push(req.body.images)
-    } else {
-        images = req.body.images
+
+    // Images Handling
+    let images = [];
+    if (req.body.images !== undefined) {
+        if (typeof req.body.images === "string") {
+            images.push(req.body.images);
+        } else {
+            images = req.body.images;
+        }
     }
-    if (images !== undefined) {
-        await Promise.all(product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
-        const imagesLink = await Promise.all(images.map(async (image) => {
+
+    if (images.length > 0 || req.body.images !== undefined) {
+        // 1. Separate images into "To Keep" (URLs) and "To Upload" (Base64/New)
+        const imagesToKeep = [];
+        const imagesToUpload = [];
+
+        images.forEach(img => {
+            if (typeof img === 'string' && img.startsWith('http')) {
+                imagesToKeep.push(img);
+            } else {
+                imagesToUpload.push(img);
+            }
+        });
+
+        // 2. Identify images to delete (present in DB but not in imagesToKeep)
+        const imagesToDelete = product.images.filter(img => !imagesToKeep.includes(img.url));
+
+        // 3. Delete removed images from Cloudinary
+        await Promise.all(imagesToDelete.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
+
+        // 4. Upload new images
+        const newImagesLinks = await Promise.all(imagesToUpload.map(async (image) => {
             const result = await cloudinary.v2.uploader.upload(image, {
                 folder: "products",
                 // width: 150,
-                height: 200,
-                crop: "scale",
+                // height: 200,
+                // crop: "scale",
             });
             return {
                 public_id: result.public_id,
@@ -99,16 +120,30 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
             };
         }));
 
-        req.body.images = imagesLink
+        // 5. Reconstruct the final images array
+        // Keep the old image objects that matched the URLs
+        const keptImagesObjects = product.images.filter(img => imagesToKeep.includes(img.url));
+
+        req.body.images = [...keptImagesObjects, ...newImagesLinks];
+    } else {
+        // If images is undefined/empty but not explicitly empty string/array, we might want to keep existing?
+        // But if frontend sends empty list, it means delete all. 
+        // Based on existing logic: if invalid/undefined, we might ignore. 
+        // Adapting to safe default: if undefined, do nothing. If empty array, delete all.
+        // The above logic handles empty array (imagesToDelete will be all).
     }
+
     product = await Product.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
-    })
+        runValidators: true,
+        useFindAndModify: false,
+    });
+
     res.status(200).json({
         success: true,
         product,
-    })
-})
+    });
+});
 // delete product --admin
 exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
     // takes product id finds that id and deletes the object

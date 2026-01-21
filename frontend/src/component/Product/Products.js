@@ -71,7 +71,8 @@ const Products = () => {
                             <Typography variant="h6" className="filter-heading">Price Range</Typography>
                             <Slider
                                 value={price}
-                                onChange={priceHandler}
+                                onChange={(event, newPrice) => setPrice(newPrice)}
+                                onChangeCommitted={priceHandler}
                                 valueLabelDisplay='auto'
                                 aria-labelledby='range-slider'
                                 min={0}
@@ -125,13 +126,14 @@ const Products = () => {
                                 ))}
                             </ul>
 
-                            <fieldset style={{border: '1px solid var(--color-border)', padding: '1rem', marginTop: '2rem'}}>
-                                <Typography component="legend" variant="caption" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--color-text)'}}>
+                            <fieldset style={{ border: '1px solid var(--color-border)', padding: '1rem', marginTop: '2rem' }}>
+                                <Typography component="legend" variant="caption" style={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--color-text)' }}>
                                     Rating
                                 </Typography>
                                 <Slider
                                     value={ratings}
-                                    onChange={(e, newRating) => {
+                                    onChange={(e, newRating) => setRating(newRating)}
+                                    onChangeCommitted={(e, newRating) => {
                                         setRating(newRating);
                                         setCurrentPage(1);
                                     }}

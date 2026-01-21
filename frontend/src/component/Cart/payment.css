@@ -15,7 +15,7 @@
   box-sizing: border-box;
 }
 
-.paymentForm > p {
+.paymentForm>p {
   font: 900 1.5rem var(--font-heading);
   color: var(--color-text);
   border-bottom: 4px solid var(--color-primary);
@@ -26,7 +26,7 @@
   text-transform: uppercase;
 }
 
-.paymentForm > div {
+.paymentForm>div {
   display: flex;
   align-items: center;
   margin: 1.5rem 0;
@@ -40,41 +40,28 @@
   border: 2px solid var(--color-text);
   border-radius: 0;
   outline: none;
-  background: #ffffff; /* Force white background for Stripe Elements to match black text */
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: var(--font-body);
 }
 
-.paymentForm > div > svg {
+.paymentForm>div>svg {
   position: absolute;
   left: 1rem;
   font-size: 1.2rem;
-  color: #000000; /* Force black icon to match white input */
+  color: var(--color-text);
   pointer-events: none;
   z-index: 1;
 }
 
+/* Payment button extends .primary-btn from App.css */
 .paymentFormBtn {
-  border: 2px solid var(--color-text);
-  background-color: var(--color-primary);
-  color: var(--color-text);
-  font: 900 1.2rem var(--font-heading);
-  width: 100%;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  outline: none;
   margin-top: 2rem;
-  text-transform: uppercase;
-  box-shadow: 4px 4px 0 var(--color-text);
-}
-
-.paymentFormBtn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--color-text);
 }
 
 .paymentFormBtn:disabled {
   background-color: var(--color-muted);
+  color: var(--color-bg);
   cursor: not-allowed;
   box-shadow: none;
   transform: none;
@@ -86,12 +73,12 @@
     padding: 1.5rem;
   }
 
-  .paymentForm > p {
+  .paymentForm>p {
     font-size: 1.2rem;
     padding-bottom: 1rem;
   }
 
-  .paymentForm > div {
+  .paymentForm>div {
     margin: 1.5rem 0;
   }
 
@@ -99,7 +86,7 @@
     padding: 1rem 1rem 1rem 3rem;
   }
 
-  .paymentForm > div > svg {
+  .paymentForm>div>svg {
     font-size: 1rem;
   }
 

@@ -99,8 +99,15 @@ const NewProduct = () => {
             className="createProductForm"
             encType="multipart/form-data"
             onSubmit={createProductSubmitHandler}
+            style={{
+              height: "auto",
+              padding: "2rem",
+              boxShadow: "8px 8px 0 var(--color-primary)",
+              border: "2px solid var(--color-text)",
+              backgroundColor: "var(--color-surface)"
+            }}
           >
-            <h1>Create Product</h1>
+            <h1 className="section-heading" style={{ borderBottom: 'none', marginBottom: '1rem' }}>Create Product</h1>
 
             <div>
               <SpellcheckIcon />
@@ -168,7 +175,7 @@ const NewProduct = () => {
 
             <div id="createProductFormImage">
               {imagesPreview.map((image, index) => (
-                <img key={index} src={image} alt="Product Preview" />
+                <img key={index} src={image} alt="Product Preview" style={{ border: '2px solid var(--color-border)' }} />
               ))}
             </div>
 
@@ -176,6 +183,8 @@ const NewProduct = () => {
               id="createProductBtn"
               type="submit"
               disabled={loading ? true : false}
+              className="primary-btn"
+              style={{ marginTop: '2rem' }}
             >
               Create
             </Button>

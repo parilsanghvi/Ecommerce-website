@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
@@ -35,6 +35,42 @@ const Payment = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
   const { error } = useSelector((state) => state.newOrder);
+
+  // Detect theme for Stripe Elements styling
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const theme = document.documentElement.getAttribute('data-theme');
+      setIsDarkMode(theme !== 'light');
+    };
+
+    checkTheme();
+
+    // Optional: observe theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Dynamic Stripe Element styles based on theme
+  const stripeElementStyle = {
+    style: {
+      base: {
+        color: isDarkMode ? '#ffffff' : '#0a0a0a',
+        fontSize: '16px',
+        fontFamily: '"Space Mono", monospace',
+        '::placeholder': {
+          color: isDarkMode ? '#888888' : '#666666',
+        },
+      },
+      invalid: {
+        color: '#ff3333',
+        iconColor: '#ff3333',
+      },
+    },
+  };
 
   const paymentData = {
     amount: Math.round(orderInfo.totalPrice * 100),
@@ -127,64 +163,25 @@ const Payment = () => {
       <CheckoutSteps activeStep={2} />
       <div className="paymentContainer">
         <form className="paymentForm" onSubmit={(e) => submitHandler(e)}>
-          <Typography>Card Info</Typography>
+          <Typography className="section-heading">Card Info</Typography>
           <div>
             <CreditCardIcon />
-            <CardNumberElement className="paymentInput" options={{
-                style: {
-                    base: {
-                        color: '#000000',
-                        '::placeholder': {
-                            color: '#aab7c4',
-                        },
-                    },
-                    invalid: {
-                        color: '#fa755a',
-                        iconColor: '#fa755a',
-                    },
-                },
-            }} />
+            <CardNumberElement className="paymentInput" options={stripeElementStyle} />
           </div>
           <div>
             <EventIcon />
-            <CardExpiryElement className="paymentInput" options={{
-                style: {
-                    base: {
-                        color: '#000000',
-                        '::placeholder': {
-                            color: '#aab7c4',
-                        },
-                    },
-                    invalid: {
-                        color: '#fa755a',
-                        iconColor: '#fa755a',
-                    },
-                },
-            }} />
+            <CardExpiryElement className="paymentInput" options={stripeElementStyle} />
           </div>
           <div>
             <VpnKeyIcon />
-            <CardCvcElement className="paymentInput" options={{
-                style: {
-                    base: {
-                        color: '#000000',
-                        '::placeholder': {
-                            color: '#aab7c4',
-                        },
-                    },
-                    invalid: {
-                        color: '#fa755a',
-                        iconColor: '#fa755a',
-                    },
-                },
-            }} />
+            <CardCvcElement className="paymentInput" options={stripeElementStyle} />
           </div>
 
           <input
             type="submit"
             value={`Pay - ₹${orderInfo && orderInfo.totalPrice}`}
             ref={payBtn}
-            className="paymentFormBtn"
+            className="primary-btn paymentFormBtn"
           />
         </form>
       </div>
@@ -193,3 +190,4 @@ const Payment = () => {
 };
 
 export default Payment;
+

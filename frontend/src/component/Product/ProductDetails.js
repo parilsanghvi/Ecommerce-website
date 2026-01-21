@@ -14,6 +14,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating } fro
 import { NEW_REVIEW_RESET } from "../../constants/productConstants";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -23,9 +25,63 @@ const ProductDetails = () => {
   const { product, loading, error } = useSelector((state) => state.productDetails);
   const { success, error: reviewError } = useSelector((state) => state.newReview);
 
+  const NextArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <NavigateNextIcon
+        className={className}
+        style={{
+          ...style,
+          display: "block",
+          color: "var(--color-primary)",
+          background: "var(--color-surface)",
+          borderRadius: "50%",
+          border: "1px solid var(--color-text)",
+          zIndex: 2,
+          width: "40px",
+          height: "40px",
+          right: "10px"
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  const PrevArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <NavigateBeforeIcon
+        className={className}
+        style={{
+          ...style,
+          display: "block",
+          color: "var(--color-primary)",
+          background: "var(--color-surface)",
+          borderRadius: "50%",
+          border: "1px solid var(--color-text)",
+          zIndex: 2,
+          width: "40px",
+          height: "40px",
+          left: "10px"
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
+
   const options = {
     size: "large",
-    value: product.ratings,
+    value: product?.ratings || 0,
     readOnly: true,
     precision: 0.5,
   };
@@ -36,7 +92,7 @@ const ProductDetails = () => {
   const [comment, setComment] = useState("");
 
   const increaseQuantity = () => {
-    if (product.stock <= quantity) return;
+    if ((product?.stock || 0) <= quantity) return;
     setQuantity(quantity + 1);
   };
 
@@ -78,11 +134,11 @@ const ProductDetails = () => {
 
   return (
     <Fragment>
-      {loading ? (
+      {loading || !product ? (
         <Loader />
       ) : (
         <Fragment>
-          <MetaData title={`${product.name} -- ECOMMERCE`} />
+          <MetaData title={`${product.name || 'Product'} -- ECOMMERCE`} />
           <motion.div
             className="ProductDetails"
             initial={{ opacity: 0, y: 50 }}
@@ -90,9 +146,9 @@ const ProductDetails = () => {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <div style={{ width: "100%", overflow: 'hidden', border: '1px solid var(--color-border)' }}>
-                <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
-                  {product.images &&
+              <div style={{ width: "100%", overflow: 'hidden', border: '1px solid var(--color-border)', position: 'relative' }}>
+                <Slider {...sliderSettings}>
+                  {product.images && product.images.length > 0 ? (
                     product.images.map((item, i) => (
                       <div key={i}>
                         <img
@@ -101,7 +157,17 @@ const ProductDetails = () => {
                           alt={`${product.name} - View ${i + 1}`}
                         />
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <div>
+                      <img
+                        className="CarouselImage"
+                        src="https://via.placeholder.com/600x600?text=No+Image"
+                        alt="No Image Available"
+                        style={{ objectFit: 'contain', background: '#ccc' }}
+                      />
+                    </div>
+                  )}
                 </Slider>
               </div>
             </div>
@@ -113,8 +179,8 @@ const ProductDetails = () => {
               </div>
               <div className="detailsBlock-2">
                 <Rating {...options} sx={{
-                    "& .MuiRating-iconFilled": { color: "var(--color-primary)" },
-                    "& .MuiRating-iconEmpty": { color: "#333" }
+                  "& .MuiRating-iconFilled": { color: "var(--color-primary)" },
+                  "& .MuiRating-iconEmpty": { color: "#333" }
                 }} />
                 <span className="detailsBlock-2-span">
                   ({product.numOfReviews} REVIEWS)
@@ -136,9 +202,9 @@ const ProductDetails = () => {
                   </button>
                 </div>
 
-                <p style={{fontFamily: 'var(--font-heading)'}}>
+                <p style={{ fontFamily: 'var(--font-heading)' }}>
                   STATUS:
-                  <b className={product.stock < 1 ? "redColor" : "greenColor"} style={{marginLeft: '8px'}}>
+                  <b className={product.stock < 1 ? "redColor" : "greenColor"} style={{ marginLeft: '8px' }}>
                     {product.stock < 1 ? "OUT OF STOCK" : "IN STOCK"}
                   </b>
                 </p>

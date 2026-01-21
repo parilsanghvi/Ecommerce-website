@@ -31,7 +31,7 @@
   justify-content: center;
 }
 
-.cartItemDetails > a {
+.cartItemDetails>a {
   font-family: var(--font-heading);
   font-size: 1.1rem;
   color: var(--color-text);
@@ -39,12 +39,12 @@
   text-transform: uppercase;
 }
 
-.cartItemDetails > a:hover {
+.cartItemDetails>a:hover {
   text-decoration: underline;
   text-decoration-thickness: 2px;
 }
 
-.cartItemDetails > span {
+.cartItemDetails>span {
   font-family: var(--font-body);
   color: var(--color-muted);
   font-size: 0.9rem;
@@ -56,8 +56,8 @@
   align-items: center;
   gap: 0.3rem;
   background: transparent;
-  border: 1px solid tomato;
-  color: tomato;
+  border: 2px solid var(--color-error);
+  color: var(--color-error);
   cursor: pointer;
   font-family: var(--font-body);
   font-weight: 700;
@@ -67,12 +67,12 @@
   text-transform: uppercase;
   transition: all 0.2s;
   width: fit-content;
-  box-shadow: 2px 2px 0 tomato;
+  box-shadow: 2px 2px 0 var(--color-error);
 }
 
 .removeCartBtn:hover {
-  background: tomato;
-  color: white;
+  background: var(--color-error);
+  color: var(--color-bg);
   transform: translate(2px, 2px);
   box-shadow: none;
 }
@@ -89,7 +89,7 @@
     height: 20vw;
   }
 
-  .cartItemDetails > a {
+  .cartItemDetails>a {
     font-size: 1rem;
   }
 }

@@ -79,17 +79,18 @@ const UpdateUser = () => {
       <MetaData title="Update User" />
       <div className="dashboard">
         <SideBar />
-        <div className="newProductContainer">
+        <div className="updateProfileContainer">
           {loading ? (
             <Loader />
           ) : (
             <form
-              className="createProductForm"
+              className="updateProfileForm"
               onSubmit={updateUserSubmitHandler}
+              style={{ height: "auto", padding: "3rem" }}
             >
-              <h1>Update User</h1>
+              <h1 className="updateProfileHeading">Update User</h1>
 
-              <div>
+              <div className="updateProfileName">
                 <PersonIcon />
                 <input
                   type="text"
@@ -99,7 +100,7 @@ const UpdateUser = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div>
+              <div className="updateProfileEmail">
                 <MailOutlineIcon />
                 <input
                   type="email"
@@ -110,7 +111,7 @@ const UpdateUser = () => {
                 />
               </div>
 
-              <div>
+              <div className="updateProfileEmail">
                 <VerifiedUserIcon />
                 <select value={role} onChange={(e) => setRole(e.target.value)}>
                   <option value="">Choose Role</option>
@@ -119,15 +120,16 @@ const UpdateUser = () => {
                 </select>
               </div>
 
-              <Button
+              <button
                 id="createProductBtn"
                 type="submit"
+                className="primary-btn"
                 disabled={
                   updateLoading ? true : false || role === "" ? true : false
                 }
               >
                 Update
-              </Button>
+              </button>
             </form>
           )}
         </div>

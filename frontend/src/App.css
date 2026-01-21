@@ -22,7 +22,8 @@
 [data-theme='light'] {
   --color-bg: #f0f0f0;
   --color-surface: #ffffff;
-  --color-primary: #4a4a4a; /* Dark gray for primary in light mode for contrast */
+  --color-primary: #4a4a4a;
+  /* Dark gray for primary in light mode for contrast */
   --color-secondary: #00bcd4;
   --color-text: #0a0a0a;
   --color-muted: #666666;
@@ -46,7 +47,12 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   text-transform: uppercase;
   letter-spacing: -1px;
@@ -63,7 +69,9 @@ button {
   cursor: pointer;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: var(--font-body);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -71,7 +79,9 @@ input, textarea, select {
   padding: var(--spacing-sm);
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: 2px solid var(--color-primary);
   border-color: var(--color-primary);
 }
@@ -80,13 +90,16 @@ input:focus, textarea:focus, select:focus {
 ::-webkit-scrollbar {
   width: 10px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--color-bg);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--color-primary);
   border: 2px solid var(--color-bg);
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-secondary);
 }
@@ -127,21 +140,55 @@ input:focus, textarea:focus, select:focus {
 }
 
 @keyframes glitch-anim {
-  0% { clip: rect(11px, 9999px, 81px, 0); }
-  20% { clip: rect(84px, 9999px, 9px, 0); }
-  40% { clip: rect(21px, 9999px, 66px, 0); }
-  60% { clip: rect(2px, 9999px, 25px, 0); }
-  80% { clip: rect(96px, 9999px, 7px, 0); }
-  100% { clip: rect(51px, 9999px, 34px, 0); }
+  0% {
+    clip: rect(11px, 9999px, 81px, 0);
+  }
+
+  20% {
+    clip: rect(84px, 9999px, 9px, 0);
+  }
+
+  40% {
+    clip: rect(21px, 9999px, 66px, 0);
+  }
+
+  60% {
+    clip: rect(2px, 9999px, 25px, 0);
+  }
+
+  80% {
+    clip: rect(96px, 9999px, 7px, 0);
+  }
+
+  100% {
+    clip: rect(51px, 9999px, 34px, 0);
+  }
 }
 
 @keyframes glitch-anim2 {
-  0% { clip: rect(27px, 9999px, 4px, 0); }
-  20% { clip: rect(44px, 9999px, 83px, 0); }
-  40% { clip: rect(2px, 9999px, 91px, 0); }
-  60% { clip: rect(67px, 9999px, 12px, 0); }
-  80% { clip: rect(98px, 9999px, 44px, 0); }
-  100% { clip: rect(13px, 9999px, 57px, 0); }
+  0% {
+    clip: rect(27px, 9999px, 4px, 0);
+  }
+
+  20% {
+    clip: rect(44px, 9999px, 83px, 0);
+  }
+
+  40% {
+    clip: rect(2px, 9999px, 91px, 0);
+  }
+
+  60% {
+    clip: rect(67px, 9999px, 12px, 0);
+  }
+
+  80% {
+    clip: rect(98px, 9999px, 44px, 0);
+  }
+
+  100% {
+    clip: rect(13px, 9999px, 57px, 0);
+  }
 }
 
 /* Common Overrides */
@@ -152,11 +199,125 @@ input:focus, textarea:focus, select:focus {
 
 .MuiTypography-root {
   font-family: var(--font-body) !important;
+  color: var(--color-text) !important;
 }
 
 .greenColor {
   color: var(--color-primary) !important;
 }
+
 .redColor {
   color: var(--color-error) !important;
+}
+
+/* ================================================
+   STANDARDIZED UI COMPONENTS
+   ================================================ */
+
+/* Primary Action Button - Used for main CTAs (Login, Pay, Checkout, Submit) */
+.primary-btn {
+  border: none;
+  background-color: var(--color-primary);
+  color: #0a0a0a;
+  /* Always dark text on primary for contrast */
+  font: 900 1.1rem var(--font-heading);
+  width: 100%;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  outline: none;
+  box-shadow: 4px 4px 0 var(--color-text);
+}
+
+.primary-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-text);
+  background-color: var(--color-secondary);
+}
+
+.primary-btn:active {
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 var(--color-text);
+}
+
+.primary-btn:disabled {
+  background-color: var(--color-muted);
+  color: var(--color-bg);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Secondary Button - Used for less prominent actions */
+.secondary-btn {
+  border: 2px solid var(--color-text);
+  background-color: transparent;
+  color: var(--color-text);
+  font: 700 1rem var(--font-heading);
+  width: 100%;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.secondary-btn:hover {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.secondary-btn:disabled {
+  border-color: var(--color-muted);
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+/* Section Heading - Consistent heading style for form sections */
+.section-heading {
+  font: 900 1.5rem var(--font-heading);
+  color: var(--color-text);
+  text-transform: uppercase;
+  border-bottom: 4px solid var(--color-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Order ID Heading - For order pages */
+.order-id-heading {
+  font: 900 2rem var(--font-heading);
+  color: var(--color-primary) !important;
+  text-transform: uppercase;
+  margin: 1rem 0;
+}
+
+/* Card Container - Consistent card styling with shadow */
+.card-container {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-text);
+  box-shadow: 8px 8px 0 var(--color-primary);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 600px) {
+  .primary-btn {
+    font-size: 1rem;
+    padding: 0.875rem;
+  }
+
+  .secondary-btn {
+    font-size: 0.9rem;
+    padding: 0.875rem;
+  }
+
+  .section-heading {
+    font-size: 1.2rem;
+  }
+
+  .card-container {
+    box-shadow: 4px 4px 0 var(--color-primary);
+    padding: 1.5rem;
+  }
 }

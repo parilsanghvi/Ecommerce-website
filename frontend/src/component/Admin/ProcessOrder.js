@@ -58,32 +58,36 @@ const ProcessOrder = () => {
       <MetaData title="Process Order" />
       <div className="dashboard">
         <SideBar />
-        <div className="newProductContainer">
+        <div className="processOrderContainer" style={{ padding: '2rem', display: 'grid', gridTemplateColumns: order.orderStatus === "Delivered" ? "1fr" : "2fr 1fr", gap: "2rem" }}>
           {loading ? (
             <Loader />
           ) : (
-            <div
-              className="confirmOrderPage"
-              style={{
-                display: order.orderStatus === "Delivered" ? "block" : "grid",
-              }}
-            >
-              <div>
+            <Fragment>
+              <div
+                className="confirmOrderPage"
+                style={{
+                  display: "block",
+                  border: "2px solid var(--color-text)",
+                  backgroundColor: "var(--color-surface)",
+                  padding: "2rem",
+                  boxShadow: "8px 8px 0 var(--color-primary)"
+                }}
+              >
                 <div className="confirmshippingArea">
-                  <Typography>Shipping Info</Typography>
+                  <Typography component="h2" className="order-id-heading" style={{ fontSize: '1.5rem', borderBottom: '2px solid var(--color-text)', paddingBottom: '1rem', marginBottom: '2rem' }}>SHIPPING INFO</Typography>
                   <div className="orderDetailsContainerBox">
-                    <div>
-                      <p>Name:</p>
+                    <div style={{ display: 'flex', marginBottom: '1rem' }}>
+                      <p style={{ fontWeight: '900', width: '100px' }}>Name:</p>
                       <span>{order.user && order.user.name}</span>
                     </div>
-                    <div>
-                      <p>Phone:</p>
+                    <div style={{ display: 'flex', marginBottom: '1rem' }}>
+                      <p style={{ fontWeight: '900', width: '100px' }}>Phone:</p>
                       <span>
                         {order.shippingInfo && order.shippingInfo.phoneNo}
                       </span>
                     </div>
-                    <div>
-                      <p>Address:</p>
+                    <div style={{ display: 'flex', marginBottom: '1rem' }}>
+                      <p style={{ fontWeight: '900', width: '100px' }}>Address:</p>
                       <span>
                         {order.shippingInfo &&
                           `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.state}, ${order.shippingInfo.pinCode}, ${order.shippingInfo.country}`}
@@ -91,9 +95,9 @@ const ProcessOrder = () => {
                     </div>
                   </div>
 
-                  <Typography>Payment</Typography>
+                  <Typography component="h2" className="order-id-heading" style={{ fontSize: '1.5rem', borderBottom: '2px solid var(--color-text)', paddingBottom: '1rem', marginBottom: '2rem', marginTop: '3rem' }}>PAYMENT</Typography>
                   <div className="orderDetailsContainerBox">
-                    <div>
+                    <div style={{ display: 'flex', marginBottom: '1rem' }}>
                       <p
                         className={
                           order.paymentInfo &&
@@ -101,6 +105,7 @@ const ProcessOrder = () => {
                             ? "greenColor"
                             : "redColor"
                         }
+                        style={{ fontWeight: '900', textTransform: 'uppercase' }}
                       >
                         {order.paymentInfo &&
                           order.paymentInfo.status === "succeeded"
@@ -109,13 +114,13 @@ const ProcessOrder = () => {
                       </p>
                     </div>
 
-                    <div>
-                      <p>Amount:</p>
+                    <div style={{ display: 'flex', marginBottom: '1rem' }}>
+                      <p style={{ fontWeight: '900', width: '100px' }}>Amount:</p>
                       <span>{order.totalPrice && order.totalPrice}</span>
                     </div>
                   </div>
 
-                  <Typography>Order Status</Typography>
+                  <Typography component="h2" className="order-id-heading" style={{ fontSize: '1.5rem', borderBottom: '2px solid var(--color-text)', paddingBottom: '1rem', marginBottom: '2rem', marginTop: '3rem' }}>ORDER STATUS</Typography>
                   <div className="orderDetailsContainerBox">
                     <div>
                       <p
@@ -124,22 +129,26 @@ const ProcessOrder = () => {
                             ? "greenColor"
                             : "redColor"
                         }
+                        style={{ fontWeight: '900', textTransform: 'uppercase' }}
                       >
                         {order.orderStatus && order.orderStatus}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="confirmCartItems">
-                  <Typography>Your Cart Items:</Typography>
+
+                <div className="confirmCartItems" style={{ marginTop: '3rem', borderTop: '2px solid var(--color-border)', paddingTop: '2rem' }}>
+                  <Typography component="h2" className="order-id-heading" style={{ fontSize: '1.5rem' }}>YOUR CART ITEMS:</Typography>
                   <div className="confirmCartItemsContainer">
                     {order.orderItems &&
                       order.orderItems.map((item) => (
-                        <div key={item.product}>
-                          <img src={item.image} alt="Product" />
-                          <Link to={`/product/${item.product}`}>
-                            {item.name}
-                          </Link>{" "}
+                        <div key={item.product} style={{ display: 'flex', alignItems: 'center', margin: '1rem 0', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <img src={item.image} alt="Product" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+                            <Link to={`/product/${item.product}`} style={{ fontWeight: '700' }}>
+                              {item.name}
+                            </Link>
+                          </div>
                           <span>
                             {item.quantity} X ₹{item.price} ={" "}
                             <b>₹{item.price * item.quantity}</b>
@@ -149,7 +158,8 @@ const ProcessOrder = () => {
                   </div>
                 </div>
               </div>
-              {/*  */}
+
+              {/* Process Order Form */}
               <div
                 style={{
                   display: order.orderStatus === "Delivered" ? "none" : "block",
@@ -158,12 +168,22 @@ const ProcessOrder = () => {
                 <form
                   className="updateOrderForm"
                   onSubmit={updateOrderSubmitHandler}
+                  style={{
+                    padding: "2rem",
+                    backgroundColor: "var(--color-surface)",
+                    border: "2px solid var(--color-text)",
+                    boxShadow: "8px 8px 0 var(--color-primary)",
+                    height: 'fit-content'
+                  }}
                 >
-                  <h1>Process Order</h1>
+                  <h1 className="section-heading" style={{ borderBottom: 'none', marginBottom: '1rem' }}>Process Order</h1>
 
-                  <div>
-                    <AccountTreeIcon />
-                    <select onChange={(e) => setStatus(e.target.value)}>
+                  <div style={{ marginBottom: '2rem' }}>
+                    <AccountTreeIcon style={{ position: 'absolute', margin: '1rem', color: 'var(--color-text)' }} />
+                    <select
+                      onChange={(e) => setStatus(e.target.value)}
+                      style={{ paddingLeft: '3rem', width: '100%' }}
+                    >
                       <option value="">Choose Category</option>
                       {order.orderStatus === "processing" && (
                         <option value="Shipped">Shipped</option>
@@ -175,18 +195,19 @@ const ProcessOrder = () => {
                     </select>
                   </div>
 
-                  <Button
+                  <button
                     id="createProductBtn"
                     type="submit"
+                    className="primary-btn"
                     disabled={
                       loading ? true : false || status === "" ? true : false
                     }
                   >
                     Process
-                  </Button>
+                  </button>
                 </form>
               </div>
-            </div>
+            </Fragment>
           )}
         </div>
       </div>

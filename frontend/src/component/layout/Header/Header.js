@@ -135,21 +135,45 @@ const Header = () => {
                     <Box sx={{ display: "flex", gap: { xs: 0.5, md: 2 }, alignItems: "center" }}>
                         <Tooltip title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
                             <motion.div whileHover={{ scale: 1.1 }}>
-                                <IconButton onClick={toggleTheme} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                <IconButton
+                                    onClick={toggleTheme}
+                                    sx={{
+                                        color: 'var(--color-text)',
+                                        '&:hover': { color: 'var(--color-primary)' },
+                                        minWidth: { xs: '44px', md: 'auto' },
+                                        minHeight: { xs: '44px', md: 'auto' }
+                                    }}
+                                >
                                     {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                                 </IconButton>
                             </motion.div>
                         </Tooltip>
                         <Tooltip title="Search">
                             <motion.div whileHover={{ scale: 1.1 }}>
-                                <IconButton onClick={() => navigate("/search")} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                <IconButton
+                                    onClick={() => navigate("/search")}
+                                    sx={{
+                                        color: 'var(--color-text)',
+                                        '&:hover': { color: 'var(--color-primary)' },
+                                        minWidth: { xs: '44px', md: 'auto' },
+                                        minHeight: { xs: '44px', md: 'auto' }
+                                    }}
+                                >
                                     <SearchIcon />
                                 </IconButton>
                             </motion.div>
                         </Tooltip>
                         <Tooltip title="Cart">
                             <motion.div whileHover={{ scale: 1.1 }}>
-                                <IconButton onClick={() => navigate("/cart")} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                <IconButton
+                                    onClick={() => navigate("/cart")}
+                                    sx={{
+                                        color: 'var(--color-text)',
+                                        '&:hover': { color: 'var(--color-primary)' },
+                                        minWidth: { xs: '44px', md: 'auto' },
+                                        minHeight: { xs: '44px', md: 'auto' }
+                                    }}
+                                >
                                     <ShoppingCartIcon />
                                 </IconButton>
                             </motion.div>
@@ -165,7 +189,9 @@ const Header = () => {
                                             color: 'var(--color-primary)',
                                             border: '1px solid var(--color-primary)',
                                             borderRadius: '4px',
-                                            padding: { xs: '4px', md: '8px' }
+                                            padding: { xs: '8px', md: '8px' },
+                                            minWidth: { xs: '44px', md: 'auto' },
+                                            minHeight: { xs: '44px', md: 'auto' }
                                         }}
                                     >
                                         <PersonIcon />
