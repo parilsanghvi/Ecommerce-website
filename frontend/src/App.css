@@ -1,4 +1,5 @@
 :root {
+  /* Dark Mode (Default) */
   --color-bg: #0a0a0a;
   --color-surface: #111111;
   --color-primary: #ccff00;
@@ -18,6 +19,17 @@
   --spacing-xl: 64px;
 }
 
+[data-theme='light'] {
+  --color-bg: #f0f0f0;
+  --color-surface: #ffffff;
+  --color-primary: #4a4a4a; /* Dark gray for primary in light mode for contrast */
+  --color-secondary: #00bcd4;
+  --color-text: #0a0a0a;
+  --color-muted: #666666;
+  --color-border: #cccccc;
+  --color-error: #d32f2f;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -31,6 +43,7 @@ body {
   font-family: var(--font-body);
   line-height: 1.5;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {

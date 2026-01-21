@@ -80,7 +80,25 @@ const Products = () => {
                                     '& .MuiSlider-thumb': {
                                         borderRadius: '0',
                                         border: '1px solid var(--color-primary)',
-                                        backgroundColor: 'black'
+                                        backgroundColor: 'var(--color-surface)',
+                                        '&:hover': {
+                                            boxShadow: '0 0 0 8px rgba(204, 255, 0, 0.16)'
+                                        }
+                                    },
+                                    '& .MuiSlider-track': {
+                                        border: 'none',
+                                        backgroundColor: 'var(--color-primary)'
+                                    },
+                                    '& .MuiSlider-rail': {
+                                        opacity: 0.5,
+                                        backgroundColor: 'var(--color-muted)'
+                                    },
+                                    '& .MuiSlider-valueLabel': {
+                                        backgroundColor: 'var(--color-surface)',
+                                        color: 'var(--color-text)',
+                                        border: '1px solid var(--color-border)',
+                                        borderRadius: '0',
+                                        fontFamily: 'var(--font-body)'
                                     }
                                 }}
                             />
@@ -101,7 +119,7 @@ const Products = () => {
                                 ))}
                             </ul>
 
-                            <fieldset>
+                            <fieldset style={{border: '1px solid var(--color-border)', padding: '1rem', marginTop: '1rem'}}>
                                 <Typography component="legend" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase'}}>
                                     Rating
                                 </Typography>
@@ -118,7 +136,18 @@ const Products = () => {
                                         '& .MuiSlider-thumb': {
                                             borderRadius: '0',
                                             border: '1px solid var(--color-primary)',
-                                            backgroundColor: 'black'
+                                            backgroundColor: 'var(--color-surface)'
+                                        },
+                                        '& .MuiSlider-rail': {
+                                            opacity: 0.5,
+                                            backgroundColor: 'var(--color-muted)'
+                                        },
+                                        '& .MuiSlider-valueLabel': {
+                                            backgroundColor: 'var(--color-surface)',
+                                            color: 'var(--color-text)',
+                                            border: '1px solid var(--color-border)',
+                                            borderRadius: '0',
+                                            fontFamily: 'var(--font-body)'
                                         }
                                     }}
                                 />

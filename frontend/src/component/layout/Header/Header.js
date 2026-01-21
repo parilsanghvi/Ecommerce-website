@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { motion } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link, useNavigate } from 'react-router-dom';
 import UserOptions from "./UserOptions";
 import { useSelector } from 'react-redux';
@@ -12,7 +14,17 @@ import { useSelector } from 'react-redux';
 const Header = () => {
     const { isAuthenticated, user } = useSelector((state) => state.user);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+    };
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -128,6 +140,13 @@ const Header = () => {
 
                     {/* Icons */}
                     <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                        <Tooltip title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+                            <motion.div whileHover={{ scale: 1.1 }}>
+                                <IconButton onClick={toggleTheme} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
+                                    {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                                </IconButton>
+                            </motion.div>
+                        </Tooltip>
                         <Tooltip title="Search">
                             <motion.div whileHover={{ scale: 1.1 }}>
                                 <IconButton onClick={() => navigate("/search")} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>

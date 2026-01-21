@@ -149,12 +149,44 @@
 }
 
 .reviewCard {
-  min-width: 300px;
+  flex: none;
+  width: 300px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   padding: 2rem;
   color: var(--color-text);
-  box-shadow: 4px 4px 0px var(--color-border);
+  box-shadow: 8px 8px 0px var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.reviewCard:hover {
+    transform: translateY(-5px);
+}
+
+.reviewCard > img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-primary);
+}
+
+.reviewCard > p {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--color-text);
+}
+
+.reviewCardComment {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    text-align: center;
 }
 
 .noReviews {
