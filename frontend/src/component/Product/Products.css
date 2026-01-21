@@ -28,11 +28,17 @@
     height: fit-content;
 }
 
+.filter-heading {
+    margin-bottom: 1rem;
+    color: var(--color-text);
+}
+
 .products {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 32px;
+    justify-content: center;
 }
 
 .categoryBox {
@@ -105,8 +111,10 @@
 @media screen and (max-width: 768px) {
     .products-container {
         flex-direction: column;
+        padding: 1rem;
     }
     .filterBox {
         width: 100%;
+        margin-bottom: 2rem;
     }
 }

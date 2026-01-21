@@ -10,6 +10,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link, useNavigate } from 'react-router-dom';
 import UserOptions from "./UserOptions";
 import { useSelector } from 'react-redux';
+import "./Header.css";
 
 const Header = () => {
     const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -99,17 +100,9 @@ const Header = () => {
                     {/* Logo */}
                     <Link to="/" style={{ textDecoration: 'none' }}>
                         <motion.div
+                            className="header-logo"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            style={{
-                                fontFamily: 'var(--font-heading)',
-                                fontSize: '1.5rem',
-                                color: 'var(--color-text)',
-                                border: '2px solid var(--color-text)',
-                                padding: '4px 12px',
-                                textTransform: 'uppercase',
-                                letterSpacing: '-1px'
-                            }}
                         >
                             ECOMMERCE
                         </motion.div>
@@ -139,7 +132,7 @@ const Header = () => {
                     </Box>
 
                     {/* Icons */}
-                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <Box sx={{ display: "flex", gap: { xs: 0.5, md: 2 }, alignItems: "center" }}>
                         <Tooltip title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
                             <motion.div whileHover={{ scale: 1.1 }}>
                                 <IconButton onClick={toggleTheme} sx={{ color: 'var(--color-text)', '&:hover': { color: 'var(--color-primary)' } }}>
@@ -166,7 +159,15 @@ const Header = () => {
                         ) : (
                             <Tooltip title="Login">
                                 <motion.div whileHover={{ scale: 1.1 }}>
-                                    <IconButton onClick={() => navigate("/login")} sx={{ color: 'var(--color-primary)', border: '1px solid var(--color-primary)', borderRadius: '4px' }}>
+                                    <IconButton
+                                        onClick={() => navigate("/login")}
+                                        sx={{
+                                            color: 'var(--color-primary)',
+                                            border: '1px solid var(--color-primary)',
+                                            borderRadius: '4px',
+                                            padding: { xs: '4px', md: '8px' }
+                                        }}
+                                    >
                                         <PersonIcon />
                                     </IconButton>
                                 </motion.div>

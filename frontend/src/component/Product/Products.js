@@ -67,7 +67,7 @@ const Products = () => {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <Typography style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase'}}>Price Range</Typography>
+                            <Typography variant="h6" className="filter-heading">Price Range</Typography>
                             <Slider
                                 value={price}
                                 onChange={priceHandler}
@@ -76,6 +76,8 @@ const Products = () => {
                                 min={0}
                                 max={25000}
                                 sx={{
+                                    marginTop: '1rem',
+                                    marginBottom: '2rem',
                                     color: 'var(--color-primary)',
                                     '& .MuiSlider-thumb': {
                                         borderRadius: '0',
@@ -103,7 +105,7 @@ const Products = () => {
                                 }}
                             />
 
-                            <Typography style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase', marginTop: '24px'}}>
+                            <Typography variant="h6" className="filter-heading">
                                 Categories
                             </Typography>
                             <ul className='categoryBox'>
@@ -119,8 +121,8 @@ const Products = () => {
                                 ))}
                             </ul>
 
-                            <fieldset style={{border: '1px solid var(--color-border)', padding: '1rem', marginTop: '1rem'}}>
-                                <Typography component="legend" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase'}}>
+                            <fieldset style={{border: '1px solid var(--color-border)', padding: '1rem', marginTop: '2rem'}}>
+                                <Typography component="legend" variant="caption" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem'}}>
                                     Rating
                                 </Typography>
                                 <Slider
@@ -132,6 +134,7 @@ const Products = () => {
                                     max={5}
                                     valueLabelDisplay='auto'
                                     sx={{
+                                        marginTop: '0.5rem',
                                         color: 'var(--color-primary)',
                                         '& .MuiSlider-thumb': {
                                             borderRadius: '0',
