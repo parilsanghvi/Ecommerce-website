@@ -5,24 +5,30 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 4rem;
 }
 
 .shippingBox {
-  background-color: white;
-  width: 25vw;
-  height: 90vh;
+  background-color: var(--color-surface);
+  width: 400px;
+  min-height: 70vh;
   box-sizing: border-box;
   overflow: hidden;
+  border: 2px solid var(--color-text);
+  box-shadow: 8px 8px 0 var(--color-primary);
+  margin-top: 2rem;
 }
 
 .shippingHeading {
   text-align: center;
-  color: rgba(0, 0, 0, 0.664);
-  font: 400 1.3vmax "Roboto", sans-serif;
-  padding: 1.3vmax;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.205);
-  width: 50%;
-  margin: auto;
+  color: var(--color-text);
+  font: 900 1.5rem var(--font-heading);
+  padding: 1.5rem;
+  border-bottom: 2px solid var(--color-text);
+  width: 100%;
+  margin: 0;
+  text-transform: uppercase;
+  background: var(--color-bg);
 }
 
 .shippingForm {
@@ -30,82 +36,105 @@
   flex-direction: column;
   align-items: center;
   margin: auto;
-  padding: 2vmax;
-  justify-content: space-evenly;
-  height: 80%;
-  transition: all 0.5s;
+  padding: 2rem;
+  gap: 1.5rem;
+  /* justify-content: space-evenly; */
+  /* height: 80%; */
 }
 
 .shippingForm > div {
   display: flex;
   width: 100%;
   align-items: center;
+  position: relative;
 }
 
 .shippingForm > div > input,
 .shippingForm > div > select {
-  padding: 1vmax 4vmax;
-  padding-right: 1vmax;
+  padding: 1rem 1rem 1rem 3rem;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.267);
-  border-radius: 4px;
-  font: 300 0.9vmax "Roboto", sans-serif;
+  border: 2px solid var(--color-text);
+  border-radius: 0;
+  font: 400 1rem var(--font-body);
   outline: none;
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+
+.shippingForm > div > input:focus,
+.shippingForm > div > select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 4px 4px 0 var(--color-muted);
 }
 
 .shippingForm > div > svg {
   position: absolute;
-  transform: translateX(1vmax);
-  font-size: 1.6vmax;
-  color: rgba(0, 0, 0, 0.623);
+  left: 1rem;
+  /* transform: translateX(1vmax); */
+  font-size: 1.2rem;
+  color: var(--color-text);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .shippingBtn {
-  border: none;
-  background-color: tomato;
-  color: white;
-  font: 300 1vmax "Roboto", sans-serif;
+  border: 2px solid var(--color-text);
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  font: 900 1.2rem var(--font-heading);
   width: 100%;
-  padding: 1vmax;
+  padding: 1rem;
   cursor: pointer;
-  transition: all 0.5s;
+  transition: all 0.2s;
   outline: none;
-  margin: 2vmax;
+  margin-top: 2rem;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 var(--color-text);
 }
 
 .shippingBtn:hover {
-  background-color: rgb(179, 66, 46);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-text);
+}
+
+.shippingBtn:disabled {
+  background-color: var(--color-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 @media screen and (max-width: 600px) {
   .shippingBox {
-    width: 100vw;
-    height: 95vh;
+    width: 90vw;
+    height: auto;
+    box-shadow: 4px 4px 0 var(--color-primary);
   }
 
   .shippingHeading {
-    font: 400 6vw "Roboto", sans-serif;
-    padding: 5vw;
+    font-size: 1.2rem;
+    padding: 1rem;
   }
 
   .shippingForm {
-    padding: 11vw;
+    padding: 1.5rem;
   }
 
   .shippingForm > div > input,
   .shippingForm > div > select {
-    padding: 5vw 10vw;
-    font: 300 4vw "Roboto", sans-serif;
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 0.9rem;
   }
 
   .shippingForm > div > svg {
-    font-size: 6vw;
-    transform: translateX(3vw);
+    font-size: 1rem;
+    left: 1rem;
   }
 
   .shippingBtn {
-    font: 300 4vw "Roboto", sans-serif;
-    padding: 4vw;
+    font-size: 1rem;
+    padding: 1rem;
   }
 }

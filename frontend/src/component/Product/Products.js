@@ -30,7 +30,7 @@ const Products = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [price, setPrice] = useState([0, 25000])
     const [category, setCategory] = useState("")
-    const { products, loading, error, productsCount, resultPerPage } = useSelector((state) => state.products)
+    const { products, loading, error, productsCount, resultPerPage, filteredProductsCount } = useSelector((state) => state.products)
     const { keyword } = useParams();
 
     const setCurrentPageNo = (e, value) => {
@@ -38,6 +38,7 @@ const Products = () => {
     }
     const priceHandler = (event, newPrice) => {
         setPrice(newPrice);
+        setCurrentPage(1);
     }
 
     const filteredProducts = useMemo(() => {
@@ -112,9 +113,12 @@ const Products = () => {
                                 {categories.map((cat) => (
                                     <li className='category-link'
                                         key={cat}
-                                        onClick={() => setCategory(cat)}
+                                        onClick={() => {
+                                            setCategory(cat);
+                                            setCurrentPage(1);
+                                        }}
                                         tabIndex="0"
-                                        style={{ color: category === cat ? 'var(--color-primary)' : '' }}
+                                        style={{ color: category === cat ? 'var(--color-primary)' : 'var(--color-text)' }}
                                     >
                                         {cat}
                                     </li>
@@ -122,13 +126,14 @@ const Products = () => {
                             </ul>
 
                             <fieldset style={{border: '1px solid var(--color-border)', padding: '1rem', marginTop: '2rem'}}>
-                                <Typography component="legend" variant="caption" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem'}}>
+                                <Typography component="legend" variant="caption" style={{fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--color-text)'}}>
                                     Rating
                                 </Typography>
                                 <Slider
                                     value={ratings}
                                     onChange={(e, newRating) => {
-                                        setRating(newRating)
+                                        setRating(newRating);
+                                        setCurrentPage(1);
                                     }}
                                     min={0}
                                     max={5}
@@ -169,15 +174,27 @@ const Products = () => {
                                 </div>
                             )}
 
-                            <div className='paginationBox' style={{ gridColumn: '1 / -1' }}>
-                                <Pagination
-                                    count={Math.ceil(productsCount / resultPerPage)}
-                                    page={currentPage}
-                                    onChange={setCurrentPageNo}
-                                    color="primary"
-                                    shape="rounded"
-                                />
-                            </div>
+                            {resultPerPage < filteredProductsCount && (
+                                <div className='paginationBox' style={{ gridColumn: '1 / -1' }}>
+                                    <Pagination
+                                        count={Math.ceil(filteredProductsCount / resultPerPage)}
+                                        page={currentPage}
+                                        onChange={setCurrentPageNo}
+                                        color="primary"
+                                        shape="rounded"
+                                        sx={{
+                                            '& .MuiPaginationItem-root': {
+                                                color: 'var(--color-text)',
+                                                fontFamily: 'var(--font-body)',
+                                            },
+                                            '& .Mui-selected': {
+                                                backgroundColor: 'var(--color-primary) !important',
+                                                color: 'var(--color-surface) !important',
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </Fragment>

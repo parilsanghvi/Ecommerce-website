@@ -160,13 +160,26 @@ const ProductDetails = () => {
             aria-labelledby="simple-dialog-title"
             open={open}
             onClose={submitReviewToggle}
+            sx={{
+              '& .MuiDialog-paper': {
+                backgroundColor: 'var(--color-surface)',
+                border: '2px solid var(--color-text)',
+                boxShadow: '8px 8px 0 var(--color-primary)',
+                borderRadius: 0,
+                color: 'var(--color-text)'
+              }
+            }}
           >
-            <DialogTitle>Submit Review</DialogTitle>
+            <DialogTitle sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>Submit Review</DialogTitle>
             <DialogContent className="submitDialog">
               <Rating
-                onChange={(e) => setRating(e.target.value)}
+                onChange={(e, newValue) => setRating(newValue)}
                 value={rating}
                 size="large"
+                sx={{
+                  '& .MuiRating-iconFilled': { color: 'var(--color-primary)' },
+                  '& .MuiRating-iconEmpty': { color: 'var(--color-muted)' }
+                }}
               />
               <textarea
                 className="submitDialogTextArea"
@@ -174,13 +187,14 @@ const ProductDetails = () => {
                 rows="5"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                placeholder="Write your review here..."
               ></textarea>
             </DialogContent>
             <DialogActions>
-              <Button onClick={submitReviewToggle} color="secondary">
+              <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
                 Cancel
               </Button>
-              <Button onClick={reviewSubmitHandler} color="primary">
+              <Button onClick={reviewSubmitHandler} sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
                 Submit
               </Button>
             </DialogActions>
