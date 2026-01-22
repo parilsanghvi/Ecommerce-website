@@ -16,7 +16,7 @@
   padding: 1rem;
   box-sizing: border-box;
   color: var(--color-text);
-  transition: all 0.5s;
+  transition: background-color 0.5s, color 0.5s;
   background-color: var(--color-primary);
   text-transform: uppercase;
   margin-top: 1rem;
@@ -35,7 +35,7 @@
 
 .myOrdersTable a {
   color: var(--color-text);
-  transition: all 0.5s;
+  transition: color 0.5s;
 }
 
 .myOrdersTable a:hover {

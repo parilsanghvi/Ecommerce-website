@@ -36,36 +36,37 @@
   padding: 2rem;
   justify-content: space-evenly;
   height: 70%;
-  transition: all 0.5s;
+  transition: opacity 0.5s, transform 0.5s;
 }
 
-.updateProfileForm > div {
+.updateProfileForm>div {
   display: flex;
   width: 100%;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.updateProfileForm > div > input {
+.updateProfileForm>div>input {
   padding: 1rem 3rem;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid var(--color-border);
-  border-radius: 0;
-  font-family: var(--font-body);
   outline: none;
-  background: var(--color-bg);
-  color: var(--color-text);
+  border-radius: 0;
+  border: 1px solid var(--color-border);
 }
 
-.updateProfileForm > div > svg {
+.updateProfileForm>div>input:focus {
+  border-color: var(--color-primary);
+}
+
+.updateProfileForm>div>svg {
   position: absolute;
   transform: translateX(1rem);
   font-size: 1.2rem;
   color: var(--color-muted);
 }
 
-#updateProfileImage > img {
+#updateProfileImage>img {
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
@@ -73,14 +74,14 @@
   border: 1px solid var(--color-border);
 }
 
-#updateProfileImage > input {
+#updateProfileImage>input {
   display: flex;
   padding: 0;
   border: none;
   background: transparent;
 }
 
-#updateProfileImage > input::file-selector-button {
+#updateProfileImage>input::file-selector-button {
   cursor: pointer;
   width: 100%;
   z-index: 2;
@@ -88,14 +89,14 @@
   border: 1px solid var(--color-border);
   margin: 0;
   font-family: var(--font-body);
-  transition: all 0.3s;
+  transition: background-color 0.3s, color 0.3s;
   padding: 0 1rem;
   color: var(--color-text);
   background-color: var(--color-bg);
   margin-left: 1rem;
 }
 
-#updateProfileImage > input::file-selector-button:hover {
+#updateProfileImage>input::file-selector-button:hover {
   background-color: var(--color-primary);
   color: black;
 }
@@ -109,8 +110,8 @@
   width: 100%;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.3s;
-  outline: none;
+  transition: background-color 0.3s;
+  outline: 1px solid transparent;
   margin-top: 2rem;
 }
 

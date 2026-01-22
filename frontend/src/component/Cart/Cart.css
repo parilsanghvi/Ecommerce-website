@@ -123,7 +123,7 @@
   padding-bottom: 0.5rem;
 }
 
-.checkOutBtn {
+/* .checkOutBtn {
   background-color: var(--color-text);
   color: var(--color-surface);
   border: none;
@@ -138,7 +138,7 @@
 .checkOutBtn:hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--color-primary);
-}
+} */
 
 .emptyCart {
   margin: auto;

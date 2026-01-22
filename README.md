@@ -6,7 +6,13 @@ Hi! My name is **Paril Sanghvi**
 
 **For Backend** - `npm i`
 
-**For Frontend** - `cd frontend` ` npm i`
+**For Frontend** - `cd frontend` then `npm i`
+ 
+ # Start the Project
+ 
+ **Backend** - `npm run dev` (Root directory)
+ **Frontend** - `cd frontend` then `npm start` (Powered by Vite)
+
 
 ## Env Variables
 

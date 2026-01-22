@@ -91,7 +91,7 @@
   height: 40px;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .detailsBlock-3-1-1 button:hover:not(:disabled) {
@@ -120,7 +120,7 @@
   font-size: 1.1rem;
   font-weight: 900;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
   box-shadow: 4px 4px 0 var(--color-text);
 }
 
@@ -146,7 +146,7 @@
   margin-top: 2rem;
   font-family: var(--font-heading);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .submitReview:hover {
@@ -236,7 +236,7 @@
 .submitDialogTextArea {
   border: 2px solid var(--color-text);
   margin: 1rem 0 0 0;
-  outline: none;
+  outline: 1px solid transparent;
   padding: 1rem;
   font-family: var(--font-body);
   font-size: 1rem;
@@ -259,7 +259,7 @@
   text-transform: uppercase;
   font-weight: 900;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
   box-shadow: 4px 4px 0 var(--color-primary);
 }
 

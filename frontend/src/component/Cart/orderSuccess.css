@@ -7,37 +7,56 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: var(--color-bg);
 }
-.orderSuccess > svg {
+
+.orderSuccess>svg {
   font-size: 7vmax;
-  color: tomato;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
 }
-.orderSuccess > p {
-  font-size: 2vmax;
+
+.orderSuccess>p {
+  font-size: 2rem;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  margin-bottom: 2rem;
 }
-.orderSuccess > a {
-  background-color: rgb(51, 51, 51);
-  color: white;
+
+.orderSuccess>a {
+  background-color: var(--color-primary);
+  color: #000;
   border: none;
-  padding: 1vmax 3vmax;
+  padding: 1rem 3rem;
   cursor: pointer;
-  font: 400 1vmax "Roboto", sans-serif;
+  font: 900 1rem var(--font-heading);
   text-decoration: none;
-  margin: 2vmax;
+  text-transform: uppercase;
+  margin: 2rem;
+  transition: all 0.3s;
+  box-shadow: 4px 4px 0 var(--color-text);
+}
+
+.orderSuccess>a:hover {
+  background-color: var(--color-secondary);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-text);
 }
 
 @media screen and (max-width: 600px) {
-  .orderSuccess > a {
-    padding: 3vw 6vw;
-    font: 400 4vw "Roboto", sans-serif;
-    margin: 2vmax;
+  .orderSuccess>a {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .orderSuccess > svg {
+  .orderSuccess>svg {
     font-size: 20vw;
   }
-  .orderSuccess > p {
-    margin: 2vmax;
-    font-size: 5vw;
+
+  .orderSuccess>p {
+    margin: 2rem;
+    font-size: 1.5rem;
   }
 }

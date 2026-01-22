@@ -10,7 +10,7 @@
   color: var(--color-text);
 }
 
-.profileContainer > div {
+.profileContainer>div {
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -20,27 +20,27 @@
   align-items: center;
 }
 
-.profileContainer > div:first-child > h1 {
+.profileContainer>div:first-child>h1 {
   color: var(--color-muted);
   font-family: var(--font-heading);
   transform: translateY(-2rem);
 }
 
-.profileContainer > div:first-child > img {
+.profileContainer>div:first-child>img {
   width: 20vmax;
   height: 20vmax;
   border-radius: 50%;
   object-fit: cover;
-  transition: all 0.5s;
+  transition: transform 0.5s, border-color 0.5s;
   border: 1px solid var(--color-border);
 }
 
-.profileContainer > div:first-child > img:hover {
+.profileContainer>div:first-child>img:hover {
   transform: scale(1.05);
   border-color: var(--color-primary);
 }
 
-.profileContainer > div:first-child > a {
+.profileContainer>div:first-child>a {
   border: none;
   background-color: var(--color-primary);
   font-family: var(--font-heading);
@@ -51,38 +51,38 @@
   text-decoration: none;
   margin: 4vmax;
   color: black;
-  transition: all 0.3s;
+  transition: background-color 0.3s;
 }
 
-.profileContainer > div:first-child > a:hover {
+.profileContainer>div:first-child>a:hover {
   background-color: var(--color-secondary);
 }
 
-.profileContainer > div:last-child {
+.profileContainer>div:last-child {
   justify-content: space-evenly;
   align-items: flex-start;
   padding: 5vmax;
   box-sizing: border-box;
 }
 
-.profileContainer > div:last-child > div > h4 {
+.profileContainer>div:last-child>div>h4 {
   color: var(--color-text);
   font-family: var(--font-heading);
 }
 
-.profileContainer > div:last-child > div > p {
+.profileContainer>div:last-child>div>p {
   color: var(--color-muted);
   font-family: var(--font-body);
   margin: 0.2vmax;
 }
 
-.profileContainer > div:last-child > div:last-child {
+.profileContainer>div:last-child>div:last-child {
   display: flex;
   flex-direction: column;
   width: 60%;
 }
 
-.profileContainer > div:last-child > div:last-child > a {
+.profileContainer>div:last-child>div:last-child>a {
   border: none;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -93,10 +93,10 @@
   text-decoration: none;
   padding: 1rem;
   text-align: center;
-  transition: all 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.profileContainer > div:last-child > div:last-child > a:hover {
+.profileContainer>div:last-child>div:last-child>a:hover {
   background-color: var(--color-primary);
   color: black;
 }
@@ -106,21 +106,21 @@
     flex-direction: column;
   }
 
-  .profileContainer > div:first-child > h1 {
+  .profileContainer>div:first-child>h1 {
     font-size: 2rem;
     transform: translateY(-2vmax);
   }
 
-  .profileContainer > div:first-child > a {
+  .profileContainer>div:first-child>a {
     width: 60%;
   }
 
-  .profileContainer > div:last-child {
+  .profileContainer>div:last-child {
     text-align: center;
     align-items: center;
   }
 
-  .profileContainer > div:last-child > div:last-child {
-      width: 100%;
+  .profileContainer>div:last-child>div:last-child {
+    width: 100%;
   }
 }

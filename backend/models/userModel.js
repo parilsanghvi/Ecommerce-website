@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
-const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
-const dotenv = require("dotenv")
 const crypto = require("crypto")
 const userSchema = new mongoose.Schema({
     name: {
@@ -15,7 +13,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "please Enter your email"],
         unique: true,
-        validate: [validator.isEmail, "Please enter valid email"]
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please enter valid email"]
     },
     password: {
         type: String,
@@ -37,7 +35,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "user",
     },
-    createdAt:{
+    createdAt: {
         type: Date,
         default: Date.now
     },

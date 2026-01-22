@@ -42,34 +42,34 @@
   /* height: 80%; */
 }
 
-.shippingForm > div {
+.shippingForm>div {
   display: flex;
   width: 100%;
   align-items: center;
   position: relative;
 }
 
-.shippingForm > div > input,
-.shippingForm > div > select {
+.shippingForm>div>input,
+.shippingForm>div>select {
   padding: 1rem 1rem 1rem 3rem;
   width: 100%;
   box-sizing: border-box;
   border: 2px solid var(--color-text);
   border-radius: 0;
   font: 400 1rem var(--font-body);
-  outline: none;
+  outline: 1px solid transparent;
   background: var(--color-surface);
   color: var(--color-text);
-  transition: all 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.shippingForm > div > input:focus,
-.shippingForm > div > select:focus {
+.shippingForm>div>input:focus,
+.shippingForm>div>select:focus {
   border-color: var(--color-primary);
   box-shadow: 4px 4px 0 var(--color-muted);
 }
 
-.shippingForm > div > svg {
+.shippingForm>div>svg {
   position: absolute;
   left: 1rem;
   /* transform: translateX(1vmax); */
@@ -87,8 +87,8 @@
   width: 100%;
   padding: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
-  outline: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  outline: 1px solid transparent;
   margin-top: 2rem;
   text-transform: uppercase;
   box-shadow: 4px 4px 0 var(--color-text);
@@ -122,13 +122,13 @@
     padding: 1.5rem;
   }
 
-  .shippingForm > div > input,
-  .shippingForm > div > select {
+  .shippingForm>div>input,
+  .shippingForm>div>select {
     padding: 1rem 1rem 1rem 3rem;
     font-size: 0.9rem;
   }
 
-  .shippingForm > div > svg {
+  .shippingForm>div>svg {
     font-size: 1rem;
     left: 1rem;
   }

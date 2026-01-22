@@ -1,62 +1,77 @@
 .productReviewsContainer {
   width: 100%;
   box-sizing: border-box;
-  background-color: rgb(255, 255, 255);
-  border-left: 1px solid rgba(0, 0, 0, 0.158);
+  background-color: var(--color-bg);
+  border-left: 2px solid var(--color-border);
   height: 100vh;
 }
 
 .productReviewsForm {
-  width: 20rem;
+  width: 25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: auto;
-  padding: 3vmax;
-  background-color: white;
+  padding: 2rem;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-text);
+  box-shadow: 8px 8px 0 var(--color-primary);
 }
 
 .productReviewsFormHeading {
-  color: rgba(0, 0, 0, 0.733);
-  font: 300 2rem "Roboto", sans-serif;
+  color: var(--color-text);
+  font: 900 2rem var(--font-heading);
   text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
 }
 
-.productReviewsForm > div {
+.productReviewsForm>div {
   display: flex;
   width: 100%;
   align-items: center;
-  margin: 2rem;
-}
-.productReviewsForm > div > input {
-  padding: 1vmax 4vmax;
-  padding-right: 1vmax;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.267);
-  border-radius: 4px;
-  font: 300 0.9vmax "Roboto", sans-serif;
-  outline: none;
+  margin: 1.5rem;
+  position: relative;
 }
 
-.productReviewsForm > div > svg {
+.productReviewsForm>div>input {
+  padding: 1rem 3rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  font-family: var(--font-body);
+  outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+  height: 50px;
+}
+
+.productReviewsForm>div>input:focus {
+  border-color: var(--color-primary);
+}
+
+.productReviewsForm>div>svg {
   position: absolute;
-  transform: translateX(1vmax);
-  font-size: 1.6vmax;
-  color: rgba(0, 0, 0, 0.623);
+  transform: translateX(1rem);
+  font-size: 1.2rem;
+  color: var(--color-muted);
+  pointer-events: none;
 }
 
 @media screen and (max-width: 600px) {
   .productReviewsContainer {
     border-left: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.158);
-  }
-  .productReviewsForm > div > input {
-    padding: 2.5vmax 5vmax;
-    font: 300 1.7vmax "Roboto", sans-serif;
   }
 
-  .productReviewsForm > div > svg {
-    font-size: 2.8vmax;
+  .productReviewsForm {
+    width: 90%;
+    padding: 1.5rem;
+    box-shadow: none;
+    border: none;
+  }
+
+  .productReviewsForm>div>input {
+    padding: 1rem 3rem;
   }
 }

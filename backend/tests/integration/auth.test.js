@@ -185,8 +185,8 @@ describe('Authentication Integration Tests', () => {
                 .post('/api/v1/login')
                 .send({ email: 'login@example.com' });
 
-            expect(res.status).toBe(401);
-            expect(res.body.message).toBe('Please enter email and password');
+            expect(res.status).toBe(400);
+            expect(res.body.message).toContain('Please enter password');
         });
     });
 

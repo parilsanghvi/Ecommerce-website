@@ -1,10 +1,5 @@
 const mongoose = require('mongoose')
-const {
-    required
-} = require('nodemon/lib/config')
-const {
-    stringify
-} = require('nodemon/lib/utils')
+
 // create schema
 const productSchema = mongoose.Schema({
     // object field name
@@ -61,9 +56,9 @@ const productSchema = mongoose.Schema({
         default: 0
     },
     reviews: [{
-        user:{
-            type:mongoose.Schema.ObjectId,
-            ref:"user",
+        user: {
+            type: mongoose.Schema.ObjectId,
+            ref: "user",
             required: true,
         },
         name: {
@@ -79,12 +74,12 @@ const productSchema = mongoose.Schema({
             required: true
         }
     }],
-    user:{
-        type:mongoose.Schema.ObjectId,
-        ref:"user",
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user",
         required: true,
     },
-    createdAt: { 
+    createdAt: {
         type: Date,
         // takes date from system
         default: Date.now

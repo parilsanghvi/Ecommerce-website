@@ -1,0 +1,145 @@
+import React, { Fragment, useEffect } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import "./productList.css";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { Button } from "@mui/material";
+import MetaData from "../layout/MetaData";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SideBar from "./Sidebar";
+import { getAllUsers, clearErrors, deleteUser, deleteUserReset } from "../../features/userSlice";
+
+const UsersList = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { error, users } = useSelector((state) => state.user);
+
+  const {
+    error: deleteError,
+    isDeleted,
+    message,
+  } = useSelector((state) => state.user);
+
+  const deleteUserHandler = (id) => {
+    dispatch(deleteUser(id));
+  };
+
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar(error, { variant: "error" });
+      dispatch(clearErrors());
+    }
+
+    if (deleteError) {
+      enqueueSnackbar(deleteError, { variant: "error" });
+      dispatch(clearErrors());
+    }
+
+    if (isDeleted) {
+      enqueueSnackbar(message, { variant: "success" });
+      navigate("/admin/users");
+      dispatch(deleteUserReset());
+    }
+  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted, message]);
+
+  const columns = [
+    { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },
+
+    {
+      field: "email",
+      headerName: "Email",
+      minWidth: 200,
+      flex: 1,
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      minWidth: 150,
+      flex: 0.5,
+    },
+
+    {
+      field: "role",
+      headerName: "Role",
+      type: "number",
+      minWidth: 150,
+      flex: 0.3,
+      cellClassName: (params) => {
+        return params.row.role === "admin"
+          ? "greenColor"
+          : "redColor";
+      },
+    },
+
+    {
+      field: "actions",
+      flex: 0.3,
+      headerName: "Actions",
+      minWidth: 150,
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <Fragment>
+            <Link to={`/admin/user/${params.row.id}`}>
+              <EditIcon />
+            </Link>
+
+            <button
+              onClick={() =>
+                deleteUserHandler(params.row.id)
+              }
+            >
+              <DeleteIcon />
+            </button>
+          </Fragment>
+        );
+      },
+    },
+  ];
+
+  const rows = [];
+
+  users &&
+    users.forEach((item) => {
+      rows.push({
+        id: item._id,
+        role: item.role,
+        email: item.email,
+        name: item.name,
+      });
+    });
+
+  return (
+    <Fragment>
+      <MetaData title={`ALL USERS - Admin`} />
+
+      <div className="dashboard">
+        <SideBar />
+        <div className="productListContainer">
+          <h1 id="productListHeading">ALL USERS</h1>
+
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={10}
+            disableSelectionOnClick
+            className="productListTable"
+            autoHeight
+          />
+        </div>
+      </div>
+    </Fragment>
+  );
+};
+
+export default UsersList;

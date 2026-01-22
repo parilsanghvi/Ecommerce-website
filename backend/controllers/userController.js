@@ -131,7 +131,7 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
     })
 })
 // update user password
-exports.updatePassoword = catchAsyncErrors(async (req, res, next) => {
+exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findById(req.user.id).select("+password")
     const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
     if (!isPasswordMatched) {
@@ -152,7 +152,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
     }
     if (req.body.avatar !== "") {
         const user = await User.findById(req.user.id)
-        if (req.body.avatar==="undefined") {
+        if (!req.body.avatar || req.body.avatar === "undefined") {
             return next(new ErrorHandler("Please upload a new avatar", 401))
         }
         const imageId = user.avatar.public_id

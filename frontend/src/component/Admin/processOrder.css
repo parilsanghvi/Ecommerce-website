@@ -1,43 +1,49 @@
 .updateOrderForm {
-  margin: 5vmax 0;
-  padding: 3vmax;
-  background-color: white;
+  margin: 2rem 0;
+  padding: 2rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
 }
 
-.updateOrderForm > div {
+.updateOrderForm>div {
   display: flex;
   width: 100%;
   align-items: center;
-}
-.updateOrderForm > div > select {
-  padding: 1vmax 4vmax;
-  margin: 2rem 0;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.267);
-  border-radius: 4px;
-  font: 300 0.9vmax "Roboto", sans-serif;
-  outline: none;
+  position: relative;
 }
 
-.updateOrderForm > div > svg {
+.updateOrderForm>div>select {
+  padding: 1rem 3rem;
+  margin: 1rem 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid var(--color-text);
+  border-radius: 0;
+  font-family: var(--font-body);
+  outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+  height: 50px;
+}
+
+.updateOrderForm>div>select:focus {
+  border-color: var(--color-primary);
+}
+
+.updateOrderForm>div>svg {
   position: absolute;
-  transform: translateX(1vmax);
-  font-size: 1.6vmax;
-  color: rgba(0, 0, 0, 0.623);
+  transform: translateX(1rem);
+  font-size: 1.2rem;
+  color: var(--color-muted);
+  pointer-events: none;
 }
 
 @media screen and (max-width: 600px) {
   .updateOrderForm {
-    padding: 5vmax;
+    padding: 1rem;
   }
 
-  .updateOrderForm > div > select {
-    padding: 2.5vmax 5vmax;
-    font: 300 1.7vmax "Roboto", sans-serif;
-  }
-
-  .updateOrderForm > div > svg {
-    font-size: 2.8vmax;
+  .updateOrderForm>div>select {
+    padding: 1rem 3rem;
   }
 }

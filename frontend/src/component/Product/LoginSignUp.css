@@ -30,7 +30,7 @@
 .login_signUp_toggle>p {
   color: var(--color-text);
   font-family: var(--font-heading);
-  transition: all 0.3s;
+  transition: color 0.3s;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -46,7 +46,7 @@
   height: 3px;
   width: 50%;
   border: none;
-  transition: all 0.5s;
+  transition: width 0.5s, transform 0.5s;
 }
 
 .loginForm,
@@ -58,7 +58,7 @@
   padding: 2rem;
   justify-content: space-evenly;
   height: 90%;
-  transition: all 0.5s;
+  transition: transform 0.5s, opacity 0.5s;
   background: var(--color-surface);
 }
 
@@ -82,7 +82,7 @@
   border: 1px solid var(--color-border);
   border-radius: 0;
   font-family: var(--font-body);
-  outline: none;
+  outline: 1px solid transparent;
   background: var(--color-bg);
   color: var(--color-text);
 }
@@ -104,7 +104,7 @@
   color: var(--color-muted);
   text-decoration: none;
   align-self: flex-end;
-  transition: all 0.3s;
+  transition: color 0.3s;
   font-family: var(--font-body);
   font-size: 0.8rem;
   margin-bottom: 1rem;
@@ -137,7 +137,7 @@
   border: 1px solid var(--color-border);
   margin: 0;
   font-family: var(--font-body);
-  transition: all 0.3s;
+  transition: background-color 0.3s, color 0.3s;
   padding: 0 1rem;
   color: var(--color-text);
   background-color: var(--color-bg);

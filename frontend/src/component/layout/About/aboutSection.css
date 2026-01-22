@@ -2,123 +2,132 @@
   height: 100vh;
   width: 100vw;
   max-width: 100%;
-  background-color: white;
+  background-color: var(--color-bg);
   display: grid;
-  grid-template-columns: 4fr 4fr;
+  grid-template-columns: 1fr 1fr;
   position: fixed;
+  color: var(--color-text);
+  z-index: 10;
 }
 
 .aboutSectionGradient {
-  background-image: linear-gradient(
-    to bottom right,
-    rgb(78, 81, 255),
-    rgb(74, 137, 189)
-  );
+  background-color: var(--color-bg);
+  /* Removed gradient */
 }
 
 .aboutSectionContainer {
   position: absolute;
   left: 50%;
   top: 50%;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--color-surface);
   width: 80vw;
   height: 80vh;
   transform: translateX(-50%) translateY(-50%);
-  box-shadow: -10px 10px 10px rgba(0, 0, 0, 0.192);
+  box-shadow: 8px 8px 0 var(--color-primary);
+  border: 2px solid var(--color-text);
 
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-.aboutSectionContainer > h1 {
-  font: 400 3vmax "Roboto", sans-serif;
-  color: tomato;
-  margin: 2vmax;
+.aboutSectionContainer>h1 {
+  font: 900 2.5rem var(--font-heading);
+  color: var(--color-primary);
+  margin: 2rem;
+  text-transform: uppercase;
 }
 
-.aboutSectionContainer > div {
+.aboutSectionContainer>div {
   display: flex;
   width: 100%;
 }
 
-.aboutSectionContainer > div > div {
+.aboutSectionContainer>div>div {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2vmax;
+  padding: 2rem;
   box-sizing: border-box;
 }
 
-.aboutSectionContainer > div > div > p {
-  color: rgba(0, 0, 0, 0.623);
-  font: 100 1vmax "Roboto", sans-serif;
+.aboutSectionContainer>div>div>p {
+  color: var(--color-text);
+  font: 400 1.2rem var(--font-body);
+  margin-bottom: 1rem;
 }
 
-.aboutSectionContainer > div > div > button {
-  margin: 1vmax 0;
+.aboutSectionContainer>div>div>button {
+  margin: 1rem 0;
 }
 
-.aboutSectionContainer > div > div > span {
-  font: 100 1vmax "Roboto", sans-serif;
-  color: rgba(0, 0, 0, 0.616);
+.aboutSectionContainer>div>div>span {
+  font: 400 1rem var(--font-body);
+  color: var(--color-muted);
   text-align: center;
   width: 80%;
 }
 
 .aboutSectionContainer2 {
-  border-left: 1px solid rgba(0, 0, 0, 0.116);
+  border-left: 2px solid var(--color-border);
 }
 
-.aboutSectionContainer2 > h2 {
-  color: rgba(0, 0, 0, 0.623);
-  font: 100 2vmax "Roboto", sans-serif;
-  margin: 2vmax;
+.aboutSectionContainer2>h2 {
+  color: var(--color-text);
+  font: 700 1.5rem var(--font-heading);
+  margin: 2rem;
+  text-transform: uppercase;
 }
 
-.aboutSectionContainer2 > a > svg {
-  font-size: 4vmax;
+.aboutSectionContainer2>a>svg {
+  font-size: 3rem;
+  transition: all 0.3s;
 }
 
 .youtubeSvgIcon {
-  color: tomato;
+  color: var(--color-error);
 }
 
 .instagramSvgIcon {
-  color: rgb(144, 81, 202);
+  color: var(--color-text);
+}
+
+.instagramSvgIcon:hover {
+  color: var(--color-primary);
 }
 
 @media screen and (max-width: 600px) {
-  .aboutSectionContainer > div {
+  .aboutSection {
+    grid-template-columns: 1fr;
+    position: relative;
+    height: auto;
+    padding: 2rem 0;
+  }
+
+  .aboutSectionContainer {
+    position: relative;
+    width: 90%;
+    transform: none;
+    left: auto;
+    top: auto;
+    margin: 0 auto;
+    height: auto;
+    box-shadow: none;
+    border: none;
+  }
+
+  .aboutSectionContainer>div {
     display: block;
   }
 
-  .aboutSectionContainer > h1 {
-    font: 400 5vmax "Roboto", sans-serif;
-    margin: 3vmax;
-  }
-
-  .aboutSectionContainer > div > div > p {
-    font: 100 2vmax "Roboto", sans-serif;
-  }
-
-  .aboutSectionContainer > div > div > span {
-    font: 100 1.4vmax "Roboto", sans-serif;
-    width: 70%;
+  .aboutSectionContainer>h1 {
+    font-size: 2rem;
   }
 
   .aboutSectionContainer2 {
     border-left: none;
-  }
-
-  .aboutSectionContainer2 > h2 {
-    font: 100 3vmax "Roboto", sans-serif;
-    margin: 2vmax;
-  }
-
-  .aboutSectionContainer2 > a > svg {
-    font-size: 6vmax;
-    margin: 1vmax;
+    border-top: 1px solid var(--color-border);
   }
 }

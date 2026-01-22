@@ -11,6 +11,7 @@ const {
     deleteReview,
     getAdminProducts
 } = require('../controllers/productController')
+const upload = require("../middleware/multer")
 // routing function
 const router = express.Router()
 const {
@@ -20,10 +21,10 @@ const {
 
 // requests crud operation with the link 
 router.route("/products").get(getAllProducts);
-router.route("/admin/products").get(isAuthenticatedUser,authorizedRoles("admin"),getAdminProducts)
-router.route("/admin/product/new").post(isAuthenticatedUser, authorizedRoles("admin"), createProduct);
+router.route("/admin/products").get(isAuthenticatedUser, authorizedRoles("admin"), getAdminProducts)
+router.route("/admin/product/new").post(isAuthenticatedUser, authorizedRoles("admin"), upload.any(), createProduct);
 
-router.route("/admin/product/:id").put(isAuthenticatedUser, authorizedRoles("admin"), updateProduct).delete(isAuthenticatedUser, authorizedRoles("admin"), deleteProduct);
+router.route("/admin/product/:id").put(isAuthenticatedUser, authorizedRoles("admin"), upload.any(), updateProduct).delete(isAuthenticatedUser, authorizedRoles("admin"), deleteProduct);
 
 router.route("/product/:id").get(getProductDetails)
 

@@ -13,7 +13,7 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     let images = []
     if (typeof req.body.images === "string") {
         images.push(req.body.images)
-    } else {
+    } else if (Array.isArray(req.body.images)) {
         images = req.body.images
     }
     const imagesLink = await Promise.all(images.map(async (image) => {

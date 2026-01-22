@@ -39,7 +39,7 @@
   box-sizing: border-box;
   border: 2px solid var(--color-text);
   border-radius: 0;
-  outline: none;
+  outline: 1px solid transparent;
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
