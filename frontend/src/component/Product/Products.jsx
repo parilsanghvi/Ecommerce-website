@@ -71,7 +71,7 @@ const Products = () => {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.5 }}
                         >
-                            <Typography variant="h6" className="filter-heading">Price Range</Typography>
+                            <Typography variant="h6" className="filter-heading" id="range-slider">Price Range</Typography>
                             <Slider
                                 value={price}
                                 onChange={(event, newPrice) => setPrice(newPrice)}
@@ -121,6 +121,16 @@ const Products = () => {
                                             setCategory(cat);
                                             setCurrentPage(1);
                                         }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                setCategory(cat);
+                                                setCurrentPage(1);
+                                            }
+                                        }}
+                                        role="button"
+                                        aria-label={`Select ${cat} category`}
+                                        aria-pressed={category === cat}
                                         tabIndex="0"
                                         style={{ color: category === cat ? 'var(--color-primary)' : 'var(--color-text)' }}
                                     >
