@@ -11,7 +11,7 @@ import Home from "./component/Home/Home"
 import ProductDetails from "./component/Product/ProductDetails"
 import Products from "./component/Product/Products"
 import Search from "./component/Product/Search"
-import LoginSignup from './component/User/LoginSignUp';
+import LoginSignup from './component/User/LoginSignup';
 import store from "./store"
 import { loadUser } from "./features/userSlice"
 import Profile from "./component/User/Profile"
