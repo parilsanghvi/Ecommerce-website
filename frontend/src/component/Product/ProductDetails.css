@@ -124,10 +124,18 @@
   box-shadow: 4px 4px 0 var(--color-text);
 }
 
-.detailsBlock-3-1>button:last-child:hover {
+.detailsBlock-3-1>button:last-child:hover:not(:disabled) {
   background: var(--color-secondary);
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--color-text);
+}
+
+.detailsBlock-3-1>button:last-child:disabled {
+  background: var(--color-muted);
+  color: var(--color-bg);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .detailsBlock-4 {
