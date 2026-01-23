@@ -230,6 +230,21 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("product not found", 404))
     }
 
+    const review = product.reviews.find(
+        (rev) => rev._id.toString() === req.query.id.toString()
+    );
+
+    if (!review) {
+        return next(new ErrorHandler("Review not found", 404));
+    }
+
+    const isOwner = review.user.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+        return next(new ErrorHandler("Not authorized to delete this review", 403));
+    }
+
     const reviews = product.reviews.filter(
         (rev) => rev._id.toString() !== req.query.id.toString()
     );
