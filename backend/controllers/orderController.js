@@ -59,7 +59,8 @@ exports.myOrders = catchAsyncErrors(async (req, res, next) => {
 // get all orders --admin
 exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
     const resultPerPage = 10;
-    const ordersCountPromise = Order.countDocuments();
+    // Optimized: Use estimatedDocumentCount() for faster counting of all documents
+    const ordersCountPromise = Order.estimatedDocumentCount();
 
     const aggregatePromise = Order.aggregate([
         {
@@ -73,7 +74,8 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
     const apifeature = new Apifeatures(Order.find(), req.query)
         .pagiNation(resultPerPage);
 
-    const ordersPromise = apifeature.query;
+    // Optimized: Use lean() for faster read-only access
+    const ordersPromise = apifeature.query.lean();
 
     const [ordersCount, aggregateResult, orders] = await Promise.all([
         ordersCountPromise,
