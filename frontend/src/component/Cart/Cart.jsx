@@ -69,10 +69,17 @@ const Cart = () => {
                       onClick={() =>
                         decreaseQuantity(item.product, item.quantity)
                       }
+                      disabled={item.quantity <= 1}
+                      aria-label="Decrease quantity"
                     >
                       -
                     </button>
-                    <input type="number" value={item.quantity} readOnly />
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      readOnly
+                      aria-label="Product quantity"
+                    />
                     <button
                       onClick={() =>
                         increaseQuantity(
@@ -81,6 +88,8 @@ const Cart = () => {
                           item.stock
                         )
                       }
+                      disabled={item.stock <= item.quantity}
+                      aria-label="Increase quantity"
                     >
                       +
                     </button>

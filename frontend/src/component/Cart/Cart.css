@@ -74,6 +74,14 @@
   color: white;
 }
 
+.cartInput>button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  pointer-events: none;
+}
+
 .cartInput>input {
   border-top: 2px solid var(--color-text);
   border-bottom: 2px solid var(--color-text);
