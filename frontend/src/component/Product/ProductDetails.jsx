@@ -10,7 +10,7 @@ import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../features/cartSlice";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -93,6 +93,7 @@ const ProductDetails = () => {
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const increaseQuantity = () => {
     if ((product?.stock || 0) <= quantity) return;
@@ -104,9 +105,15 @@ const ProductDetails = () => {
     setQuantity(quantity - 1);
   };
 
-  const addToCartHandler = () => {
-    dispatch(addItemsToCart({ id, quantity }));
-    enqueueSnackbar("Item Added To Cart", { variant: "success" });
+  const addToCartHandler = async () => {
+    setAddingToCart(true);
+    const resultAction = await dispatch(addItemsToCart({ id, quantity }));
+    if (addItemsToCart.fulfilled.match(resultAction)) {
+      enqueueSnackbar("Item Added To Cart", { variant: "success" });
+    } else {
+      enqueueSnackbar("Failed to add to cart", { variant: "error" });
+    }
+    setAddingToCart(false);
   };
 
   const submitReviewToggle = () => {
@@ -205,10 +212,13 @@ const ProductDetails = () => {
                     <button onClick={increaseQuantity} disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
                   </div>
                   <button
-                    disabled={product.stock < 1 ? true : false}
+                    disabled={product.stock < 1 || addingToCart}
                     onClick={addToCartHandler}
+                    aria-busy={addingToCart}
+                    aria-label={addingToCart ? "Adding to cart" : "Add to cart"}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
                   >
-                    ADD TO CART
+                    {addingToCart ? <CircularProgress size={20} color="inherit" /> : "ADD TO CART"}
                   </button>
                 </div>
 

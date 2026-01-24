@@ -80,12 +80,12 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
         validateBeforeSave: false
     });
 
-    // Use FRONTEND_URL if available to prevent Host Header Injection
-    const host = process.env.FRONTEND_URL
+    // Use FRONTEND_URL if set to prevent Host Header Injection
+    const clientUrl = process.env.FRONTEND_URL
         ? process.env.FRONTEND_URL.replace(/\/$/, "")
         : `${req.protocol}://${req.get("host")}`;
 
-    const resetPasswordUrl = `${host}/password/reset/${resetToken}`
+    const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`
     const message = `your password reset token is :- \n\n ${resetPasswordUrl} \n\n if you have not requested this email then please ignore it`;
     try {
         await sendEmail({
@@ -130,7 +130,8 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 })
 // get user detail
 exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.user.id)
+    // Optimized: Use req.user from middleware instead of redundant DB call
+    const user = req.user;
     res.status(200).json({
         success: true,
         user
@@ -184,7 +185,8 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 })
 // get all users
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
-    const users = await User.find();
+    // Optimized: Use lean() for faster read-only performance
+    const users = await User.find().lean();
     res.status(200).json({
         success: true,
         users
@@ -192,7 +194,8 @@ exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
 })
 // admin get single user detail
 exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
+    // Optimized: Use lean() for faster read-only performance
+    const user = await User.findById(req.params.id).lean();
     if ((!user)) {
         return next(new ErrorHandler(`user doesnot exist with id: ${req.params.id}`, 400))
     }

@@ -13,3 +13,11 @@
 ## 2025-02-18 - Interactive Lists and Class Name Verification
 **Learning:** Found a typo in class name (`category-box` vs `categoryBox`) preventing styles from applying, and interactive list items lacking keyboard support.
 **Action:** When refactoring interactive lists, ensure `li` elements have `role="button"`, `tabIndex="0"`, and `onKeyDown` handlers. Always verify class names against the imported CSS file.
+
+## 2025-02-18 - Keyboard Event Handling
+**Learning:** When adding keyboard support for 'Space', always `preventDefault()` to prevent the default page scroll behavior.
+**Action:** Include `e.preventDefault()` in `onKeyDown` handlers for Space key.
+
+## 2025-02-18 - Disabled Button Styling
+**Learning:** Standard browser `disabled` attribute might not be enough for visual feedback in this design system, especially for small icon-only buttons.
+**Action:** When adding `disabled` attributes, explicitly style `:disabled` state in the component's CSS to ensure users perceive the element as non-interactive (e.g., `opacity: 0.5`, `cursor: not-allowed`).

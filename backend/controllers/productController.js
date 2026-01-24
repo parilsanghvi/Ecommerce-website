@@ -42,7 +42,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 // get all products
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     const resultPerPage = 8;
-    const productsCount = await Product.countDocuments();
+    // Optimized: Use estimatedDocumentCount() for faster counting of all documents
+    const productsCount = await Product.estimatedDocumentCount();
 
     const apifeature = new Apifeatures(Product.find(), req.query)
         .search()
@@ -52,7 +53,8 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
     apifeature.pagiNation(resultPerPage);
 
-    const products = await apifeature.query;
+    // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
+    const products = await apifeature.query.lean();
 
     res.status(200).json({
         success: true,
@@ -227,6 +229,21 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
 
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
+    }
+
+    const review = product.reviews.find(
+        (rev) => rev._id.toString() === req.query.id.toString()
+    );
+
+    if (!review) {
+        return next(new ErrorHandler("Review not found", 404));
+    }
+
+    const isOwner = review.user.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+        return next(new ErrorHandler("Not authorized to delete this review", 403));
     }
 
     const reviews = product.reviews.filter(
