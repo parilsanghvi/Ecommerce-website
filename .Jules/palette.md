@@ -17,3 +17,7 @@
 ## 2025-02-18 - Keyboard Event Handling
 **Learning:** When adding keyboard support for 'Space', always `preventDefault()` to prevent the default page scroll behavior.
 **Action:** Include `e.preventDefault()` in `onKeyDown` handlers for Space key.
+
+## 2025-02-18 - Disabled Button Styling
+**Learning:** Standard browser `disabled` attribute might not be enough for visual feedback in this design system, especially for small icon-only buttons.
+**Action:** When adding `disabled` attributes, explicitly style `:disabled` state in the component's CSS to ensure users perceive the element as non-interactive (e.g., `opacity: 0.5`, `cursor: not-allowed`).
