@@ -42,7 +42,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 // get all products
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     const resultPerPage = 8;
-    const productsCount = await Product.countDocuments();
+    // Optimized: Use estimatedDocumentCount() for faster counting of all documents
+    const productsCount = await Product.estimatedDocumentCount();
 
     const apifeature = new Apifeatures(Product.find(), req.query)
         .search()
