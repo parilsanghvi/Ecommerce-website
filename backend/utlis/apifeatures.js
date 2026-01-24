@@ -1,6 +1,7 @@
-const {
-    json
-} = require("express/lib/response");
+// Helper function to escape regex characters
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 class Apifeatures {
     constructor(query, querystr) {
@@ -10,7 +11,7 @@ class Apifeatures {
     search() {
         const keyword = this.querystr.keyword ? {
             name: {
-                $regex: this.querystr.keyword,
+                $regex: escapeRegex(this.querystr.keyword),
                 $options: "i",
             }
         } : {}
@@ -46,7 +47,7 @@ class Apifeatures {
         // Case insensitive filter for category
         if (queryObj.category && typeof queryObj.category === 'string') {
             queryObj.category = {
-                $regex: queryObj.category,
+                $regex: escapeRegex(queryObj.category),
                 $options: "i",
             };
         }
