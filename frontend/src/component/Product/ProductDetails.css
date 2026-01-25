@@ -257,6 +257,14 @@
   border-color: var(--color-primary);
 }
 
+.characterCount {
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 0.5rem;
+}
+
 .submitReview {
   background: var(--color-surface);
   border: 2px solid var(--color-text);
