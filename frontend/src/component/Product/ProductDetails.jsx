@@ -262,6 +262,7 @@ const ProductDetails = () => {
                 onChange={(e, newValue) => setRating(newValue)}
                 value={rating}
                 size="large"
+                aria-label="Rating"
                 sx={{
                   '& .MuiRating-iconFilled': { color: 'var(--color-primary)' },
                   '& .MuiRating-iconEmpty': { color: 'var(--color-muted)' }
@@ -274,7 +275,9 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                aria-label="Review Description"
               ></textarea>
+              <p className="characterCount">{comment.length} characters</p>
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>

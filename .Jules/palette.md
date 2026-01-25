@@ -21,3 +21,7 @@
 ## 2025-02-18 - Disabled Button Styling
 **Learning:** Standard browser `disabled` attribute might not be enough for visual feedback in this design system, especially for small icon-only buttons.
 **Action:** When adding `disabled` attributes, explicitly style `:disabled` state in the component's CSS to ensure users perceive the element as non-interactive (e.g., `opacity: 0.5`, `cursor: not-allowed`).
+
+## 2025-02-19 - Text Area Feedback
+**Learning:** Long-form inputs like review textareas often lack immediate feedback on length, leading to user uncertainty. Also, they frequently miss accessible labels when inside dialogs.
+**Action:** Always pair textareas with a character count or limit indicator, and ensure they have an explicit `aria-label` or `<label>` element, especially in modals/dialogs where context might be visually obvious but programmatically hidden.
