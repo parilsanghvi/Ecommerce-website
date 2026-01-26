@@ -130,6 +130,24 @@
   box-shadow: 6px 6px 0 var(--color-text);
 }
 
+.submitReview:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.detailsBlock-3-1-1 button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  z-index: 1;
+}
+
+.character-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+}
+
 .detailsBlock-3-1>button:last-child:disabled {
   background: var(--color-muted);
   color: var(--color-bg);
