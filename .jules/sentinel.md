@@ -24,3 +24,8 @@
 **Vulnerability:** The `forgotPassword` controller used `req.get("host")` to construct the password reset link. This allows an attacker to inject a malicious Host header, potentially causing the victim to receive a reset link pointing to an attacker-controlled domain.
 **Learning:** Trusting `Host` header for generating absolute URLs is insecure, especially for sensitive actions like password resets.
 **Prevention:** Always use a trusted server-side configuration variable (like `FRONTEND_URL`) to construct absolute URLs. Implement a fallback only if strictly necessary and understood.
+
+## 2025-02-18 - Authentication Bypass for Deleted Users
+**Vulnerability:** The `isAuthenticatedUser` middleware successfully verified the JWT but failed to check if the corresponding user still existed in the database (`req.user` became `null`). This allowed deleted users (with unexpired tokens) to bypass authentication and potentially crash the server in subsequent steps.
+**Learning:** `findById` returning `null` (success) is distinct from it throwing an error. Authentication logic must explicitly handle the "valid token, missing user" state.
+**Prevention:** Always assert `if (!user)` immediately after database lookups in authentication middleware.
