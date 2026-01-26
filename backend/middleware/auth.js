@@ -14,6 +14,10 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
     req.user = await User.findById(decodedData.id);
 
+    if (!req.user) {
+        return next(new ErrorHandler("User no longer exists", 401));
+    }
+
     next();
 });
 exports.authorizedRoles = (...roles) => {
