@@ -1,12 +1,11 @@
 import './App.css';
 import "@fontsource/archivo-black";
 import "@fontsource/space-mono";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import Header from "./component/layout/Header/Header"
 import Footer from "./component/layout/Footer/Footer"
 import Loader from "./component/layout/Loader";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React from 'react';
 import Home from "./component/Home/Home"
 import ProductDetails from "./component/Product/ProductDetails"
 import Products from "./component/Product/Products"
@@ -30,18 +29,20 @@ import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./component/Cart/OrderSuccess";
 import MyOrders from "./component/Order/MyOrders"
 import OrderDetails from "./component/Order/OrderDetails"
-import Dashboard from "./component/Admin/Dashboard";
-import ProductList from "./component/Admin/ProductList";
-import NewProduct from "./component/Admin/NewProduct";
-import UpdateProduct from "./component/Admin/UpdateProduct";
-import OrderList from "./component/Admin/OrderList";
-import ProcessOrder from "./component/Admin/ProcessOrder";
-import UsersList from "./component/Admin/UsersList";
-import UpdateUser from "./component/Admin/UpdateUser";
-import ProductReviews from "./component/Admin/ProductReviews";
 import Contact from "./component/layout/Contact/Contact";
 import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
+
+// Lazy load Admin components
+const Dashboard = React.lazy(() => import("./component/Admin/Dashboard"));
+const ProductList = React.lazy(() => import("./component/Admin/ProductList"));
+const NewProduct = React.lazy(() => import("./component/Admin/NewProduct"));
+const UpdateProduct = React.lazy(() => import("./component/Admin/UpdateProduct"));
+const OrderList = React.lazy(() => import("./component/Admin/OrderList"));
+const ProcessOrder = React.lazy(() => import("./component/Admin/ProcessOrder"));
+const UsersList = React.lazy(() => import("./component/Admin/UsersList"));
+const UpdateUser = React.lazy(() => import("./component/Admin/UpdateUser"));
+const ProductReviews = React.lazy(() => import("./component/Admin/ProductReviews"));
 
 function App() {
 
@@ -63,63 +64,64 @@ function App() {
   return (
     <Router>
       <Header />
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/product/:id" element={<ProductDetails />} />
+          <Route exact path="/products" element={<Products />} />
+          <Route path="/products/:keyword" element={<Products />} />
+          <Route exact path="/search" element={<Search />} />
 
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/product/:id" element={<ProductDetails />} />
-        <Route exact path="/products" element={<Products />} />
-        <Route path="/products/:keyword" element={<Products />} />
-        <Route exact path="/search" element={<Search />} />
+          <Route element={<ProtectedRoute />}>
+            <Route exact path="/account" element={<Profile />} />
+            <Route exact path="/me/update" element={<UpdateProfile />} />
+            <Route exact path="/password/update" element={<UpdatePassword />} />
+            <Route exact path="/shipping" element={<Shipping />} />
+            <Route exact path="/success" element={<OrderSuccess />} />
+            <Route exact path="/orders" element={<MyOrders />} />
+            <Route exact path="/order/confirm" element={<ConfirmOrder />} />
+            <Route exact path="/order/:id" element={<OrderDetails />} />
+          </Route>
 
-        <Route element={<ProtectedRoute />}>
-          <Route exact path="/account" element={<Profile />} />
-          <Route exact path="/me/update" element={<UpdateProfile />} />
-          <Route exact path="/password/update" element={<UpdatePassword />} />
-          <Route exact path="/shipping" element={<Shipping />} />
-          <Route exact path="/success" element={<OrderSuccess />} />
-          <Route exact path="/orders" element={<MyOrders />} />
-          <Route exact path="/order/confirm" element={<ConfirmOrder />} />
-          <Route exact path="/order/:id" element={<OrderDetails />} />
-        </Route>
+          <Route exact path="/password/forgot" element={<ForgotPassword />} />
+          <Route exact path="/password/reset/:token" element={<ResetPassword />} />
+          <Route exact path="/contact" element={<Contact />} />
+          <Route exact path="/login" element={<LoginSignup />} />
+          <Route exact path="/about" element={<About />} />
+          <Route exact path="/cart" element={<Cart />} />
 
-        <Route exact path="/password/forgot" element={<ForgotPassword />} />
-        <Route exact path="/password/reset/:token" element={<ResetPassword />} />
-        <Route exact path="/contact" element={<Contact />} />
-        <Route exact path="/login" element={<LoginSignup />} />
-        <Route exact path="/about" element={<About />} />
-        <Route exact path="/cart" element={<Cart />} />
-
-        <Route
-          path="/process/payment"
-          element={
-            stripeApiKey ? (
-              <Elements stripe={loadStripe(stripeApiKey)}>
+          <Route
+            path="/process/payment"
+            element={
+              stripeApiKey ? (
+                <Elements stripe={loadStripe(stripeApiKey)}>
+                  <ProtectedRoute>
+                    <Payment />
+                  </ProtectedRoute>
+                </Elements>
+              ) : (
                 <ProtectedRoute>
-                  <Payment />
+                  <Loader />
                 </ProtectedRoute>
-              </Elements>
-            ) : (
-              <ProtectedRoute>
-                <Loader />
-              </ProtectedRoute>
-            )
-          }
-        />
+              )
+            }
+          />
 
-        <Route element={<ProtectedRoute isAdmin={true} />}>
-          <Route exact path="/admin/dashboard" element={<Dashboard />} />
-          <Route exact path="/admin/products" element={<ProductList />} />
-          <Route exact path="/admin/product" element={<NewProduct />} />
-          <Route exact path="/admin/orders" element={<OrderList />} />
-          <Route exact path="/admin/product/:id" element={<UpdateProduct />} />
-          <Route exact path="/admin/order/:id" element={<ProcessOrder />} />
-          <Route exact path="/admin/users" element={<UsersList />} />
-          <Route exact path="/admin/user/:id" element={<UpdateUser />} />
-          <Route exact path="/admin/reviews" element={<ProductReviews />} />
-        </Route>
+          <Route element={<ProtectedRoute isAdmin={true} />}>
+            <Route exact path="/admin/dashboard" element={<Dashboard />} />
+            <Route exact path="/admin/products" element={<ProductList />} />
+            <Route exact path="/admin/product" element={<NewProduct />} />
+            <Route exact path="/admin/orders" element={<OrderList />} />
+            <Route exact path="/admin/product/:id" element={<UpdateProduct />} />
+            <Route exact path="/admin/order/:id" element={<ProcessOrder />} />
+            <Route exact path="/admin/users" element={<UsersList />} />
+            <Route exact path="/admin/user/:id" element={<UpdateUser />} />
+            <Route exact path="/admin/reviews" element={<ProductReviews />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </Router>
 
