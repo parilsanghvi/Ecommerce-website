@@ -27,11 +27,13 @@ const ProductDetails = () => {
   const NextArrow = (props) => {
     const { className, style, onClick } = props;
     return (
-      <NavigateNextIcon
+      <button
         className={className}
         style={{
           ...style,
-          display: "block",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           color: "var(--color-primary)",
           background: "var(--color-surface)",
           borderRadius: "50%",
@@ -39,23 +41,29 @@ const ProductDetails = () => {
           zIndex: 2,
           width: "40px",
           height: "40px",
-          right: "10px"
+          right: "10px",
+          cursor: "pointer",
+          padding: 0
         }}
         onClick={onClick}
-        role="button"
         aria-label="Next Slide"
-      />
+        type="button"
+      >
+        <NavigateNextIcon />
+      </button>
     );
   }
 
   const PrevArrow = (props) => {
     const { className, style, onClick } = props;
     return (
-      <NavigateBeforeIcon
+      <button
         className={className}
         style={{
           ...style,
-          display: "block",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           color: "var(--color-primary)",
           background: "var(--color-surface)",
           borderRadius: "50%",
@@ -63,12 +71,16 @@ const ProductDetails = () => {
           zIndex: 2,
           width: "40px",
           height: "40px",
-          left: "10px"
+          left: "10px",
+          cursor: "pointer",
+          padding: 0
         }}
         onClick={onClick}
-        role="button"
         aria-label="Previous Slide"
-      />
+        type="button"
+      >
+        <NavigateBeforeIcon />
+      </button>
     );
   }
 
@@ -274,6 +286,7 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                aria-label="Review comment"
               ></textarea>
             </DialogContent>
             <DialogActions>
