@@ -99,6 +99,14 @@
   color: black;
 }
 
+.detailsBlock-3-1-1 button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  pointer-events: none;
+}
+
 .detailsBlock-3-1-1 input {
   width: 50px;
   height: 40px;
