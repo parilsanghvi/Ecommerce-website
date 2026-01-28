@@ -11,6 +11,8 @@ let adminCookie;
 let userCookie;
 let testProduct;
 
+jest.setTimeout(30000);
+
 jest.mock('cloudinary', () => ({
     v2: {
         config: jest.fn(),
@@ -332,6 +334,9 @@ describe('Admin Integration Tests', () => {
 
                 const updated = await Order.findById(testOrder._id);
                 expect(updated.orderStatus).toBe('Shipped');
+
+                const updatedProduct = await Product.findById(testProduct._id);
+                expect(updatedProduct.stock).toBe(testProduct.stock - 2);
             });
         });
 
