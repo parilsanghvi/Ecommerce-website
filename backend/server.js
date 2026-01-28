@@ -23,8 +23,9 @@ cloudinary.config({
 });
 
 // takes routes from app and listens on port
-const server = app.listen(process.env.PORT, () => {
-    console.log(`server is working on http://localhost:${process.env.PORT}`);
+const PORT = process.env.PORT || 4000;
+const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`server is working on http://localhost:${PORT}`);
 })
 // unhandeled promise rejection
 process.on("unhandledRejection", err => {
