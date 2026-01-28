@@ -14,6 +14,10 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
     req.user = await User.findById(decodedData.id);
 
+    if (!req.user) {
+        return next(new ErrorHandler("User not found", 401));
+    }
+
     next();
 });
 exports.authorizedRoles = (...roles) => {
