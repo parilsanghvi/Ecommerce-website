@@ -94,6 +94,7 @@ const ProductDetails = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [addingToCart, setAddingToCart] = useState(false);
+  const MAX_REVIEW_LENGTH = 1000;
 
   const increaseQuantity = () => {
     if ((product?.stock || 0) <= quantity) return;
@@ -274,13 +275,37 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                maxLength={MAX_REVIEW_LENGTH}
+                aria-label="Review comment"
+                aria-describedby="review-char-limit"
               ></textarea>
+              <p
+                id="review-char-limit"
+                style={{
+                  textAlign: 'right',
+                  fontSize: '0.8rem',
+                  color: comment.length >= MAX_REVIEW_LENGTH ? 'var(--color-error)' : 'var(--color-muted)',
+                  marginTop: '4px',
+                  fontFamily: 'var(--font-body)'
+                }}
+              >
+                {comment.length}/{MAX_REVIEW_LENGTH} characters
+              </p>
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
                 Cancel
               </Button>
-              <Button onClick={reviewSubmitHandler} sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+              <Button
+                onClick={reviewSubmitHandler}
+                disabled={!rating || !comment.trim() || comment.length > MAX_REVIEW_LENGTH}
+                sx={{
+                  color: 'var(--color-primary)',
+                  fontWeight: 'bold',
+                  opacity: (!rating || !comment.trim()) ? 0.5 : 1,
+                  cursor: (!rating || !comment.trim()) ? 'not-allowed' : 'pointer'
+                }}
+              >
                 Submit
               </Button>
             </DialogActions>
