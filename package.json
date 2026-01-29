@@ -8,7 +8,7 @@
     "test:backend": "jest --config backend/jest.config.js",
     "start": "node backend/server.js",
     "dev": "node --watch --env-file=backend/config/config.env backend/server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend"
+    "heroku-postbuild": "cd frontend && pnpm install --production=false && pnpm run build"
   },
   "author": "",
   "license": "ISC",
