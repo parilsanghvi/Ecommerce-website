@@ -274,13 +274,33 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                aria-label="Review comment"
+                maxLength={1000}
+                aria-describedby="review-char-count"
               ></textarea>
+              <p
+                id="review-char-count"
+                className="characterCount"
+              >
+                {comment.length}/1000 characters
+              </p>
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
                 Cancel
               </Button>
-              <Button onClick={reviewSubmitHandler} sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+              <Button
+                onClick={reviewSubmitHandler}
+                disabled={rating === 0 || comment.trim().length === 0}
+                sx={{
+                  color: 'var(--color-primary)',
+                  fontWeight: 'bold',
+                  '&.Mui-disabled': {
+                    color: 'var(--color-muted)',
+                    opacity: 0.5
+                  }
+                }}
+              >
                 Submit
               </Button>
             </DialogActions>

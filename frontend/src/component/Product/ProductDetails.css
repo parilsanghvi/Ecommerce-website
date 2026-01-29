@@ -279,3 +279,11 @@
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--color-text);
 }
+
+.characterCount {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 4px;
+  font-family: var(--font-body);
+}
