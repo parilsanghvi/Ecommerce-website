@@ -117,8 +117,8 @@ const LoginSignup = () => {
                         <div className='LoginSignUpBox'>
                             <div>
                                 <div className='login_signUp_toggle'>
-                                    <p onClick={(e) => switchTabs(e, "login")}>Login</p>
-                                    <p onClick={(e) => switchTabs(e, "register")}>Register</p>
+                                    <button className="toggle-btn" onClick={(e) => switchTabs(e, "login")}>Login</button>
+                                    <button className="toggle-btn" onClick={(e) => switchTabs(e, "register")}>Register</button>
                                 </div>
                                 <button ref={switcherTab}></button>
                             </div>
@@ -134,6 +134,7 @@ const LoginSignup = () => {
                                     <input
                                         type="email"
                                         placeholder="Email"
+                                        aria-label="Login Email"
                                         required
                                         value={loginEmail}
                                         onChange={(e) => {
@@ -146,6 +147,7 @@ const LoginSignup = () => {
                                     <LockOpenIcon />
                                     <input type="password"
                                         placeholder="Password"
+                                        aria-label="Login Password"
                                         required
                                         value={loginPassword}
                                         onChange={(e) => {
@@ -163,6 +165,7 @@ const LoginSignup = () => {
                                     <input
                                         type="text"
                                         placeholder="Name"
+                                        aria-label="Name"
                                         required
                                         name="name"
                                         value={name}
@@ -174,6 +177,7 @@ const LoginSignup = () => {
                                     <input
                                         type="email"
                                         placeholder="Email"
+                                        aria-label="Email"
                                         required
                                         name='email'
                                         value={email}
@@ -185,6 +189,7 @@ const LoginSignup = () => {
                                     <input
                                         type="password"
                                         placeholder="Password"
+                                        aria-label="Password"
                                         required
                                         name='password'
                                         value={password}
@@ -197,6 +202,7 @@ const LoginSignup = () => {
                                         type="file"
                                         name='avatar'
                                         accept='image/*'
+                                        aria-label="Avatar Upload"
                                         onChange={registerDataChange}
                                     />
                                 </div>
