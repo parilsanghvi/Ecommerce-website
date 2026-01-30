@@ -24,3 +24,8 @@
 **Vulnerability:** The `forgotPassword` controller used `req.get("host")` to construct the password reset link. This allows an attacker to inject a malicious Host header, potentially causing the victim to receive a reset link pointing to an attacker-controlled domain.
 **Learning:** Trusting `Host` header for generating absolute URLs is insecure, especially for sensitive actions like password resets.
 **Prevention:** Always use a trusted server-side configuration variable (like `FRONTEND_URL`) to construct absolute URLs. Implement a fallback only if strictly necessary and understood.
+
+## 2025-02-18 - Zombie User Access via Valid JWT
+**Vulnerability:** `isAuthenticatedUser` middleware retrieved the user from DB but failed to check if the result was `null`. This allowed deleted users with valid tokens to bypass authentication checks and potentially crash the server or access protected routes (where `req.user` wasn't checked).
+**Learning:** Trusting that a valid JWT implies a valid user in the database is a dangerous assumption. Middleware must always validate the existence of the entity it retrieves.
+**Prevention:** Always check for `null` after `User.findById` or similar DB calls in authentication middleware.
