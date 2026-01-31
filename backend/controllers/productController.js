@@ -180,6 +180,11 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         comment,
         productId
     } = req.body
+
+    if (rating < 0 || rating > 5) {
+        return next(new ErrorHandler("Rating must be between 0 and 5", 400));
+    }
+
     const review = {
         user: req.user._id,
         name: req.user.name,
