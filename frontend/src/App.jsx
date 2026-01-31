@@ -30,16 +30,18 @@ import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./component/Cart/OrderSuccess";
 import MyOrders from "./component/Order/MyOrders"
 import OrderDetails from "./component/Order/OrderDetails"
-import Dashboard from "./component/Admin/Dashboard";
-import ProductList from "./component/Admin/ProductList";
-import NewProduct from "./component/Admin/NewProduct";
-import UpdateProduct from "./component/Admin/UpdateProduct";
-import OrderList from "./component/Admin/OrderList";
-import ProcessOrder from "./component/Admin/ProcessOrder";
-import UsersList from "./component/Admin/UsersList";
-import UpdateUser from "./component/Admin/UpdateUser";
-import ProductReviews from "./component/Admin/ProductReviews";
 import Contact from "./component/layout/Contact/Contact";
+
+// Lazy load Admin components for performance
+const Dashboard = React.lazy(() => import("./component/Admin/Dashboard"));
+const ProductList = React.lazy(() => import("./component/Admin/ProductList"));
+const NewProduct = React.lazy(() => import("./component/Admin/NewProduct"));
+const UpdateProduct = React.lazy(() => import("./component/Admin/UpdateProduct"));
+const OrderList = React.lazy(() => import("./component/Admin/OrderList"));
+const ProcessOrder = React.lazy(() => import("./component/Admin/ProcessOrder"));
+const UsersList = React.lazy(() => import("./component/Admin/UsersList"));
+const UpdateUser = React.lazy(() => import("./component/Admin/UpdateUser"));
+const ProductReviews = React.lazy(() => import("./component/Admin/ProductReviews"));
 import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
 
@@ -63,9 +65,9 @@ function App() {
   return (
     <Router>
       <Header />
-
-      <Routes>
-        <Route exact path="/" element={<Home />} />
+      <React.Suspense fallback={<Loader />}>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
         <Route exact path="/product/:id" element={<ProductDetails />} />
         <Route exact path="/products" element={<Products />} />
         <Route path="/products/:keyword" element={<Products />} />
@@ -119,7 +121,8 @@ function App() {
         </Route>
 
         <Route path="*" element={<NotFound />} />
-      </Routes>
+        </Routes>
+      </React.Suspense>
       <Footer />
     </Router>
 
