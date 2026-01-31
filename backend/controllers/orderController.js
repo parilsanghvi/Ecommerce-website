@@ -123,11 +123,15 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 });
 
 async function updateStock(id, quantity) {
-    const product = await Product.findById(id);
-    product.stock = product.stock - quantity;
-    await product.save({
-        validateBeforeSave: false
-    })
+    // Security Fix: Use atomic update with check for sufficient stock to prevent race conditions and negative inventory
+    const result = await Product.updateOne(
+        { _id: id, stock: { $gte: quantity } },
+        { $inc: { stock: -quantity } }
+    );
+
+    if (result.modifiedCount === 0) {
+        throw new ErrorHandler(`Insufficient stock for product ${id}`, 400);
+    }
 }
 
 // delete order --admin
