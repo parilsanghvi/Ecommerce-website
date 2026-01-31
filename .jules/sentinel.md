@@ -25,7 +25,7 @@
 **Learning:** Trusting `Host` header for generating absolute URLs is insecure, especially for sensitive actions like password resets.
 **Prevention:** Always use a trusted server-side configuration variable (like `FRONTEND_URL`) to construct absolute URLs. Implement a fallback only if strictly necessary and understood.
 
-## 2025-02-18 - Authentication Bypass for Deleted Users
-**Vulnerability:** The `isAuthenticatedUser` middleware successfully verified the JWT but failed to check if the corresponding user still existed in the database (`req.user` became `null`). This allowed deleted users (with unexpired tokens) to bypass authentication and potentially crash the server in subsequent steps.
-**Learning:** `findById` returning `null` (success) is distinct from it throwing an error. Authentication logic must explicitly handle the "valid token, missing user" state.
-**Prevention:** Always assert `if (!user)` immediately after database lookups in authentication middleware.
+## 2025-02-21 - Authorization Bypass via Deleted User
+**Vulnerability:** The `isAuthenticatedUser` middleware verified the JWT but failed to check if the user actually exists in the database. Deleted users with valid (unexpired) tokens could still access protected routes, leading to potential crashes or unauthorized access.
+**Learning:** A valid token proves *who* signed it, not that the user *still exists*. State changes (deletion, ban) must be checked against the database.
+**Prevention:** Always validate that the user retrieved from the database (via ID in token) exists before attaching it to the request.

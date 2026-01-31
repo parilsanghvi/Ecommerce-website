@@ -51,39 +51,38 @@ afterEach(async () => {
     jest.clearAllMocks();
 });
 
-describe('Deleted User Authentication', () => {
-    it('should return 401 when accessing protected route with token of deleted user', async () => {
-        // 1. Create User
+describe('Deleted User Access Security Test', () => {
+    it('should deny access to protected route if user is deleted but token is valid', async () => {
+        // 1. Register a user
         const userData = {
             name: 'Test User',
             email: 'test@example.com',
             password: 'password123',
-            avatar: { public_id: 'test_id', url: 'test_url' }
+            avatar: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
         };
-        const user = await User.create(userData);
 
-        // 2. Login
+        await request(app).post('/api/v1/register').send(userData);
+
+        // 2. Login to get token
         const loginRes = await request(app)
             .post('/api/v1/login')
             .send({ email: 'test@example.com', password: 'password123' });
 
-        expect(loginRes.status).toBe(200);
-        const cookie = loginRes.headers['set-cookie'];
-        expect(cookie).toBeDefined();
+        const token = loginRes.headers['set-cookie'];
+        expect(token).toBeDefined();
 
-        // 3. Delete User
-        await User.deleteOne({ _id: user._id });
+        // 3. Delete the user from DB manually
+        await User.deleteOne({ email: 'test@example.com' });
 
-        // 4. Access Protected Route (/api/v1/me)
-        const meRes = await request(app)
+        // 4. Attempt to access protected route (/api/v1/me)
+        const response = await request(app)
             .get('/api/v1/me')
-            .set('Cookie', cookie);
+            .set('Cookie', token);
 
-        // 5. Expect 401 (Currently fails/crashes/500s)
-        // Note: Without the fix, this might return 500 or crash.
-        // We assert 401 because that's what we WANT.
-        expect(meRes.status).toBe(401);
-        // The message check is optional but good practice
-        // expect(meRes.body.message).toMatch(/user not found|login/i);
+        // 5. Verification
+        // Expect failure with 401 once fixed
+        expect(response.status).toBe(401);
+        expect(response.body.success).toBe(false);
+        expect(response.body.message).toBe("User no longer exists");
     });
 });
