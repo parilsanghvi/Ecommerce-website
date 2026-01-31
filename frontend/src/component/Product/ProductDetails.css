@@ -146,21 +146,6 @@
   padding-top: 2rem;
 }
 
-.submitReview {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  padding: 12px 24px;
-  margin-top: 2rem;
-  font-family: var(--font-heading);
-  cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-
-.submitReview:hover {
-  background: var(--color-surface);
-  border-color: var(--color-primary);
-}
 
 .reviewsHeading {
   text-align: center;
