@@ -92,6 +92,12 @@
   color: #0a0a0a !important;
 }
 
+.paginationBox {
+  display: flex;
+  justify-content: center;
+  margin: 2vmax;
+}
+
 @media screen and (max-width: 600px) {
   .productListTable div {
     font: 300 4vw var(--font-body);
