@@ -21,3 +21,7 @@
 ## 2025-02-18 - Disabled Button Styling
 **Learning:** Standard browser `disabled` attribute might not be enough for visual feedback in this design system, especially for small icon-only buttons.
 **Action:** When adding `disabled` attributes, explicitly style `:disabled` state in the component's CSS to ensure users perceive the element as non-interactive (e.g., `opacity: 0.5`, `cursor: not-allowed`).
+
+## 2026-02-01 - Playwright and MUI Rating
+**Learning:** Playwright can struggle interacting with Material UI Rating components because the `<label>` elements often overlay the actual inputs, and can be "intercepted" by other elements or viewport issues.
+**Action:** When testing MUI Rating components, use `force=True` on clicks or target the specific interactive elements (like labels or icons) directly, and consider viewport size.
