@@ -123,11 +123,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 });
 
 async function updateStock(id, quantity) {
-    const product = await Product.findById(id);
-    product.stock = product.stock - quantity;
-    await product.save({
-        validateBeforeSave: false
-    })
+    await Product.updateOne({ _id: id }, { $inc: { stock: -quantity } });
 }
 
 // delete order --admin
