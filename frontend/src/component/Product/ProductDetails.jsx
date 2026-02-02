@@ -243,7 +243,7 @@ const ProductDetails = () => {
           <h3 className="reviewsHeading">REVIEWS</h3>
 
           <Dialog
-            aria-labelledby="simple-dialog-title"
+            aria-labelledby="submit-review-dialog-title"
             open={open}
             onClose={submitReviewToggle}
             sx={{
@@ -256,7 +256,7 @@ const ProductDetails = () => {
               }
             }}
           >
-            <DialogTitle sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>Submit Review</DialogTitle>
+            <DialogTitle id="submit-review-dialog-title" sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>Submit Review</DialogTitle>
             <DialogContent className="submitDialog">
               <Rating
                 onChange={(e, newValue) => setRating(newValue)}
@@ -274,13 +274,18 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                aria-label="Review comment"
               ></textarea>
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
                 Cancel
               </Button>
-              <Button onClick={reviewSubmitHandler} sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+              <Button
+                onClick={reviewSubmitHandler}
+                className="submitDialogBtn"
+                disabled={rating <= 0 || !comment || comment.trim() === ""}
+              >
                 Submit
               </Button>
             </DialogActions>
