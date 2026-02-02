@@ -71,39 +71,40 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findOne({
         email: req.body.email,
     })
-    if (!user) {
-        return next(new ErrorHandler("user not found", 404))
-    }
-    // get resetPassword Token
-    const resetToken = await user.getResetPasswordToken();
-    await user.save({
-        validateBeforeSave: false
-    });
-    // Use FRONTEND_URL if set to prevent Host Header Injection
-    const clientUrl = process.env.FRONTEND_URL
-        ? process.env.FRONTEND_URL.replace(/\/$/, "")
-        : `${req.protocol}://${req.get("host")}`;
-
-    const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`
-    const message = `your password reset token is :- \n\n ${resetPasswordUrl} \n\n if you have not requested this email then please ignore it`;
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: `Ecommerce Password recovery`,
-            message,
-        })
-        res.status(200).json({
-            success: true,
-            message: `email sent to ${user.email} successfully`,
-        })
-    } catch (error) {
-        user.resetPasswordToken = undefined
-        user.resetPasswordExpire = undefined
+    if (user) {
+        // get resetPassword Token
+        const resetToken = await user.getResetPasswordToken();
         await user.save({
             validateBeforeSave: false
         });
-        return next(new ErrorHandler(error.message, 500))
+        // Use FRONTEND_URL if set to prevent Host Header Injection
+        const clientUrl = process.env.FRONTEND_URL
+            ? process.env.FRONTEND_URL.replace(/\/$/, "")
+            : `${req.protocol}://${req.get("host")}`;
+
+        const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`
+        const message = `your password reset token is :- \n\n ${resetPasswordUrl} \n\n if you have not requested this email then please ignore it`;
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: `Ecommerce Password recovery`,
+                message,
+            })
+        } catch (error) {
+            user.resetPasswordToken = undefined
+            user.resetPasswordExpire = undefined
+            await user.save({
+                validateBeforeSave: false
+            });
+            // We log the error but return success to avoid leaking user existence
+            console.log(error.message);
+        }
     }
+
+    res.status(200).json({
+        success: true,
+        message: `If an account with that email exists, we have sent a password reset link.`,
+    })
 })
 // reset password
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
