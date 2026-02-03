@@ -332,6 +332,11 @@ describe('Admin Integration Tests', () => {
 
                 const updated = await Order.findById(testOrder._id);
                 expect(updated.orderStatus).toBe('Shipped');
+
+                // Verify stock decrement
+                const product = await Product.findById(testProduct._id);
+                // Initial stock was 10, order quantity is 2, so new stock should be 8
+                expect(product.stock).toBe(8);
             });
         });
 
