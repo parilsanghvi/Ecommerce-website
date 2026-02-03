@@ -123,7 +123,6 @@ const ProductDetails = () => {
   const reviewSubmitHandler = () => {
     const myForm = { rating, comment, productId: id };
     dispatch(newReview(myForm));
-    setOpen(false);
   };
 
   useEffect(() => {
@@ -142,12 +141,13 @@ const ProductDetails = () => {
     if (success) {
       enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch(newReviewReset());
+      setOpen(false);
     }
   }, [dispatch, error, reviewError, success, enqueueSnackbar]);
 
   return (
     <Fragment>
-      {loading || !product ? (
+      {!product || Object.keys(product).length === 0 ? (
         <Loader />
       ) : (
         <Fragment>
@@ -256,7 +256,7 @@ const ProductDetails = () => {
               }
             }}
           >
-            <DialogTitle sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>Submit Review</DialogTitle>
+            <DialogTitle id="simple-dialog-title" sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>Submit Review</DialogTitle>
             <DialogContent className="submitDialog">
               <Rating
                 onChange={(e, newValue) => setRating(newValue)}
@@ -274,13 +274,19 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                aria-label="Review comment"
               ></textarea>
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
                 Cancel
               </Button>
-              <Button onClick={reviewSubmitHandler} sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+              <Button
+                onClick={reviewSubmitHandler}
+                sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}
+                disabled={loading || rating === 0 || comment.trim() === ""}
+                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
+              >
                 Submit
               </Button>
             </DialogActions>

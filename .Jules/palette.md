@@ -1,23 +1,7 @@
-## 2025-02-18 - Accessibility Anti-Patterns
-**Learning:** This codebase implements interactive tabs using `<p>` tags with `onClick` handlers, which makes them inaccessible to keyboard users.
-**Action:** When working on navigation or toggle components, check for semantic HTML usage. If `div` or `p` tags are used for buttons, upgrade them to `<button>` or add `role="button"`, `tabIndex="0"`, and `onKeyDown` handlers to ensure accessibility.
+## 2024-05-22 - Shared Loading State UX Anti-Pattern
+**Learning:** This app uses a single `loading` state in Redux slices for multiple async actions (e.g., fetching product details AND submitting a review). This causes jarring UX where the entire page replaced by a loader when performing a sub-action.
+**Action:** When working on "Product" or similar slices, check if `loading` is used for the main content render. If so, avoid using the global `loading` state for button feedback if it triggers a full-page unmount. Instead, use local state or refine the render condition to only show full-page loader if data is missing (`!product`).
 
-## 2025-02-18 - Component-Specific CSS
-**Learning:** This codebase uses CSS files associated with specific components (e.g. `Products.css` for `Products.js`). When adding new UI states (like empty states), it's better to add a new class to the existing component CSS file rather than using inline styles, to maintain separation of concerns and keep the JSX clean.
-**Action:** Always check for an existing `.css` file for the component and append new styles there.
-
-## 2025-02-18 - Form Input Labeling
-**Learning:** Found input fields (specifically search) relying solely on placeholders, which is a common accessibility failure.
-**Action:** Always ensure inputs have an associated `<label>` or `aria-label`. When using `placeholder`, it should provide an example of expected input, not serve as the label itself.
-
-## 2025-02-18 - Interactive Lists and Class Name Verification
-**Learning:** Found a typo in class name (`category-box` vs `categoryBox`) preventing styles from applying, and interactive list items lacking keyboard support.
-**Action:** When refactoring interactive lists, ensure `li` elements have `role="button"`, `tabIndex="0"`, and `onKeyDown` handlers. Always verify class names against the imported CSS file.
-
-## 2025-02-18 - Keyboard Event Handling
-**Learning:** When adding keyboard support for 'Space', always `preventDefault()` to prevent the default page scroll behavior.
-**Action:** Include `e.preventDefault()` in `onKeyDown` handlers for Space key.
-
-## 2025-02-18 - Disabled Button Styling
-**Learning:** Standard browser `disabled` attribute might not be enough for visual feedback in this design system, especially for small icon-only buttons.
-**Action:** When adding `disabled` attributes, explicitly style `:disabled` state in the component's CSS to ensure users perceive the element as non-interactive (e.g., `opacity: 0.5`, `cursor: not-allowed`).
+## 2024-05-22 - Testing Material UI Rating
+**Learning:** Material UI Rating component hides radio inputs. Playwright `click()` on the input fails.
+**Action:** Target the `<label>` or use `get_by_text("X Stars")` if available, and sometimes `force=True` is needed if the label wraps the hidden input but is visually handled by SVGs.
