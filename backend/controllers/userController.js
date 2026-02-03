@@ -72,7 +72,10 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
         email: req.body.email,
     })
     if (!user) {
-        return next(new ErrorHandler("user not found", 404))
+        return res.status(200).json({
+            success: true,
+            message: `email sent to ${req.body.email} successfully`,
+        })
     }
     // get resetPassword Token
     const resetToken = await user.getResetPasswordToken();
