@@ -8,7 +8,7 @@ const CartItemCard = ({ item, deleteCartItems }) => {
   return (
     <div className="CartItemCard">
       <div className="cartItemImage">
-        <img src={item.image} alt="ssa" />
+        <img src={item.image} alt={item.name} />
       </div>
       <div className="cartItemDetails">
         <Link to={`/product/${item.product}`}>{item.name}</Link>

@@ -144,7 +144,7 @@ const ProcessOrder = () => {
                       order.orderItems.map((item) => (
                         <div key={item.product} style={{ display: 'flex', alignItems: 'center', margin: '1rem 0', justifyContent: 'space-between' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <img src={item.image} alt="Product" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+                            <img src={item.image} alt={item.name} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
                             <Link to={`/product/${item.product}`} style={{ fontWeight: '700' }}>
                               {item.name}
                             </Link>
