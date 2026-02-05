@@ -86,6 +86,7 @@ const UserOptions = ({ user }) => {
                     onClick={handleClick}
                     size="small"
                     sx={{ ml: 2 }}
+                    aria-label="Account settings"
                     aria-controls={open ? "account-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
