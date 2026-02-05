@@ -61,7 +61,7 @@ describe('Login Authentication Bypass', () => {
         await userController.loginUser(req, res, next);
 
         expect(next).toHaveBeenCalledWith(expect.objectContaining({
-            message: "invalid email",
+            message: "Invalid email or password",
             statusCode: 401
         }));
         expect(sendToken).not.toHaveBeenCalled();

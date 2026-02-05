@@ -47,11 +47,11 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
         email
     }).select("+password");
     if (!user) {
-        return next(new ErrorHandler("invalid email", 401))
+        return next(new ErrorHandler("Invalid email or password", 401))
     }
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
-        return next(new ErrorHandler("invalid password", 401))
+        return next(new ErrorHandler("Invalid email or password", 401))
     }
     sendToken(user, 200, res)
 })
@@ -72,7 +72,10 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
         email: req.body.email,
     })
     if (!user) {
-        return next(new ErrorHandler("user not found", 404))
+        return res.status(200).json({
+            success: true,
+            message: `If a user with that email exists, a password reset link has been sent.`
+        })
     }
     // get resetPassword Token
     const resetToken = await user.getResetPasswordToken();
