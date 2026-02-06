@@ -85,6 +85,7 @@ const Header = () => {
                             size="large"
                             onClick={toggleDrawer(true)}
                             sx={{ color: 'var(--color-primary)' }}
+                            aria-label="Open navigation menu"
                         >
                             <MenuIcon />
                         </IconButton>
@@ -143,6 +144,7 @@ const Header = () => {
                                         minWidth: { xs: '44px', md: 'auto' },
                                         minHeight: { xs: '44px', md: 'auto' }
                                     }}
+                                    aria-label={theme === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
                                 >
                                     {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                                 </IconButton>
@@ -158,6 +160,7 @@ const Header = () => {
                                         minWidth: { xs: '44px', md: 'auto' },
                                         minHeight: { xs: '44px', md: 'auto' }
                                     }}
+                                    aria-label="Search"
                                 >
                                     <SearchIcon />
                                 </IconButton>
@@ -173,6 +176,7 @@ const Header = () => {
                                         minWidth: { xs: '44px', md: 'auto' },
                                         minHeight: { xs: '44px', md: 'auto' }
                                     }}
+                                    aria-label="View cart"
                                 >
                                     <ShoppingCartIcon />
                                 </IconButton>
@@ -193,6 +197,7 @@ const Header = () => {
                                             minWidth: { xs: '44px', md: 'auto' },
                                             minHeight: { xs: '44px', md: 'auto' }
                                         }}
+                                        aria-label="Login"
                                     >
                                         <PersonIcon />
                                     </IconButton>
