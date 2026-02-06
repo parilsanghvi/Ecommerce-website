@@ -332,6 +332,9 @@ describe('Admin Integration Tests', () => {
 
                 const updated = await Order.findById(testOrder._id);
                 expect(updated.orderStatus).toBe('Shipped');
+
+                const updatedProduct = await Product.findById(testProduct._id);
+                expect(updatedProduct.stock).toBe(8);
             });
         });
 

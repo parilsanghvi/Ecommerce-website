@@ -104,10 +104,17 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     }
 
 
-    if (req.body.status==="Shipped") {
-        await Promise.all(order.orderItems.map(async (item) => {
-            await updateStock(item.product, item.quantity)
-        }))
+    if (req.body.status === "Shipped") {
+        // Optimized: Use bulkWrite for atomic stock updates (1 DB call vs N+1)
+        const operations = order.orderItems.map((item) => ({
+            updateOne: {
+                filter: { _id: item.product },
+                update: { $inc: { stock: -item.quantity } }
+            }
+        }));
+        if (operations.length > 0) {
+            await Product.bulkWrite(operations);
+        }
     }
 
     order.orderStatus = req.body.status;
@@ -121,14 +128,6 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         success: true,
     });
 });
-
-async function updateStock(id, quantity) {
-    const product = await Product.findById(id);
-    product.stock = product.stock - quantity;
-    await product.save({
-        validateBeforeSave: false
-    })
-}
 
 // delete order --admin
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
