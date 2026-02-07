@@ -5,6 +5,9 @@ const errorMidddleware = require('./middleware/error');
 const path = require("path")
 // config
 
+// Enable extended query parser for bracket notation (e.g., ratings[gte]=1 -> {ratings: {gte: 1}})
+app.set('query parser', 'extended');
+
 // parsing object to json
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser())
