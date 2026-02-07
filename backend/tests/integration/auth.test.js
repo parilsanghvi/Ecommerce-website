@@ -168,7 +168,7 @@ describe('Authentication Integration Tests', () => {
 
             expect(res.status).toBe(401);
             expect(res.body.success).toBe(false);
-            expect(res.body.message).toBe('invalid password');
+            expect(res.body.message).toBe('Invalid email or password');
         });
 
         it('should fail with non-existent email', async () => {
@@ -177,7 +177,7 @@ describe('Authentication Integration Tests', () => {
                 .send({ email: 'nonexistent@example.com', password: 'password123' });
 
             expect(res.status).toBe(401);
-            expect(res.body.message).toBe('invalid email');
+            expect(res.body.message).toBe('Invalid email or password');
         });
 
         it('should fail without email or password', async () => {
