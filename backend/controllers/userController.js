@@ -157,11 +157,11 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
         email: req.body.email,
     }
     if (req.body.avatar !== "") {
-        const user = await User.findById(req.user.id)
         if (!req.body.avatar || req.body.avatar === "undefined") {
             return next(new ErrorHandler("Please upload a new avatar", 401))
         }
-        const imageId = user.avatar.public_id
+        // Optimized: Use req.user.avatar directly instead of redundant DB call
+        const imageId = req.user.avatar.public_id
         await cloudinary.v2.uploader.destroy(imageId);
         const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
             folder: "avatars",
