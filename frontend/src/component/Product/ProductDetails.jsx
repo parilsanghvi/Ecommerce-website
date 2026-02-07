@@ -262,6 +262,8 @@ const ProductDetails = () => {
                 onChange={(e, newValue) => setRating(newValue)}
                 value={rating}
                 size="large"
+                name="rating-input"
+                aria-label="Product Rating"
                 sx={{
                   '& .MuiRating-iconFilled': { color: 'var(--color-primary)' },
                   '& .MuiRating-iconEmpty': { color: 'var(--color-muted)' }
@@ -274,13 +276,23 @@ const ProductDetails = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your review here..."
+                aria-label="Review Comment"
+                required
               ></textarea>
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
                 Cancel
               </Button>
-              <Button onClick={reviewSubmitHandler} sx={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+              <Button
+                onClick={reviewSubmitHandler}
+                disabled={rating <= 0 || !comment.trim()}
+                sx={{
+                  color: 'var(--color-primary)',
+                  fontWeight: 'bold',
+                  '&.Mui-disabled': { color: 'var(--color-muted)' }
+                }}
+              >
                 Submit
               </Button>
             </DialogActions>
