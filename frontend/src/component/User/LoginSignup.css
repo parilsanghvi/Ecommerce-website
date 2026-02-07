@@ -27,7 +27,9 @@
     border-bottom: 2px solid var(--color-border);
 }
 
-.login_signUp_toggle>p {
+.login_signUp_toggle>.toggle-btn {
+    background: none;
+    border: none;
     color: var(--color-text);
     font: 700 1rem var(--font-heading);
     transition: color 0.5s;
@@ -38,7 +40,7 @@
     text-transform: uppercase;
 }
 
-.login_signUp_toggle>p:hover {
+.login_signUp_toggle>.toggle-btn:hover {
     color: var(--color-primary);
 }
 
@@ -199,7 +201,7 @@
         height: 50px;
     }
 
-    .login_signUp_toggle>p {
+    .login_signUp_toggle>.toggle-btn {
         font-size: 1rem;
     }
 
