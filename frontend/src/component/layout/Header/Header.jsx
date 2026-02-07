@@ -84,7 +84,6 @@ const Header = () => {
                         <IconButton
                             size="large"
                             onClick={toggleDrawer(true)}
-                            aria-label="Open navigation menu"
                             sx={{ color: 'var(--color-primary)' }}
                         >
                             <MenuIcon />
@@ -138,7 +137,6 @@ const Header = () => {
                             <motion.div whileHover={{ scale: 1.1 }}>
                                 <IconButton
                                     onClick={toggleTheme}
-                                    aria-label={theme === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
                                     sx={{
                                         color: 'var(--color-text)',
                                         '&:hover': { color: 'var(--color-primary)' },
@@ -154,7 +152,6 @@ const Header = () => {
                             <motion.div whileHover={{ scale: 1.1 }}>
                                 <IconButton
                                     onClick={() => navigate("/search")}
-                                    aria-label="Search"
                                     sx={{
                                         color: 'var(--color-text)',
                                         '&:hover': { color: 'var(--color-primary)' },
@@ -170,7 +167,6 @@ const Header = () => {
                             <motion.div whileHover={{ scale: 1.1 }}>
                                 <IconButton
                                     onClick={() => navigate("/cart")}
-                                    aria-label="View cart"
                                     sx={{
                                         color: 'var(--color-text)',
                                         '&:hover': { color: 'var(--color-primary)' },
@@ -189,7 +185,6 @@ const Header = () => {
                                 <motion.div whileHover={{ scale: 1.1 }}>
                                     <IconButton
                                         onClick={() => navigate("/login")}
-                                        aria-label="Login"
                                         sx={{
                                             color: 'var(--color-primary)',
                                             border: '1px solid var(--color-primary)',
