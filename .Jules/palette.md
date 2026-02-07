@@ -21,3 +21,7 @@
 ## 2025-02-18 - Disabled Button Styling
 **Learning:** Standard browser `disabled` attribute might not be enough for visual feedback in this design system, especially for small icon-only buttons.
 **Action:** When adding `disabled` attributes, explicitly style `:disabled` state in the component's CSS to ensure users perceive the element as non-interactive (e.g., `opacity: 0.5`, `cursor: not-allowed`).
+
+## 2025-02-18 - Image Accessibility
+**Learning:** Found critical accessibility issues where image `alt` text was hardcoded to "ssa" or "Product", providing no value to screen readers.
+**Action:** Always bind `alt` text to dynamic content (e.g., `alt={item.name}`) when displaying product images or other dynamic content. Avoid placeholder strings in production code.
