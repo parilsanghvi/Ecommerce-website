@@ -71,8 +71,12 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findOne({
         email: req.body.email,
     })
+
     if (!user) {
-        return next(new ErrorHandler("user not found", 404))
+        return res.status(200).json({
+            success: true,
+            message: `If an account with that email exists, we have sent a password reset link.`
+        })
     }
     // get resetPassword Token
     const resetToken = await user.getResetPasswordToken();
@@ -94,7 +98,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
         })
         res.status(200).json({
             success: true,
-            message: `email sent to ${user.email} successfully`,
+            message: `If an account with that email exists, we have sent a password reset link.`,
         })
     } catch (error) {
         user.resetPasswordToken = undefined
