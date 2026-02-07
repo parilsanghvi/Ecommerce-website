@@ -15,6 +15,24 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         shippingPrice,
         totalPrice
     } = req.body;
+
+    // Verify itemsPrice against database
+    const productIds = orderItems.map(item => item.product);
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    let calculatedItemsPrice = 0;
+    for (const item of orderItems) {
+        const product = products.find(p => p._id.toString() === item.product);
+        if (!product) {
+            return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
+        }
+        calculatedItemsPrice += product.price * item.quantity;
+    }
+
+    if (Math.abs(Number(itemsPrice) - calculatedItemsPrice) > 0.01) {
+        return next(new ErrorHandler("Price mismatch detected. Please refresh and try again.", 400));
+    }
+
     const order = await Order.create({
         shippingInfo,
         orderItems,

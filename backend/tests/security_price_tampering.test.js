@@ -1,0 +1,105 @@
+const orderController = require('../controllers/orderController');
+const Product = require('../models/productModel');
+const Order = require('../models/orderModel');
+const ErrorHandler = require('../utlis/errorhandler');
+
+// Mock Mongoose Models
+jest.mock('../models/productModel');
+jest.mock('../models/orderModel');
+jest.mock('../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next));
+
+describe('Order Security: Price Tampering', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should reject order creation when price is tampered', async () => {
+        // Mock request data
+        const req = {
+            user: { _id: 'userid', name: 'Test User', email: 'test@example.com' },
+            body: {
+                shippingInfo: {},
+                orderItems: [{
+                    product: 'productid',
+                    quantity: 1,
+                    price: 1 // User claims price is 1
+                }],
+                paymentInfo: {},
+                itemsPrice: 1, // User claims total items price is 1
+                taxPrice: 0,
+                shippingPrice: 0,
+                totalPrice: 1
+            }
+        };
+
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+        const next = jest.fn();
+
+        // Mock Product.find to return the REAL product with price 1000
+        Product.find.mockResolvedValue([{
+            _id: 'productid',
+            price: 1000,
+        }]);
+
+        await orderController.newOrder(req, res, next);
+
+        // Verify that Order.create was NOT called
+        expect(Order.create).not.toHaveBeenCalled();
+
+        // Verify that next was called with an error (Price mismatch)
+        expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(next.mock.calls[0][0].message).toMatch(/Price mismatch detected/);
+        expect(next.mock.calls[0][0].statusCode).toBe(400);
+    });
+
+    it('should create order when price is valid', async () => {
+        // Mock request data
+        const req = {
+            user: { _id: 'userid', name: 'Test User', email: 'test@example.com' },
+            body: {
+                shippingInfo: {},
+                orderItems: [{
+                    product: 'productid',
+                    quantity: 1,
+                    price: 1000
+                }],
+                paymentInfo: {},
+                itemsPrice: 1000, // Valid Total
+                taxPrice: 0,
+                shippingPrice: 0,
+                totalPrice: 1000
+            }
+        };
+
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+        const next = jest.fn();
+
+        // Mock Product.find to return the REAL product with price 1000
+        Product.find.mockResolvedValue([{
+            _id: 'productid',
+            price: 1000,
+        }]);
+
+        // Mock Order.create success
+        Order.create.mockResolvedValue({
+            ...req.body,
+            _id: 'orderid'
+        });
+
+        await orderController.newOrder(req, res, next);
+
+        // Verify that Order.create WAS called
+        expect(Order.create).toHaveBeenCalledWith(expect.objectContaining({
+            itemsPrice: 1000
+        }));
+
+        // Verify success response
+        expect(res.status).toHaveBeenCalledWith(201);
+    });
+});
