@@ -89,6 +89,7 @@ const UserOptions = ({ user }) => {
                     aria-controls={open ? "account-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
+                    aria-label="Account settings"
                 >
                     <Avatar
                         alt={user.name}
