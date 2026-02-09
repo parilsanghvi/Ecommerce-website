@@ -18,8 +18,22 @@ const updateProfileSchema = z.object({
     avatar: z.string().optional(),
 });
 
+const forgotPasswordSchema = z.object({
+    email: z.string({ required_error: "Please enter email" }).email("Please enter a valid email"),
+});
+
+const resetPasswordSchema = z.object({
+    password: z.string({ required_error: "Please enter password" }).min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string({ required_error: "Please confirm password" }).min(8, "Password must be at least 8 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+});
+
 module.exports = {
     registerSchema,
     loginSchema,
     updateProfileSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
 };

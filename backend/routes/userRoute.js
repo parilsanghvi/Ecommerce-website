@@ -22,16 +22,16 @@ const {
     authorizedRoles
 } = require("../middleware/auth")
 const validate = require("../middleware/validate");
-const { registerSchema, loginSchema, updateProfileSchema } = require("../schemas/userZodSchema");
+const { registerSchema, loginSchema, updateProfileSchema, forgotPasswordSchema, resetPasswordSchema } = require("../schemas/userZodSchema");
 const router = express.Router()
 
 router.route("/register").post(upload.any(), validate(registerSchema), registerUser);
 
 router.route("/login").post(validate(loginSchema), loginUser)
 
-router.route("/password/forgot").post(forgotPassword);
+router.route("/password/forgot").post(validate(forgotPasswordSchema), forgotPassword);
 
-router.route("/password/reset/:token").put(resetPassword);
+router.route("/password/reset/:token").put(validate(resetPasswordSchema), resetPassword);
 
 router.route("/logout").get(logout)
 
