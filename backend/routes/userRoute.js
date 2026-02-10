@@ -21,15 +21,16 @@ const {
     isAuthenticatedUser,
     authorizedRoles
 } = require("../middleware/auth")
+const rateLimiter = require("../middleware/rateLimiter");
 const validate = require("../middleware/validate");
 const { registerSchema, loginSchema, updateProfileSchema } = require("../schemas/userZodSchema");
 const router = express.Router()
 
 router.route("/register").post(upload.any(), validate(registerSchema), registerUser);
 
-router.route("/login").post(validate(loginSchema), loginUser)
+router.route("/login").post(rateLimiter({ windowMs: 15 * 60 * 1000, max: 5 }), validate(loginSchema), loginUser)
 
-router.route("/password/forgot").post(forgotPassword);
+router.route("/password/forgot").post(rateLimiter({ windowMs: 15 * 60 * 1000, max: 5 }), forgotPassword);
 
 router.route("/password/reset/:token").put(resetPassword);
 
