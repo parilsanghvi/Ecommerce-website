@@ -23,6 +23,7 @@ const LoginSignup = () => {
     const { error, loading, isAuthenticated } = useSelector(state => state.user)
     const [loginEmail, setLoginEmail] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
+    const [activeTab, setActiveTab] = useState("login")
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -91,6 +92,7 @@ const LoginSignup = () => {
 
 
     const switchTabs = (e, tab) => {
+        setActiveTab(tab);
         if (tab === "login") {
             switcherTab.current.classList.add("shiftToNeutral")
             switcherTab.current.classList.remove("shiftToRight")
@@ -116,11 +118,29 @@ const LoginSignup = () => {
                     <div className='LoginSignUpContainer'>
                         <div className='LoginSignUpBox'>
                             <div>
-                                <div className='login_signUp_toggle'>
-                                    <button className="toggle-btn" onClick={(e) => switchTabs(e, "login")}>Login</button>
-                                    <button className="toggle-btn" onClick={(e) => switchTabs(e, "register")}>Register</button>
+                                <div className='login_signUp_toggle' role="tablist">
+                                    <button
+                                        className="toggle-btn"
+                                        onClick={(e) => switchTabs(e, "login")}
+                                        role="tab"
+                                        aria-selected={activeTab === "login"}
+                                        aria-controls="login-panel"
+                                        id="login-tab"
+                                    >
+                                        Login
+                                    </button>
+                                    <button
+                                        className="toggle-btn"
+                                        onClick={(e) => switchTabs(e, "register")}
+                                        role="tab"
+                                        aria-selected={activeTab === "register"}
+                                        aria-controls="register-panel"
+                                        id="register-tab"
+                                    >
+                                        Register
+                                    </button>
                                 </div>
-                                <button ref={switcherTab}></button>
+                                <div className="slider-line" ref={switcherTab}></div>
                             </div>
                             {(error || localError) && (
                                 <div className="loginError">
@@ -128,7 +148,15 @@ const LoginSignup = () => {
                                     <span>{localError || (error === "Field value too long" ? "File is too large" : error)}</span>
                                 </div>
                             )}
-                            <form className='loginForm' ref={loginTab} onSubmit={loginSubmit}>
+                            <form
+                                className='loginForm'
+                                ref={loginTab}
+                                onSubmit={loginSubmit}
+                                role="tabpanel"
+                                id="login-panel"
+                                aria-labelledby="login-tab"
+                                aria-hidden={activeTab !== "login"}
+                            >
                                 <div className='loginEmail'>
                                     <MailOutlineIcon />
                                     <input
@@ -159,7 +187,16 @@ const LoginSignup = () => {
                                 <Link to="/password/forgot">Forgot Password ?</Link>
                                 <input type="submit" value="Login" className='primary-btn' />
                             </form>
-                            <form className='signUpForm' ref={registerTab} encType='multipart/form-data' onSubmit={registerSubmit}>
+                            <form
+                                className='signUpForm'
+                                ref={registerTab}
+                                encType='multipart/form-data'
+                                onSubmit={registerSubmit}
+                                role="tabpanel"
+                                id="register-panel"
+                                aria-labelledby="register-tab"
+                                aria-hidden={activeTab !== "register"}
+                            >
                                 <div className='signUpName'>
                                     <FaceIcon />
                                     <input

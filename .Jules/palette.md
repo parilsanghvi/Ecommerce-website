@@ -25,3 +25,7 @@
 ## 2025-02-18 - Image Accessibility
 **Learning:** Found critical accessibility issues where image `alt` text was hardcoded to "ssa" or "Product", providing no value to screen readers.
 **Action:** Always bind `alt` text to dynamic content (e.g., `alt={item.name}`) when displaying product images or other dynamic content. Avoid placeholder strings in production code.
+
+## 2025-02-18 - Decorative Elements as Interactive
+**Learning:** Found an empty `<button>` element used solely for a visual sliding underline effect. This pollutes the accessibility tree and confuses screen reader users.
+**Action:** Replace purely decorative interactive elements with `<div>` or `<span>` and apply styles via CSS. Ensure these elements are removed from the focus order and accessibility tree.

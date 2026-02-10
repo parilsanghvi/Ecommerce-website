@@ -44,7 +44,7 @@
     color: var(--color-primary);
 }
 
-.LoginSignUpBox>div>button {
+.LoginSignUpBox>div>.slider-line {
     background-color: var(--color-primary);
     height: 4px;
     width: 50%;
