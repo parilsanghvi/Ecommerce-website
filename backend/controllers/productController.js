@@ -220,7 +220,8 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
 // get all reviews of single product
 exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
     // Optimized: Use lean() for faster read access to reviews
-    const product = await Product.findById(req.query.id).lean()
+    // Optimized: Select only reviews field to reduce payload size
+    const product = await Product.findById(req.query.id).select("reviews").lean()
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
