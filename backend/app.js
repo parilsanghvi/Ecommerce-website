@@ -1,5 +1,9 @@
 const express = require('express');
 const app = express();
+
+// Enable trust proxy for rate limiting behind load balancers (e.g. Render, Heroku)
+app.set('trust proxy', 1);
+
 const cookieParser = require("cookie-parser");
 const errorMidddleware = require('./middleware/error');
 const path = require("path")

@@ -23,13 +23,19 @@ const {
 } = require("../middleware/auth")
 const validate = require("../middleware/validate");
 const { registerSchema, loginSchema, updateProfileSchema } = require("../schemas/userZodSchema");
+const createRateLimiter = require("../middleware/rateLimiter");
+
 const router = express.Router()
+
+// Rate limiters
+const loginLimiter = createRateLimiter(15 * 60 * 1000, 5, "Too many login attempts. Please try again after 15 minutes.");
+const forgotPasswordLimiter = createRateLimiter(15 * 60 * 1000, 3, "Too many password reset requests. Please try again after 15 minutes.");
 
 router.route("/register").post(upload.any(), validate(registerSchema), registerUser);
 
-router.route("/login").post(validate(loginSchema), loginUser)
+router.route("/login").post(loginLimiter, validate(loginSchema), loginUser)
 
-router.route("/password/forgot").post(forgotPassword);
+router.route("/password/forgot").post(forgotPasswordLimiter, forgotPassword);
 
 router.route("/password/reset/:token").put(resetPassword);
 

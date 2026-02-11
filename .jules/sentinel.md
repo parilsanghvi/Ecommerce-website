@@ -13,3 +13,8 @@
 1. In order creation logic, always fetch product prices from the database and recalculate the total on the server side.
 2. Reject requests where the client-provided price deviates from the server-calculated price (allowing for small floating-point margins).
 3. Use Jest mocks for Mongoose models (`Product`, `Order`) when writing unit tests to avoid environment-related crashes.
+
+## 2026-02-11 - Missing Trust Proxy Configuration
+**Vulnerability:** Rate limiting implementation would fail (ban load balancer IP) on platforms like Render because `app.set('trust proxy', 1)` was missing, causing all requests to appear as coming from the internal load balancer.
+**Learning:** When implementing IP-based security controls (rate limiting), always verify that the application correctly resolves client IPs in its deployment environment (e.g., behind proxies). Documentation or memory might be outdated.
+**Prevention:** Explicitly configure `trust proxy` settings in Express applications destined for PaaS deployment, or use a library that forces you to configure it.
