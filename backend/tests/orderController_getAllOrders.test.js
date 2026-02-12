@@ -67,7 +67,8 @@ describe('getAllOrders Integration Test', () => {
 
     const req = {
       query: {
-        page: '1'
+        page: '1',
+        calculateTotal: 'true'
       }
     };
 
@@ -87,5 +88,66 @@ describe('getAllOrders Integration Test', () => {
     expect(responseData.totalOrders).toBe(3);
     expect(responseData.orders.length).toBe(3);
     expect(responseData.totalAmount).toBe(120 + 130 + 140);
+  });
+
+  it('should NOT return totalAmount when calculateTotal is not requested', async () => {
+    // Seed data with 'user' field
+    const userId = new mongoose.Types.ObjectId();
+    const orderData = {
+        shippingInfo: {
+            address: "123 Main St",
+            city: "City",
+            state: "State",
+            country: "Country",
+            pinCode: 123456,
+            phoneNo: 1234567890
+        },
+        orderItems: [{
+            name: "Product 1",
+            quantity: 1,
+            price: 100,
+            image: "image.jpg",
+            product: new mongoose.Types.ObjectId()
+        }],
+        user: userId,
+        paymentInfo: {
+            id: "payment_id",
+            status: "succeeded"
+        },
+        paidAt: new Date(),
+        itemsPrice: 100,
+        taxPrice: 10,
+        shippingPrice: 10,
+        totalPrice: 120,
+        orderStatus: "processing"
+    };
+
+    await Order.create([
+      { ...orderData, totalPrice: 120 },
+    ]);
+
+    const req = {
+      query: {
+        page: '1'
+        // calculateTotal is missing (undefined) or false
+      }
+    };
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+
+    const next = jest.fn();
+
+    await orderController.getAllOrders(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    const responseData = res.json.mock.calls[0][0];
+
+    expect(responseData.success).toBe(true);
+    expect(responseData.totalOrders).toBe(1);
+    expect(responseData.orders.length).toBe(1);
+    expect(responseData.totalAmount).toBeUndefined();
   });
 });
