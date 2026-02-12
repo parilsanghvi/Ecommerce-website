@@ -25,3 +25,7 @@
 ## 2025-02-18 - Image Accessibility
 **Learning:** Found critical accessibility issues where image `alt` text was hardcoded to "ssa" or "Product", providing no value to screen readers.
 **Action:** Always bind `alt` text to dynamic content (e.g., `alt={item.name}`) when displaying product images or other dynamic content. Avoid placeholder strings in production code.
+
+## 2025-02-18 - Tooltips on Disabled Buttons
+**Learning:** Browsers often disable mouse events on `disabled` buttons, preventing tooltips from appearing. This codebase uses `pointer-events: none` on disabled buttons which exacerbates this.
+**Action:** To show tooltips on disabled actions, use `aria-disabled="true"` instead of `disabled` attribute, remove `pointer-events: none` from CSS, and wrap the button in a `Tooltip` component. Crucially, ensure the `onClick` handler explicitly checks the disabled condition since the button remains interactive.

@@ -74,12 +74,12 @@
   color: white;
 }
 
-.cartInput>button:disabled {
+.cartInput>button:disabled,
+.cartInput>button[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
   background-color: var(--color-surface);
   color: var(--color-text);
-  pointer-events: none;
 }
 
 .cartInput>input {

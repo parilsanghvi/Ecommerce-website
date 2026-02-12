@@ -3,7 +3,7 @@ import "./Cart.css";
 import CartItemCard from "./CartItemCard";
 import { useSelector, useDispatch } from "react-redux";
 import { addItemsToCart, removeItemsFromCart } from "../../features/cartSlice";
-import { Typography } from "@mui/material";
+import { Typography, Tooltip } from "@mui/material";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -65,34 +65,38 @@ const Cart = () => {
                 <div className="cartContainer" key={item.product}>
                   <CartItemCard item={item} deleteCartItems={deleteCartItems} />
                   <div className="cartInput">
-                    <button
-                      onClick={() =>
-                        decreaseQuantity(item.product, item.quantity)
-                      }
-                      disabled={item.quantity <= 1}
-                      aria-label="Decrease quantity"
-                    >
-                      -
-                    </button>
+                    <Tooltip title={item.quantity <= 1 ? "Minimum quantity is 1" : ""}>
+                      <button
+                        onClick={() =>
+                          decreaseQuantity(item.product, item.quantity)
+                        }
+                        aria-disabled={item.quantity <= 1}
+                        aria-label="Decrease quantity"
+                      >
+                        -
+                      </button>
+                    </Tooltip>
                     <input
                       type="number"
                       value={item.quantity}
                       readOnly
                       aria-label="Product quantity"
                     />
-                    <button
-                      onClick={() =>
-                        increaseQuantity(
-                          item.product,
-                          item.quantity,
-                          item.stock
-                        )
-                      }
-                      disabled={item.stock <= item.quantity}
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
+                    <Tooltip title={item.stock <= item.quantity ? "Maximum stock reached" : ""}>
+                      <button
+                        onClick={() =>
+                          increaseQuantity(
+                            item.product,
+                            item.quantity,
+                            item.stock
+                          )
+                        }
+                        aria-disabled={item.stock <= item.quantity}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </Tooltip>
                   </div>
                   <p className="cartSubtotal">{`₹${item.price * item.quantity
                     }`}</p>
