@@ -5,6 +5,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import FaceIcon from "@mui/icons-material/Face"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { MdErrorOutline } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux"
 import { clearErrors, login, register } from "../../features/userSlice";
@@ -23,6 +25,8 @@ const LoginSignup = () => {
     const { error, loading, isAuthenticated } = useSelector(state => state.user)
     const [loginEmail, setLoginEmail] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
+    const [showLoginPassword, setShowLoginPassword] = useState(false);
+    const [showRegisterPassword, setShowRegisterPassword] = useState(false);
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -174,7 +178,8 @@ const LoginSignup = () => {
                                 </div>
                                 <div className='loginPassword'>
                                     <LockOpenIcon />
-                                    <input type="password"
+                                    <input
+                                        type={showLoginPassword ? "text" : "password"}
                                         placeholder="Password"
                                         aria-label="Login Password"
                                         required
@@ -184,6 +189,14 @@ const LoginSignup = () => {
                                             clearLocalAndGlobalErrors();
                                         }}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                        className="password-toggle-btn"
+                                        aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showLoginPassword ? <VisibilityOff /> : <Visibility />}
+                                    </button>
                                 </div>
                                 <Link to="/password/forgot">Forgot Password ?</Link>
                                 <input type="submit" value="Login" className='primary-btn' />
@@ -225,7 +238,7 @@ const LoginSignup = () => {
                                 <div className='signUpPassword'>
                                     <LockOpenIcon />
                                     <input
-                                        type="password"
+                                        type={showRegisterPassword ? "text" : "password"}
                                         placeholder="Password"
                                         aria-label="Password"
                                         required
@@ -233,6 +246,14 @@ const LoginSignup = () => {
                                         value={password}
                                         onChange={registerDataChange}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                        className="password-toggle-btn"
+                                        aria-label={showRegisterPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showRegisterPassword ? <VisibilityOff /> : <Visibility />}
+                                    </button>
                                 </div>
                                 <div id='registerImage'>
                                     <img src={avatarPreview} alt="avatar preview" />

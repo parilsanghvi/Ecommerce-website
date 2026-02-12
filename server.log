@@ -1,0 +1,31 @@
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /assets/index-CSH3Hu16.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /assets/index-D6eKJR7U.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /api/v1/products?keyword=&page=1 HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /api/v1/stripeapikey HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /api/v1/me HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /assets/playstore-CB0HO-5s.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /assets/Appstore-DerDNcmi.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /assets/archivo-black-latin-400-normal-BTVu2TQR.woff2 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /assets/space-mono-latin-400-normal-Rg4St2Dn.woff2 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:30:43] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:30:43] "GET /api/v1/products?keyword=&page=1 HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /assets/index-CSH3Hu16.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /assets/index-D6eKJR7U.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /api/v1/products?keyword=&page=1 HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /api/v1/stripeapikey HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /api/v1/me HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /assets/playstore-CB0HO-5s.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /assets/Appstore-DerDNcmi.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /assets/archivo-black-latin-400-normal-BTVu2TQR.woff2 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /assets/space-mono-latin-400-normal-Rg4St2Dn.woff2 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Feb/2026 14:31:09] code 404, message File not found
+127.0.0.1 - - [11/Feb/2026 14:31:09] "GET /api/v1/products?keyword=&page=1 HTTP/1.1" 404 -
+127.0.0.1 - - [11/Feb/2026 14:31:10] "GET /Profile.png HTTP/1.1" 200 -
