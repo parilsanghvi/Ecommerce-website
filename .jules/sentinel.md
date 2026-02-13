@@ -13,8 +13,3 @@
 1. In order creation logic, always fetch product prices from the database and recalculate the total on the server side.
 2. Reject requests where the client-provided price deviates from the server-calculated price (allowing for small floating-point margins).
 3. Use Jest mocks for Mongoose models (`Product`, `Order`) when writing unit tests to avoid environment-related crashes.
-
-## 2025-02-19 - Rate Limiting in Integration Tests
-**Vulnerability:** Rate limiting middleware blocked legitimate integration tests which simulate user traffic (logins) from the same IP address.
-**Learning:** Shared state in rate limiting middleware (e.g., in-memory Map) persists across tests in the same process, causing false positives in integration suites.
-**Prevention:** Implement environment-aware configuration in security middleware (e.g., disable/relax limits in `NODE_ENV=test`) and use specific flags (e.g., `TEST_RATE_LIMIT`) to re-enable strict limits for dedicated security tests.
