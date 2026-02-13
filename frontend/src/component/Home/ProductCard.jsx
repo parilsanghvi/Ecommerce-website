@@ -30,6 +30,10 @@ const ProductCard = ({ product }) => {
             <img
               src={product.images[0].url}
               alt={product.name}
+              // Optimization: Lazy load images to improve initial page load performance
+              loading="lazy"
+              // Optimization: Decode image asynchronously to avoid blocking main thread
+              decoding="async"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -76,4 +80,5 @@ const ProductCard = ({ product }) => {
   );
 };
 
-export default ProductCard;
+// Optimization: Memoize component to prevent unnecessary re-renders when parent state updates
+export default React.memo(ProductCard);
