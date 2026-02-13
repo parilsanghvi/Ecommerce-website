@@ -10,7 +10,7 @@ import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../features/cartSlice";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress, Tooltip } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -207,9 +207,13 @@ const ProductDetails = () => {
                 <h1>{`₹${product.price}`}</h1>
                 <div className="detailsBlock-3-1">
                   <div className="detailsBlock-3-1-1">
-                    <button onClick={decreaseQuantity} disabled={quantity <= 1} aria-label="Decrease quantity">-</button>
+                    <Tooltip title={quantity <= 1 ? "Minimum quantity is 1" : ""}>
+                      <button onClick={quantity <= 1 ? undefined : decreaseQuantity} aria-disabled={quantity <= 1} aria-label="Decrease quantity">-</button>
+                    </Tooltip>
                     <input readOnly type="number" value={quantity} aria-label="Product quantity" />
-                    <button onClick={increaseQuantity} disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
+                    <Tooltip title={product.stock <= quantity ? "Maximum stock reached" : ""}>
+                      <button onClick={product.stock <= quantity ? undefined : increaseQuantity} aria-disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
+                    </Tooltip>
                   </div>
                   <button
                     disabled={product.stock < 1 || addingToCart}
