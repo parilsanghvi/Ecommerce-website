@@ -5,6 +5,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import FaceIcon from "@mui/icons-material/Face"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { MdErrorOutline } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux"
 import { clearErrors, login, register } from "../../features/userSlice";
@@ -23,6 +25,8 @@ const LoginSignup = () => {
     const { error, loading, isAuthenticated } = useSelector(state => state.user)
     const [loginEmail, setLoginEmail] = useState("")
     const [loginPassword, setLoginPassword] = useState("")
+    const [showLoginPassword, setShowLoginPassword] = useState(false);
+    const [showRegisterPassword, setShowRegisterPassword] = useState(false);
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -32,6 +36,7 @@ const LoginSignup = () => {
     const [avatarPreview, setAvatarPreview] = useState("/Profile.png")
     const { name, email, password } = user;
     const [localError, setLocalError] = useState("");
+    const [activeTab, setActiveTab] = useState("login");
 
     const clearLocalAndGlobalErrors = () => {
         setLocalError("");
@@ -98,6 +103,7 @@ const LoginSignup = () => {
             registerTab.current.classList.remove("shiftToNeutralForm")
             loginTab.current.classList.remove("shiftToLeft")
             clearLocalAndGlobalErrors();
+            setActiveTab("login");
         }
         if (tab === "register") {
             switcherTab.current.classList.remove("shiftToNeutral")
@@ -106,6 +112,7 @@ const LoginSignup = () => {
             registerTab.current.classList.add("shiftToNeutralForm")
             loginTab.current.classList.add("shiftToLeft")
             clearLocalAndGlobalErrors();
+            setActiveTab("register");
         }
     }
     return (
@@ -116,11 +123,29 @@ const LoginSignup = () => {
                     <div className='LoginSignUpContainer'>
                         <div className='LoginSignUpBox'>
                             <div>
-                                <div className='login_signUp_toggle'>
-                                    <button className="toggle-btn" onClick={(e) => switchTabs(e, "login")}>Login</button>
-                                    <button className="toggle-btn" onClick={(e) => switchTabs(e, "register")}>Register</button>
+                                <div className='login_signUp_toggle' role="tablist">
+                                    <button
+                                        className="toggle-btn"
+                                        onClick={(e) => switchTabs(e, "login")}
+                                        role="tab"
+                                        aria-selected={activeTab === "login"}
+                                        aria-controls="login-panel"
+                                        id="login-tab"
+                                    >
+                                        Login
+                                    </button>
+                                    <button
+                                        className="toggle-btn"
+                                        onClick={(e) => switchTabs(e, "register")}
+                                        role="tab"
+                                        aria-selected={activeTab === "register"}
+                                        aria-controls="register-panel"
+                                        id="register-tab"
+                                    >
+                                        Register
+                                    </button>
                                 </div>
-                                <button ref={switcherTab}></button>
+                                <button ref={switcherTab} tabIndex="-1" aria-hidden="true"></button>
                             </div>
                             {(error || localError) && (
                                 <div className="loginError">
@@ -128,7 +153,15 @@ const LoginSignup = () => {
                                     <span>{localError || (error === "Field value too long" ? "File is too large" : error)}</span>
                                 </div>
                             )}
-                            <form className='loginForm' ref={loginTab} onSubmit={loginSubmit}>
+                            <form
+                                className='loginForm'
+                                ref={loginTab}
+                                onSubmit={loginSubmit}
+                                role="tabpanel"
+                                aria-labelledby="login-tab"
+                                id="login-panel"
+                                aria-hidden={activeTab !== "login"}
+                            >
                                 <div className='loginEmail'>
                                     <MailOutlineIcon />
                                     <input
@@ -145,7 +178,8 @@ const LoginSignup = () => {
                                 </div>
                                 <div className='loginPassword'>
                                     <LockOpenIcon />
-                                    <input type="password"
+                                    <input
+                                        type={showLoginPassword ? "text" : "password"}
                                         placeholder="Password"
                                         aria-label="Login Password"
                                         required
@@ -155,11 +189,28 @@ const LoginSignup = () => {
                                             clearLocalAndGlobalErrors();
                                         }}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                        className="password-toggle-btn"
+                                        aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showLoginPassword ? <VisibilityOff /> : <Visibility />}
+                                    </button>
                                 </div>
                                 <Link to="/password/forgot">Forgot Password ?</Link>
                                 <input type="submit" value="Login" className='primary-btn' />
                             </form>
-                            <form className='signUpForm' ref={registerTab} encType='multipart/form-data' onSubmit={registerSubmit}>
+                            <form
+                                className='signUpForm'
+                                ref={registerTab}
+                                encType='multipart/form-data'
+                                onSubmit={registerSubmit}
+                                role="tabpanel"
+                                aria-labelledby="register-tab"
+                                id="register-panel"
+                                aria-hidden={activeTab !== "register"}
+                            >
                                 <div className='signUpName'>
                                     <FaceIcon />
                                     <input
@@ -187,7 +238,7 @@ const LoginSignup = () => {
                                 <div className='signUpPassword'>
                                     <LockOpenIcon />
                                     <input
-                                        type="password"
+                                        type={showRegisterPassword ? "text" : "password"}
                                         placeholder="Password"
                                         aria-label="Password"
                                         required
@@ -195,6 +246,14 @@ const LoginSignup = () => {
                                         value={password}
                                         onChange={registerDataChange}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                        className="password-toggle-btn"
+                                        aria-label={showRegisterPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showRegisterPassword ? <VisibilityOff /> : <Visibility />}
+                                    </button>
                                 </div>
                                 <div id='registerImage'>
                                     <img src={avatarPreview} alt="avatar preview" />

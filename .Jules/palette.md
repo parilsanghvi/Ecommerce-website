@@ -29,3 +29,7 @@
 ## 2025-02-18 - Tooltips on Disabled Buttons
 **Learning:** Browsers often disable mouse events on `disabled` buttons, preventing tooltips from appearing. This codebase uses `pointer-events: none` on disabled buttons which exacerbates this.
 **Action:** To show tooltips on disabled actions, use `aria-disabled="true"` instead of `disabled` attribute, remove `pointer-events: none` from CSS, and wrap the button in a `Tooltip` component. Crucially, ensure the `onClick` handler explicitly checks the disabled condition since the button remains interactive.
+
+## 2025-05-23 - Accessibility in Imperative Animation Code
+**Learning:** The `LoginSignup` component used direct DOM manipulation via `refs` for tab switching animations, which made it difficult to manage accessibility states like `aria-selected` declaratively.
+**Action:** When retrofitting accessibility into legacy imperative code, introduce a parallel React state (e.g., `activeTab`) to manage ARIA attributes without rewriting the entire animation logic.

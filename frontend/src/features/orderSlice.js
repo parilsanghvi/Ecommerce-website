@@ -53,9 +53,19 @@ export const myOrders = createAsyncThunk(
 // Get All Orders (Admin)
 export const getAllOrders = createAsyncThunk(
     "order/getAllOrders",
-    async (page = 1, { rejectWithValue }) => {
+    async (arg = 1, { rejectWithValue }) => {
         try {
-            const { data } = await axios.get(`/api/v1/admin/orders?page=${page}`);
+            let page = 1;
+            let calculateTotal = false;
+
+            if (typeof arg === 'number') {
+                page = arg;
+            } else if (typeof arg === 'object') {
+                page = arg.page || 1;
+                calculateTotal = arg.calculateTotal || false;
+            }
+
+            const { data } = await axios.get(`/api/v1/admin/orders?page=${page}&calculateTotal=${calculateTotal}`);
             return data;
         } catch (error) {
             return rejectWithValue(error.response.data.message);
@@ -156,7 +166,10 @@ const orderSlice = createSlice({
             .addCase(getAllOrders.fulfilled, (state, action) => {
                 state.loading = false;
                 state.orders = action.payload.orders;
-                state.totalAmount = action.payload.totalAmount;
+                // Only update totalAmount if it's returned by the backend
+                if (action.payload.totalAmount !== undefined) {
+                    state.totalAmount = action.payload.totalAmount;
+                }
                 state.totalOrders = action.payload.totalOrders;
                 state.resultPerPage = action.payload.resultPerPage;
             })
