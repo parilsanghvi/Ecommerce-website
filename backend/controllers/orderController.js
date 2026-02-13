@@ -80,14 +80,20 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
     // Optimized: Use estimatedDocumentCount() for faster counting of all documents
     const ordersCountPromise = Order.estimatedDocumentCount();
 
-    const aggregatePromise = Order.aggregate([
-        {
-            $group: {
-                _id: null,
-                totalAmount: { $sum: "$totalPrice" }
+    let aggregatePromise = Promise.resolve([]);
+
+    // Optimize: Only calculate total revenue when explicitly requested (e.g. for Dashboard)
+    // This avoids scanning the entire orders collection on every page load
+    if (req.query.calculateTotal === "true") {
+        aggregatePromise = Order.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: { $sum: "$totalPrice" }
+                }
             }
-        }
-    ]);
+        ]);
+    }
 
     const apifeature = new Apifeatures(Order.find(), req.query)
         .pagiNation(resultPerPage);
@@ -101,15 +107,23 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
         ordersPromise
     ]);
 
-    const totalAmount = aggregateResult.length > 0 ? aggregateResult[0].totalAmount : 0;
+    let totalAmount;
+    if (req.query.calculateTotal === "true") {
+        totalAmount = aggregateResult.length > 0 ? aggregateResult[0].totalAmount : 0;
+    }
 
-    res.status(200).json({
+    const response = {
         success: true,
-        totalAmount,
         orders,
         totalOrders: ordersCount,
         resultPerPage,
-    });
+    };
+
+    if (totalAmount !== undefined) {
+        response.totalAmount = totalAmount;
+    }
+
+    res.status(200).json(response);
 });
 // update order status --admin
 exports.updateOrder = catchAsyncErrors(async (req, res, next) => {

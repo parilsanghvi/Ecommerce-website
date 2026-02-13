@@ -25,3 +25,7 @@
 ## 2025-02-18 - Image Accessibility
 **Learning:** Found critical accessibility issues where image `alt` text was hardcoded to "ssa" or "Product", providing no value to screen readers.
 **Action:** Always bind `alt` text to dynamic content (e.g., `alt={item.name}`) when displaying product images or other dynamic content. Avoid placeholder strings in production code.
+
+## 2025-05-23 - Accessibility in Imperative Animation Code
+**Learning:** The `LoginSignup` component used direct DOM manipulation via `refs` for tab switching animations, which made it difficult to manage accessibility states like `aria-selected` declaratively.
+**Action:** When retrofitting accessibility into legacy imperative code, introduce a parallel React state (e.g., `activeTab`) to manage ARIA attributes without rewriting the entire animation logic.

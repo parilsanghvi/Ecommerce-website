@@ -51,7 +51,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(getAdminProduct());
-    dispatch(getAllOrders());
+    dispatch(getAllOrders({ calculateTotal: true }));
     dispatch(getAllUsers());
   }, [dispatch]);
 

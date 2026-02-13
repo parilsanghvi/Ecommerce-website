@@ -13,3 +13,11 @@
 1. In order creation logic, always fetch product prices from the database and recalculate the total on the server side.
 2. Reject requests where the client-provided price deviates from the server-calculated price (allowing for small floating-point margins).
 3. Use Jest mocks for Mongoose models (`Product`, `Order`) when writing unit tests to avoid environment-related crashes.
+
+## 2025-02-19 - Missing Input Validation on Forgot/Reset Password
+**Vulnerability:** The `forgotPassword` and `resetPassword` endpoints lacked input validation at the route level. This allowed invalid emails or password formats to reach the controller logic, potentially causing unexpected behavior or unnecessary database lookups.
+**Learning:** Even though the controller logic might handle missing users or mismatched passwords, validation at the boundary (middleware) is critical for security best practices (Fail Fast). `zod` schemas were available but not applied to these specific routes.
+**Prevention:**
+1. Always apply validation middleware to all public-facing routes, especially authentication-related ones.
+2. Ensure consistent use of `zod` schemas for all request bodies.
+3. Verify that new routes are added with appropriate validation middleware.
