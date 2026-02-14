@@ -14,6 +14,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
     req.user = await User.findById(decodedData.id);
 
+    // Security: Check if user still exists in DB
     if (!req.user) {
         return next(new ErrorHandler("User no longer exists", 401));
     }
