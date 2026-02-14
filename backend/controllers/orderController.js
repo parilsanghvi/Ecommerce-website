@@ -157,9 +157,19 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 
 
     if (req.body.status === "Shipped") {
-        await Promise.all(order.orderItems.map(async (item) => {
-            await updateStock(item.product, item.quantity)
-        }))
+        const operations = order.orderItems.map((item) => ({
+            updateOne: {
+                filter: { _id: item.product, stock: { $gte: item.quantity } },
+                update: { $inc: { stock: -item.quantity } }
+            }
+        }));
+
+        if (operations.length > 0) {
+            const result = await Product.bulkWrite(operations);
+            if (result.modifiedCount !== operations.length) {
+                throw new ErrorHandler("Insufficient stock for one or more products", 400);
+            }
+        }
     }
 
     order.orderStatus = req.body.status;
@@ -173,18 +183,6 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         success: true,
     });
 });
-
-async function updateStock(id, quantity) {
-    // Security Fix: Use atomic update with check for sufficient stock to prevent race conditions and negative inventory
-    const result = await Product.updateOne(
-        { _id: id, stock: { $gte: quantity } },
-        { $inc: { stock: -quantity } }
-    );
-
-    if (result.modifiedCount === 0) {
-        throw new ErrorHandler(`Insufficient stock for product ${id}`, 400);
-    }
-}
 
 // delete order --admin
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
