@@ -49,13 +49,18 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
         .search()
         .filter();
 
-    let filteredProductsCount = await apifeature.query.clone().countDocuments();
+    const filteredProductsCountPromise = apifeature.query.clone().countDocuments();
 
     apifeature.pagiNation(resultPerPage);
 
     // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
     // Optimized: Exclude reviews to reduce payload size and improve performance
-    const products = await apifeature.query.select("-reviews").lean();
+    const productsPromise = apifeature.query.select("-reviews").lean();
+
+    const [filteredProductsCount, products] = await Promise.all([
+        filteredProductsCountPromise,
+        productsPromise,
+    ]);
 
     res.status(200).json({
         success: true,
