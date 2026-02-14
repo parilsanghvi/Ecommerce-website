@@ -33,3 +33,7 @@
 ## 2025-05-23 - Accessibility in Imperative Animation Code
 **Learning:** The `LoginSignup` component used direct DOM manipulation via `refs` for tab switching animations, which made it difficult to manage accessibility states like `aria-selected` declaratively.
 **Action:** When retrofitting accessibility into legacy imperative code, introduce a parallel React state (e.g., `activeTab`) to manage ARIA attributes without rewriting the entire animation logic.
+
+## 2025-02-18 - Decorative Elements as Interactive
+**Learning:** Found an empty `<button>` element used solely for a visual sliding underline effect. This pollutes the accessibility tree and confuses screen reader users.
+**Action:** Replace purely decorative interactive elements with `<div>` or `<span>` and apply styles via CSS. Ensure these elements are removed from the focus order and accessibility tree.
