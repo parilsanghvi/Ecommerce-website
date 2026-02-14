@@ -5,22 +5,19 @@ import MetaData from "../layout/MetaData";
 import { getProduct, clearErrors } from "../../features/productSlice"
 import { useDispatch, useSelector } from "react-redux"
 import Loader from "../layout/Loader";
-import { useSnackbar } from "notistack";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import ProductCard from "./ProductCard";
 import { motion } from "framer-motion";
 
 const Home = () => {
-    const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const { loading, error, products } = useSelector((state) => state.product)
 
+    useErrorNotification(error, clearErrors);
+
     useEffect(() => {
-        if (error) {
-            enqueueSnackbar(error, { variant: "error" });
-            dispatch(clearErrors());
-        }
         dispatch(getProduct())
-    }, [dispatch, error, enqueueSnackbar])
+    }, [dispatch])
 
     return (<Fragment>
         {loading ? (<Loader />) : (<Fragment>

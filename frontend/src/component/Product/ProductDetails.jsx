@@ -8,6 +8,7 @@ import { clearErrors, getProductDetails, newReview, newReviewReset } from "../..
 import ReviewCard from "./ReviewCard";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../features/cartSlice";
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress, Tooltip } from "@mui/material";
@@ -126,24 +127,19 @@ const ProductDetails = () => {
     setOpen(false);
   };
 
+  useErrorNotification(error, clearErrors);
+  useErrorNotification(reviewError, clearErrors);
+
   useEffect(() => {
     dispatch(getProductDetails(id));
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-    if (reviewError) {
-      enqueueSnackbar(reviewError, { variant: "error" });
-      dispatch(clearErrors());
-    }
     if (success) {
       enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch(newReviewReset());
     }
-  }, [dispatch, error, reviewError, success, enqueueSnackbar]);
+  }, [dispatch, success, enqueueSnackbar]);
 
   return (
     <Fragment>
@@ -170,6 +166,7 @@ const ProductDetails = () => {
                           alt={`${product.name} - View ${i + 1}`}
                           width={600}
                           height={600}
+                          loading="lazy"
                         />
                       </div>
                     ))
@@ -182,6 +179,7 @@ const ProductDetails = () => {
                         style={{ objectFit: 'contain', background: '#ccc' }}
                         width={600}
                         height={600}
+                        loading="lazy"
                       />
                     </div>
                   )}

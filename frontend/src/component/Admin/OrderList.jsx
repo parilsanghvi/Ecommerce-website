@@ -5,10 +5,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Button, Pagination } from "@mui/material";
-import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SideBar from "./Sidebar";
+import AdminLayout from "./AdminLayout";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import {
   deleteOrder,
   getAllOrders,
@@ -36,27 +36,20 @@ const OrderList = () => {
     setCurrentPage(value);
   };
 
+  useErrorNotification(error, clearErrors);
+  useErrorNotification(deleteError, clearErrors);
+
   useEffect(() => {
     dispatch(getAllOrders(currentPage));
   }, [dispatch, currentPage]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
-    if (deleteError) {
-      enqueueSnackbar(deleteError, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
     if (isDeleted) {
       enqueueSnackbar("Order Deleted Successfully", { variant: "success" });
       navigate("/admin/orders");
       dispatch(deleteOrderReset());
     }
-  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted]);
+  }, [dispatch, enqueueSnackbar, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
@@ -96,11 +89,11 @@ const OrderList = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/order/${params.row.id}`}>
+            <Link to={`/admin/order/${params.row.id}`} aria-label="Edit order">
               <EditIcon />
             </Link>
 
-            <button onClick={() => deleteOrderHandler(params.row.id)}>
+            <button onClick={() => deleteOrderHandler(params.row.id)} aria-label="Delete order">
               <DeleteIcon />
             </button>
           </Fragment>
@@ -122,37 +115,32 @@ const OrderList = () => {
     });
 
   return (
-    <Fragment>
-      <MetaData title={`ALL ORDERS - Admin`} />
+    <AdminLayout title={`ALL ORDERS - Admin`}>
+      <div className="productListContainer">
+        <h1 id="productListHeading">ALL ORDERS</h1>
 
-      <div className="dashboard">
-        <SideBar />
-        <div className="productListContainer">
-          <h1 id="productListHeading">ALL ORDERS</h1>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          className="productListTable"
+          autoHeight
+          hideFooterPagination
+        />
 
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
-            className="productListTable"
-            autoHeight
-            hideFooterPagination
-          />
-
-          {resultPerPage < totalOrders && (
-            <div className="paginationBox">
-              <Pagination
-                count={Math.ceil(totalOrders / resultPerPage)}
-                page={currentPage}
-                onChange={setCurrentPageNo}
-                color="primary"
-              />
-            </div>
-          )}
-        </div>
+        {resultPerPage < totalOrders && (
+          <div className="paginationBox">
+            <Pagination
+              count={Math.ceil(totalOrders / resultPerPage)}
+              page={currentPage}
+              onChange={setCurrentPageNo}
+              color="primary"
+            />
+          </div>
+        )}
       </div>
-    </Fragment>
+    </AdminLayout>
   );
 };
 

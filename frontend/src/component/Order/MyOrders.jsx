@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, myOrders } from "../../features/orderSlice";
 import Loader from "../layout/Loader";
 import { Link } from "react-router-dom";
-import { useSnackbar } from "notistack";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import Typography from "@mui/material/Typography";
 import MetaData from "../layout/MetaData";
 import LaunchIcon from "@mui/icons-material/Launch";
@@ -13,10 +13,10 @@ import LaunchIcon from "@mui/icons-material/Launch";
 const MyOrders = () => {
   const dispatch = useDispatch();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const { loading, error, orders } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.user);
+
+  useErrorNotification(error, clearErrors);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
@@ -78,13 +78,6 @@ const MyOrders = () => {
   useEffect(() => {
     dispatch(myOrders());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-  }, [dispatch, error, enqueueSnackbar]);
 
   return (
     <Fragment>

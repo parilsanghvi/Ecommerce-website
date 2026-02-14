@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Sidebar from "./Sidebar";
 import "./dashboard.css";
 import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -19,7 +18,7 @@ import {
 import { getAdminProduct } from "../../features/productSlice";
 import { getAllOrders } from "../../features/orderSlice";
 import { getAllUsers } from "../../features/userSlice";
-import MetaData from "../layout/MetaData";
+import AdminLayout from "./AdminLayout";
 
 ChartJS.register(
   CategoryScale,
@@ -80,44 +79,39 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard">
-      <MetaData title="Dashboard - Admin Panel" />
-      <Sidebar />
+    <AdminLayout title="Dashboard - Admin Panel">
+      <Typography component="h1">Dashboard</Typography>
 
-      <div className="dashboardContainer">
-        <Typography component="h1">Dashboard</Typography>
-
-        <div className="dashboardSummary">
-          <div>
-            <p>
-              Total Amount <br /> ₹{totalAmount}
-            </p>
-          </div>
-          <div className="dashboardSummaryBox2">
-            <Link to="/admin/products">
-              <p>Product</p>
-              <p>{products && products.length}</p>
-            </Link>
-            <Link to="/admin/orders">
-              <p>Orders</p>
-              <p>{totalOrders && totalOrders}</p>
-            </Link>
-            <Link to="/admin/users">
-              <p>Users</p>
-              <p>{users && users.length}</p>
-            </Link>
-          </div>
+      <div className="dashboardSummary">
+        <div>
+          <p>
+            Total Amount <br /> ₹{totalAmount}
+          </p>
         </div>
-
-        <div className="lineChart">
-          <Line data={lineState} />
-        </div>
-
-        <div className="doughnutChart">
-          <Doughnut data={doughnutState} />
+        <div className="dashboardSummaryBox2">
+          <Link to="/admin/products">
+            <p>Product</p>
+            <p>{products && products.length}</p>
+          </Link>
+          <Link to="/admin/orders">
+            <p>Orders</p>
+            <p>{totalOrders && totalOrders}</p>
+          </Link>
+          <Link to="/admin/users">
+            <p>Users</p>
+            <p>{users && users.length}</p>
+          </Link>
         </div>
       </div>
-    </div>
+
+      <div className="lineChart">
+        <Line data={lineState} />
+      </div>
+
+      <div className="doughnutChart">
+        <Doughnut data={doughnutState} />
+      </div>
+    </AdminLayout>
   );
 };
 

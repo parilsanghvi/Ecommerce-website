@@ -4,13 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, createProduct, newProductReset } from "../../features/productSlice";
 import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
-import MetaData from "../layout/MetaData";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import DescriptionIcon from "@mui/icons-material/Description";
 import StorageIcon from "@mui/icons-material/Storage";
 import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import SideBar from "./Sidebar";
+import AdminLayout from "./AdminLayout";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import { useNavigate } from "react-router-dom";
 
 const NewProduct = () => {
@@ -38,18 +38,15 @@ const NewProduct = () => {
     "SmartPhones",
   ];
 
-  useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
+  useErrorNotification(error, clearErrors);
 
+  useEffect(() => {
     if (success) {
       enqueueSnackbar("Product Created Successfully", { variant: "success" });
       navigate("/admin/dashboard");
       dispatch(newProductReset());
     }
-  }, [dispatch, enqueueSnackbar, error, navigate, success]);
+  }, [dispatch, enqueueSnackbar, navigate, success]);
 
   const createProductSubmitHandler = (e) => {
     e.preventDefault();
@@ -89,108 +86,104 @@ const NewProduct = () => {
   };
 
   return (
-    <Fragment>
-      <MetaData title="Create Product" />
-      <div className="dashboard">
-        <SideBar />
-        <div className="newProductContainer">
-          <form
-            className="createProductForm"
-            encType="multipart/form-data"
-            onSubmit={createProductSubmitHandler}
-            style={{
-              height: "auto",
-              padding: "2rem",
-              boxShadow: "8px 8px 0 var(--color-primary)",
-              border: "2px solid var(--color-text)",
-              backgroundColor: "var(--color-surface)"
-            }}
-          >
-            <h1 className="section-heading" style={{ borderBottom: 'none', marginBottom: '1rem' }}>Create Product</h1>
+    <AdminLayout title="Create Product">
+      <div className="newProductContainer">
+        <form
+          className="createProductForm"
+          encType="multipart/form-data"
+          onSubmit={createProductSubmitHandler}
+          style={{
+            height: "auto",
+            padding: "2rem",
+            boxShadow: "8px 8px 0 var(--color-primary)",
+            border: "2px solid var(--color-text)",
+            backgroundColor: "var(--color-surface)"
+          }}
+        >
+          <h1 className="section-heading" style={{ borderBottom: 'none', marginBottom: '1rem' }}>Create Product</h1>
 
-            <div>
-              <SpellcheckIcon />
-              <input
-                type="text"
-                placeholder="Product Name"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <AttachMoneyIcon />
-              <input
-                type="number"
-                placeholder="Price"
-                required
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
+          <div>
+            <SpellcheckIcon />
+            <input
+              type="text"
+              placeholder="Product Name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div>
+            <AttachMoneyIcon />
+            <input
+              type="number"
+              placeholder="Price"
+              required
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </div>
 
-            <div>
-              <DescriptionIcon />
+          <div>
+            <DescriptionIcon />
 
-              <textarea
-                placeholder="Product Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                cols="30"
-                rows="1"
-              ></textarea>
-            </div>
+            <textarea
+              placeholder="Product Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              cols="30"
+              rows="1"
+            ></textarea>
+          </div>
 
-            <div>
-              <AccountTreeIcon />
-              <select onChange={(e) => setCategory(e.target.value)}>
-                <option value="">Choose Category</option>
-                {categories.map((cate) => (
-                  <option key={cate} value={cate}>
-                    {cate}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <StorageIcon />
-              <input
-                type="number"
-                placeholder="Stock"
-                required
-                onChange={(e) => setStock(e.target.value)}
-              />
-            </div>
-
-            <div id="createProductFormFile">
-              <input
-                type="file"
-                name="avatar"
-                accept="image/*"
-                onChange={createProductImagesChange}
-                multiple
-              />
-            </div>
-
-            <div id="createProductFormImage">
-              {imagesPreview.map((image, index) => (
-                <img key={index} src={image} alt="Product Preview" style={{ border: '2px solid var(--color-border)' }} />
+          <div>
+            <AccountTreeIcon />
+            <select onChange={(e) => setCategory(e.target.value)}>
+              <option value="">Choose Category</option>
+              {categories.map((cate) => (
+                <option key={cate} value={cate}>
+                  {cate}
+                </option>
               ))}
-            </div>
+            </select>
+          </div>
 
-            <button
-              id="createProductBtn"
-              type="submit"
-              disabled={loading ? true : false}
-              className="primary-btn"
-              style={{ marginTop: '2rem' }}
-            >
-              Create
-            </button>
-          </form>
-        </div>
+          <div>
+            <StorageIcon />
+            <input
+              type="number"
+              placeholder="Stock"
+              required
+              onChange={(e) => setStock(e.target.value)}
+            />
+          </div>
+
+          <div id="createProductFormFile">
+            <input
+              type="file"
+              name="avatar"
+              accept="image/*"
+              onChange={createProductImagesChange}
+              multiple
+            />
+          </div>
+
+          <div id="createProductFormImage">
+            {imagesPreview.map((image, index) => (
+              <img key={index} src={image} alt="Product Preview" style={{ border: '2px solid var(--color-border)' }} />
+            ))}
+          </div>
+
+          <button
+            id="createProductBtn"
+            type="submit"
+            disabled={loading ? true : false}
+            className="primary-btn"
+            style={{ marginTop: '2rem' }}
+          >
+            Create
+          </button>
+        </form>
       </div>
-    </Fragment>
+    </AdminLayout>
   );
 };
 
