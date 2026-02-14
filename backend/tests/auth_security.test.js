@@ -26,24 +26,11 @@ describe('isAuthenticatedUser Middleware Security', () => {
 
         await isAuthenticatedUser(req, res, next);
 
-        // If the vulnerability exists, next() is called without error
-        // If fixed, next(error) is called
-
-        // We expect it to FAIL currently (so next is called with undefined)
-        // But we want to assert what SHOULD happen.
-        // For reproduction, we can assert that it IS CALLED (which means it passed auth)
-        // OR we can assert that it passed with error (which it won't).
-
-        // Let's check what arguments next was called with
+        // Verify that next was called with an error
         const nextArg = next.mock.calls[0][0];
 
-        // If nextArg is undefined, it means success (bypass)
-        // If nextArg is ErrorHandler, it means secure
-
-        if (!nextArg) {
-             console.log("VULNERABILITY CONFIRMED: Auth passed for deleted user");
-        }
-
         expect(nextArg).toBeInstanceOf(ErrorHandler);
+        expect(nextArg.message).toBe("User no longer exists");
+        expect(nextArg.statusCode).toBe(401);
     });
 });
