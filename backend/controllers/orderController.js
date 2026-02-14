@@ -29,8 +29,28 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         calculatedItemsPrice += product.price * item.quantity;
     }
 
-    if (Math.abs(Number(itemsPrice) - calculatedItemsPrice) > 0.01) {
+    // Security Fix: Ensure all price fields are numbers and match calculations
+    if (isNaN(itemsPrice) || Math.abs(Number(itemsPrice) - calculatedItemsPrice) > 0.01) {
         return next(new ErrorHandler("Price mismatch detected. Please refresh and try again.", 400));
+    }
+
+    // Security Fix: Validate all price components to prevent tampering
+    // Calculate expected tax (18%) and shipping (Free over 1000, else 200)
+    // Note: This logic duplicates frontend logic and should ideally be centralized
+    const calculatedTaxPrice = calculatedItemsPrice * 0.18;
+    const calculatedShippingPrice = calculatedItemsPrice > 1000 ? 0 : 200;
+    const calculatedTotalPrice = calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice;
+
+    if (isNaN(taxPrice) || Math.abs(Number(taxPrice) - calculatedTaxPrice) > 0.01) {
+        return next(new ErrorHandler("Tax price mismatch detected. Please refresh and try again.", 400));
+    }
+
+    if (isNaN(shippingPrice) || Math.abs(Number(shippingPrice) - calculatedShippingPrice) > 0.01) {
+        return next(new ErrorHandler("Shipping price mismatch detected. Please refresh and try again.", 400));
+    }
+
+    if (isNaN(totalPrice) || Math.abs(Number(totalPrice) - calculatedTotalPrice) > 0.01) {
+        return next(new ErrorHandler("Total price mismatch detected. Please refresh and try again.", 400));
     }
 
     const order = await Order.create({
