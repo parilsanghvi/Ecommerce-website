@@ -27,7 +27,7 @@ describe('updateOrder Stock Update Security', () => {
         jest.clearAllMocks();
     });
 
-    it('should use atomic updateOne to prevent race conditions and negative stock', async () => {
+    it('should use bulkWrite for atomic update to improve performance', async () => {
         const mockOrder = {
             orderStatus: 'Processing',
             orderItems: [
@@ -38,22 +38,30 @@ describe('updateOrder Stock Update Security', () => {
         };
 
         Order.findById.mockResolvedValue(mockOrder);
-        Product.updateOne.mockResolvedValue({ modifiedCount: 1 });
+        // Mock bulkWrite success (modifiedCount matches items length)
+        Product.bulkWrite.mockResolvedValue({ modifiedCount: 2 });
 
         await updateOrder(req, res, next);
 
         expect(Order.findById).toHaveBeenCalledWith('order123');
-        expect(Product.updateOne).toHaveBeenCalledTimes(2);
+        expect(Product.bulkWrite).toHaveBeenCalledTimes(1);
 
-        expect(Product.updateOne).toHaveBeenCalledWith(
-            { _id: 'prod1', stock: { $gte: 2 } },
-            { $inc: { stock: -2 } }
-        );
+        const expectedOperations = [
+            {
+                updateOne: {
+                    filter: { _id: 'prod1', stock: { $gte: 2 } },
+                    update: { $inc: { stock: -2 } }
+                }
+            },
+            {
+                updateOne: {
+                    filter: { _id: 'prod2', stock: { $gte: 1 } },
+                    update: { $inc: { stock: -1 } }
+                }
+            }
+        ];
 
-        expect(Product.updateOne).toHaveBeenCalledWith(
-            { _id: 'prod2', stock: { $gte: 1 } },
-            { $inc: { stock: -1 } }
-        );
+        expect(Product.bulkWrite).toHaveBeenCalledWith(expectedOperations);
 
         expect(mockOrder.orderStatus).toBe('Shipped');
         expect(mockOrder.save).toHaveBeenCalled();
@@ -70,15 +78,19 @@ describe('updateOrder Stock Update Security', () => {
         };
 
         Order.findById.mockResolvedValue(mockOrder);
-        // Simulate failure (modifiedCount: 0)
-        Product.updateOne.mockResolvedValue({ modifiedCount: 0 });
+        // Simulate failure (modifiedCount: 0, mismatch with operations.length 1)
+        Product.bulkWrite.mockResolvedValue({ modifiedCount: 0 });
 
-        await expect(updateOrder(req, res, next)).rejects.toThrow('Insufficient stock for product prod1');
+        await expect(updateOrder(req, res, next)).rejects.toThrow('Insufficient stock for one or more products');
 
-        expect(Product.updateOne).toHaveBeenCalledWith(
-            { _id: 'prod1', stock: { $gte: 10 } },
-            { $inc: { stock: -10 } }
-        );
+        expect(Product.bulkWrite).toHaveBeenCalledWith([
+            {
+                updateOne: {
+                    filter: { _id: 'prod1', stock: { $gte: 10 } },
+                    update: { $inc: { stock: -10 } }
+                }
+            }
+        ]);
 
         // Verify order was NOT saved
         expect(mockOrder.save).not.toHaveBeenCalled();
