@@ -68,7 +68,7 @@ const NewProduct = () => {
   const createProductImagesChange = (e) => {
     const files = Array.from(e.target.files);
 
-    setImages([]);
+    setImages(files);
     setImagesPreview([]);
 
     files.forEach((file) => {
@@ -77,7 +77,6 @@ const NewProduct = () => {
       reader.onload = () => {
         if (reader.readyState === 2) {
           setImagesPreview((old) => [...old, reader.result]);
-          setImages((old) => [...old, reader.result]);
         }
       };
 
