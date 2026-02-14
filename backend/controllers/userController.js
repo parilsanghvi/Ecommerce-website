@@ -82,7 +82,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save({
         validateBeforeSave: false
     });
-    // Use FRONTEND_URL if set to prevent Host Header Injection
+    // Use FRONTEND_URL if set to prevent Host Header Injection (Security Fix)
     const clientUrl = process.env.FRONTEND_URL
         ? process.env.FRONTEND_URL.replace(/\/$/, "")
         : `${req.protocol}://${req.get("host")}`;
