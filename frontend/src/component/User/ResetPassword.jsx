@@ -17,8 +17,8 @@ const ResetPassword = () => {
 
 
   const { error, success, loading } = useSelector((state) => state.user);
-  const [password, setPassword] = useState()
-  const [confirmPassword, setConfirmPassword] = useState()
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
 
   const resetPasswordSubmit = (e) => {
     e.preventDefault();

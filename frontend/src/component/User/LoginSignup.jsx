@@ -37,7 +37,7 @@ const LoginSignup = () => {
     const [avatarPreview, setAvatarPreview] = useState("/Profile.png")
     const { name, email, password } = user;
     const [localError, setLocalError] = useState("");
-    const [activeTab, setActiveTab] = useState("login");
+
 
     const clearLocalAndGlobalErrors = () => {
         setLocalError("");

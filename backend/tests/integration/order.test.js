@@ -95,9 +95,9 @@ describe('Order Integration Tests', () => {
             },
             paidAt: Date.now(),
             itemsPrice: 200,
-            taxPrice: 20,
-            shippingPrice: 10,
-            totalPrice: 230
+            taxPrice: 36,
+            shippingPrice: 200,
+            totalPrice: 436
         });
 
         it('should create a new order for authenticated user', async () => {
@@ -109,7 +109,7 @@ describe('Order Integration Tests', () => {
             expect(res.status).toBe(201);
             expect(res.body.success).toBe(true);
             expect(res.body.order).toBeDefined();
-            expect(res.body.order.totalPrice).toBe(230);
+            expect(res.body.order.totalPrice).toBe(436);
         });
 
 
