@@ -60,7 +60,8 @@ describe('Shipping', () => {
 
     it('shows error for invalid phone number', () => {
         render(<Shipping />);
-        fireEvent.change(screen.getByPlaceholderText('Phone Number'), { target: { value: '123' } });
+        const phoneInput = screen.getByPlaceholderText('Phone Number');
+        fireEvent.change(phoneInput, { target: { value: '123' } });
         fireEvent.change(screen.getByPlaceholderText('Address'), { target: { value: '123 Main' } });
         fireEvent.change(screen.getByPlaceholderText('City'), { target: { value: 'Mumbai' } });
         fireEvent.change(screen.getByPlaceholderText('Pin Code'), { target: { value: '400001' } });
@@ -70,15 +71,16 @@ describe('Shipping', () => {
         const stateSelect = screen.getByDisplayValue('State');
         fireEvent.change(stateSelect, { target: { value: 'MH' } });
 
-        fireEvent.submit(screen.getByDisplayValue('Continue'));
-        expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-            'Phone Number should be 10 digits long',
-            { variant: 'error' }
-        );
+        fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+
+        // HTML5 validation prevents submission, so custom error is NOT called
+        expect(mockEnqueueSnackbar).not.toHaveBeenCalled();
+        // Check HTML5 validity
+        expect(phoneInput.checkValidity()).toBe(false);
     });
 
     it('renders continue button', () => {
         render(<Shipping />);
-        expect(screen.getByDisplayValue('Continue')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument();
     });
 });

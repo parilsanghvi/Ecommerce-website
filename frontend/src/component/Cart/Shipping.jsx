@@ -56,10 +56,11 @@ const Shipping = () => {
             onSubmit={shippingSubmit}
           >
             <div>
-              <HomeIcon />
+              <HomeIcon aria-hidden="true" />
               <input
                 type="text"
                 placeholder="Address"
+                aria-label="Address"
                 required
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -67,10 +68,11 @@ const Shipping = () => {
             </div>
 
             <div>
-              <LocationCityIcon />
+              <LocationCityIcon aria-hidden="true" />
               <input
                 type="text"
                 placeholder="City"
+                aria-label="City"
                 required
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
@@ -78,10 +80,11 @@ const Shipping = () => {
             </div>
 
             <div>
-              <PinDropIcon />
+              <PinDropIcon aria-hidden="true" />
               <input
                 type="number"
                 placeholder="Pin Code"
+                aria-label="Pin Code"
                 required
                 value={pinCode}
                 onChange={(e) => setPinCode(e.target.value)}
@@ -89,24 +92,27 @@ const Shipping = () => {
             </div>
 
             <div>
-              <PhoneIcon />
+              <PhoneIcon aria-hidden="true" />
               <input
-                type="number"
+                type="tel"
                 placeholder="Phone Number"
+                aria-label="Phone Number"
                 required
                 value={phoneNo}
                 onChange={(e) => setPhoneNo(e.target.value)}
-                size="10"
+                pattern="[0-9]{10}"
+                title="Phone Number should be 10 digits long"
               />
             </div>
 
             <div>
-              <PublicIcon />
+              <PublicIcon aria-hidden="true" />
 
               <select
                 required
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
+                aria-label="Country"
               >
                 <option value="">Country</option>
                 {Country &&
@@ -120,12 +126,13 @@ const Shipping = () => {
 
             {country && (
               <div>
-                <TransferWithinAStationIcon />
+                <TransferWithinAStationIcon aria-hidden="true" />
 
                 <select
                   required
                   value={state}
                   onChange={(e) => setState(e.target.value)}
+                  aria-label="State"
                 >
                   <option value="">State</option>
                   {State &&
@@ -138,12 +145,12 @@ const Shipping = () => {
               </div>
             )}
 
-            <input
+            <button
               type="submit"
-              value="Continue"
               className="shippingBtn"
-              disabled={state ? false : true}
-            />
+            >
+              Continue
+            </button>
           </form>
         </div>
       </div>
