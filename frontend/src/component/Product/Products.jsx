@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useMemo } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import "./Products.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { clearErrors, getProduct } from '../../features/productSlice'
@@ -47,11 +47,7 @@ const Products = () => {
         setRating(0);
         setCurrentPage(1);
     }
-
-    const filteredProducts = useMemo(() => {
-        if (!products) return [];
-        return products.filter((product) => product.stock !== 0);
-    }, [products]);
+    const filteredProducts = products || [];
 
     useErrorNotification(error, clearErrors);
 
