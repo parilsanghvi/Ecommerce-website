@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const app = express();
 
 // Enable trust proxy for rate limiting behind load balancers
@@ -7,6 +8,9 @@ app.set('trust proxy', 1);
 const cookieParser = require("cookie-parser");
 const errorMidddleware = require('./middleware/error');
 const path = require("path")
+
+// Enable compression
+app.use(compression());
 // config
 
 // Enable extended query parser for bracket notation (e.g., ratings[gte]=1 -> {ratings: {gte: 1}})
