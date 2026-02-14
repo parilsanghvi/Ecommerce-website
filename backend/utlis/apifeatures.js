@@ -10,9 +10,10 @@ class Apifeatures {
     }
     search() {
         const keyword = this.querystr.keyword ? {
-            name: {
-                $regex: escapeRegex(this.querystr.keyword),
-                $options: "i",
+            $text: {
+                $search: this.querystr.keyword,
+                $caseSensitive: false,
+                $diacriticSensitive: false
             }
         } : {}
         this.query = this.query.find({

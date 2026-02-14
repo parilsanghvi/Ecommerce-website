@@ -68,6 +68,8 @@ describe('getAllProducts Integration Test', () => {
         { name: 'Carrot', price: 30, description: 'veg', category: 'Food', images: [], user: userId },
       ]);
 
+      await Product.ensureIndexes();
+
       const req = {
         query: {
           keyword: 'Apple'
