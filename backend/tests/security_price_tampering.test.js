@@ -68,9 +68,9 @@ describe('Order Security: Price Tampering', () => {
                 }],
                 paymentInfo: {},
                 itemsPrice: 1000, // Valid Total
-                taxPrice: 0,
-                shippingPrice: 0,
-                totalPrice: 1000
+                taxPrice: 180, // 1000 * 0.18
+                shippingPrice: 200, // 1000 is not > 1000, so shipping is 200
+                totalPrice: 1380 // 1000 + 180 + 200
             }
         };
 

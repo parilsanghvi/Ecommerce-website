@@ -8,9 +8,10 @@ import { clearErrors, getProductDetails, newReview, newReviewReset } from "../..
 import ReviewCard from "./ReviewCard";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../features/cartSlice";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress, Tooltip } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -126,24 +127,19 @@ const ProductDetails = () => {
     setOpen(false);
   };
 
+  useErrorNotification(error, clearErrors);
+  useErrorNotification(reviewError, clearErrors);
+
   useEffect(() => {
     dispatch(getProductDetails(id));
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-    if (reviewError) {
-      enqueueSnackbar(reviewError, { variant: "error" });
-      dispatch(clearErrors());
-    }
     if (success) {
       enqueueSnackbar("Review Submitted Successfully", { variant: "success" });
       dispatch(newReviewReset());
     }
-  }, [dispatch, error, reviewError, success, enqueueSnackbar]);
+  }, [dispatch, success, enqueueSnackbar]);
 
   return (
     <Fragment>
@@ -170,6 +166,7 @@ const ProductDetails = () => {
                           alt={`${product.name} - View ${i + 1}`}
                           width={600}
                           height={600}
+                          loading="lazy"
                         />
                       </div>
                     ))
@@ -182,6 +179,7 @@ const ProductDetails = () => {
                         style={{ objectFit: 'contain', background: '#ccc' }}
                         width={600}
                         height={600}
+                        loading="lazy"
                       />
                     </div>
                   )}
@@ -207,9 +205,13 @@ const ProductDetails = () => {
                 <h1>{`₹${product.price}`}</h1>
                 <div className="detailsBlock-3-1">
                   <div className="detailsBlock-3-1-1">
-                    <button onClick={decreaseQuantity} disabled={quantity <= 1} aria-label="Decrease quantity">-</button>
+                    <Tooltip title={quantity <= 1 ? "Minimum quantity is 1" : ""}>
+                      <button onClick={quantity <= 1 ? undefined : decreaseQuantity} aria-disabled={quantity <= 1} aria-label="Decrease quantity">-</button>
+                    </Tooltip>
                     <input readOnly type="number" value={quantity} aria-label="Product quantity" />
-                    <button onClick={increaseQuantity} disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
+                    <Tooltip title={product.stock <= quantity ? "Maximum stock reached" : ""}>
+                      <button onClick={product.stock <= quantity ? undefined : increaseQuantity} aria-disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
+                    </Tooltip>
                   </div>
                   <button
                     disabled={product.stock < 1 || addingToCart}

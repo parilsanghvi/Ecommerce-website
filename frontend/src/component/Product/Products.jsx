@@ -9,7 +9,7 @@ import Slider from "@mui/material/Slider"
 import Typography from "@mui/material/Typography"
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import MetaData from "../layout/MetaData";
-import { useSnackbar } from "notistack";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -25,7 +25,6 @@ const categories = [
 
 const Products = () => {
     const dispatch = useDispatch()
-    const { enqueueSnackbar } = useSnackbar();
     const [ratings, setRating] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [price, setPrice] = useState([0, 25000])
@@ -46,16 +45,11 @@ const Products = () => {
         return products.filter((product) => product.stock !== 0);
     }, [products]);
 
+    useErrorNotification(error, clearErrors);
+
     useEffect(() => {
         dispatch(getProduct({ keyword, currentPage, price, category, ratings }));
     }, [dispatch, keyword, currentPage, price, category, ratings]);
-
-    useEffect(() => {
-        if (error) {
-            enqueueSnackbar(error, { variant: "error" });
-            dispatch(clearErrors());
-        }
-    }, [dispatch, error, enqueueSnackbar]);
 
     return (
         <Fragment>

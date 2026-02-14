@@ -11,10 +11,10 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
-import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SideBar from "./Sidebar";
+import AdminLayout from "./AdminLayout";
+import useErrorNotification from "../../hooks/useErrorNotification";
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -32,27 +32,20 @@ const ProductList = () => {
     dispatch(deleteProduct(id));
   };
 
+  useErrorNotification(error, clearErrors);
+  useErrorNotification(deleteError, clearErrors);
+
   useEffect(() => {
     dispatch(getAdminProduct());
   }, [dispatch]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
-    if (deleteError) {
-      enqueueSnackbar(deleteError, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
     if (isDeleted) {
       navigate("/admin/dashboard");
       enqueueSnackbar("Product Deleted Successfully", { variant: "success" });
       dispatch(deleteProductReset());
     }
-  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted]);
+  }, [dispatch, enqueueSnackbar, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Product ID", minWidth: 200, flex: 0.5 },
@@ -89,7 +82,7 @@ const ProductList = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/product/${params.row.id}`}>
+            <Link to={`/admin/product/${params.row.id}`} aria-label="Edit product">
               <EditIcon />
             </Link>
 
@@ -97,6 +90,7 @@ const ProductList = () => {
               onClick={() =>
                 deleteProductHandler(params.row.id)
               }
+              aria-label="Delete product"
             >
               <DeleteIcon />
             </button>
@@ -119,25 +113,20 @@ const ProductList = () => {
     });
 
   return (
-    <Fragment>
-      <MetaData title={`ALL PRODUCTS - Admin`} />
+    <AdminLayout title={`ALL PRODUCTS - Admin`}>
+      <div className="productListContainer">
+        <h1 id="productListHeading">ALL PRODUCTS</h1>
 
-      <div className="dashboard">
-        <SideBar />
-        <div className="productListContainer">
-          <h1 id="productListHeading">ALL PRODUCTS</h1>
-
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
-            className="productListTable"
-            autoHeight
-          />
-        </div>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          className="productListTable"
+          autoHeight
+        />
       </div>
-    </Fragment>
+    </AdminLayout>
   );
 };
 

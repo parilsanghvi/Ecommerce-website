@@ -11,10 +11,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
-import MetaData from "../layout/MetaData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Star from "@mui/icons-material/Star";
-import SideBar from "./Sidebar";
+import AdminLayout from "./AdminLayout";
+import useErrorNotification from "../../hooks/useErrorNotification";
 
 const ProductReviews = () => {
   const dispatch = useDispatch();
@@ -41,6 +41,9 @@ const ProductReviews = () => {
     dispatch(getAllReviews(productId));
   };
 
+  useErrorNotification(error, clearErrors);
+  useErrorNotification(deleteError, clearErrors);
+
   useEffect(() => {
     if (productId.length === 24) {
       dispatch(getAllReviews(productId));
@@ -48,22 +51,12 @@ const ProductReviews = () => {
   }, [dispatch, productId]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
-    if (deleteError) {
-      enqueueSnackbar(deleteError, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
     if (isDeleted) {
       enqueueSnackbar("Review Deleted Successfully", { variant: "success" });
       navigate("/admin/reviews");
       dispatch(deleteReviewReset());
     }
-  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted]);
+  }, [dispatch, enqueueSnackbar, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Review ID", minWidth: 200, flex: 0.5 },
@@ -90,7 +83,7 @@ const ProductReviews = () => {
       flex: 0.4,
 
       cellClassName: (params) => {
-        return params.getValue(params.id, "rating") >= 3
+        return params.row.rating >= 3
           ? "greenColor"
           : "redColor";
       },
@@ -108,8 +101,9 @@ const ProductReviews = () => {
           <Fragment>
             <button
               onClick={() =>
-                deleteReviewHandler(params.getValue(params.id, "id"))
+                deleteReviewHandler(params.row.id)
               }
+              aria-label="Delete review"
             >
               <DeleteIcon />
             </button>
@@ -132,56 +126,51 @@ const ProductReviews = () => {
     });
 
   return (
-    <Fragment>
-      <MetaData title={`ALL REVIEWS - Admin`} />
+    <AdminLayout title={`ALL REVIEWS - Admin`}>
+      <div className="productReviewsContainer">
+        <form
+          className="productReviewsForm"
+          onSubmit={productReviewsSubmitHandler}
+        >
+          <h1 className="productReviewsFormHeading">ALL REVIEWS</h1>
 
-      <div className="dashboard">
-        <SideBar />
-        <div className="productReviewsContainer">
-          <form
-            className="productReviewsForm"
-            onSubmit={productReviewsSubmitHandler}
-          >
-            <h1 className="productReviewsFormHeading">ALL REVIEWS</h1>
-
-            <div>
-              <Star />
-              <input
-                type="text"
-                placeholder="Product Id"
-                required
-                value={productId}
-                onChange={(e) => setProductId(e.target.value)}
-              />
-            </div>
-
-            <button
-              id="createProductBtn"
-              type="submit"
-              className="primary-btn"
-              disabled={
-                loading ? true : false || productId === "" ? true : false
-              }
-            >
-              Search
-            </button>
-          </form>
-
-          {reviews && reviews.length > 0 ? (
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={10}
-              disableSelectionOnClick
-              className="productListTable"
-              autoHeight
+          <div>
+            <Star />
+            <input
+              type="text"
+              placeholder="Product Id"
+              required
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
             />
-          ) : (
-            <h1 className="productReviewsFormHeading">No Reviews Found</h1>
-          )}
-        </div>
+          </div>
+
+          <button
+            id="createProductBtn"
+            type="submit"
+            className="primary-btn"
+            disabled={
+              loading ? true : false || productId === "" ? true : false
+            }
+          >
+            Search
+          </button>
+        </form>
+
+        {reviews && reviews.length > 0 ? (
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={10}
+            disableSelectionOnClick
+            className="productListTable"
+            autoHeight
+          />
+        ) : (
+          <h1 className="productReviewsFormHeading">No Reviews Found</h1>
+        )}
       </div>
-    </Fragment>
+    </AdminLayout>
   );
 };
 

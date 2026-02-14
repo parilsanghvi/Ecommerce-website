@@ -50,6 +50,12 @@ export const createProduct = createAsyncThunk(
             const config = {
                 headers: { "Content-Type": "application/json" },
             };
+
+            // Allow axios to handle Content-Type for FormData
+            if (productData instanceof FormData) {
+                delete config.headers["Content-Type"];
+            }
+
             const { data } = await axios.post(
                 `/api/v1/admin/product/new`,
                 productData,

@@ -1,17 +1,16 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import Products from '../component/Product/Products';
-import { Provider } from 'react-redux';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import '@testing-library/jest-dom';
+import { describe, it, expect, vi } from 'vitest';
+import Products from '../component/Product/Products';
 
 // Mock Redux
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
+const mockDispatch = vi.fn();
+vi.mock('react-redux', () => ({
+    ...vi.importActual('react-redux'),
     useDispatch: () => mockDispatch,
     useSelector: (selector) => selector({
-        products: {
+        product: {
             loading: false,
             error: null,
             products: [
@@ -26,25 +25,32 @@ jest.mock('react-redux', () => ({
 }));
 
 // Mock Notistack
-jest.mock('notistack', () => ({
+vi.mock('notistack', () => ({
     useSnackbar: () => ({
-        enqueueSnackbar: jest.fn()
+        enqueueSnackbar: vi.fn()
     })
 }));
 
 // Mock Router
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useParams: () => ({ keyword: '' }),
-}));
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return {
+        ...actual,
+        useParams: () => ({ keyword: '' }),
+    };
+});
 
-// Mock ProductCard child component to avoid deeper rendering issues
-jest.mock('../component/Home/ProductCard', () => (props) => <div>{props.product.name}</div>);
-jest.mock('../component/layout/MetaData', () => () => <div>MetaData</div>);
+// Mock children
+vi.mock('../component/Home/ProductCard', () => ({
+    default: (props) => <div>{props.product.name}</div>,
+}));
+vi.mock('../component/layout/MetaData', () => ({
+    default: () => <div>MetaData</div>,
+}));
 
 describe('Products Component', () => {
 
-    test('renders product list', () => {
+    it('renders product list', () => {
         render(
             <BrowserRouter>
                 <Products />
@@ -53,10 +59,9 @@ describe('Products Component', () => {
 
         expect(screen.getByText('Inventory')).toBeInTheDocument();
         expect(screen.getByText('Test Product 1')).toBeInTheDocument();
-        // Since we mock ProductCard to just show name
     });
 
-    test('dispatches getProduct action on mount', () => {
+    it('dispatches getProduct action on mount', () => {
         render(
             <BrowserRouter>
                 <Products />

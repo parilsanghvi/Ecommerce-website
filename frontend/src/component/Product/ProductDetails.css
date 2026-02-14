@@ -94,9 +94,15 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.detailsBlock-3-1-1 button:hover:not(:disabled) {
+.detailsBlock-3-1-1 button:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--color-primary);
   color: black;
+}
+
+.detailsBlock-3-1-1 button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  color: var(--color-text);
 }
 
 .detailsBlock-3-1-1 input {

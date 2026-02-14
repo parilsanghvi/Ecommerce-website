@@ -27,6 +27,7 @@ const LoginSignup = () => {
     const [loginPassword, setLoginPassword] = useState("")
     const [showLoginPassword, setShowLoginPassword] = useState(false);
     const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+    const [activeTab, setActiveTab] = useState("login")
     const [user, setUser] = useState({
         name: "",
         email: "",
@@ -36,7 +37,7 @@ const LoginSignup = () => {
     const [avatarPreview, setAvatarPreview] = useState("/Profile.png")
     const { name, email, password } = user;
     const [localError, setLocalError] = useState("");
-    const [activeTab, setActiveTab] = useState("login");
+
 
     const clearLocalAndGlobalErrors = () => {
         setLocalError("");
@@ -96,6 +97,7 @@ const LoginSignup = () => {
 
 
     const switchTabs = (e, tab) => {
+        setActiveTab(tab);
         if (tab === "login") {
             switcherTab.current.classList.add("shiftToNeutral")
             switcherTab.current.classList.remove("shiftToRight")
@@ -145,8 +147,8 @@ const LoginSignup = () => {
                                         Register
                                     </button>
                                 </div>
-                                <button ref={switcherTab} tabIndex="-1" aria-hidden="true"></button>
-                            </div>
+                                <div className="slider-line" ref={switcherTab}></div>
+                            </div >
                             {(error || localError) && (
                                 <div className="loginError">
                                     <MdErrorOutline />
@@ -158,8 +160,8 @@ const LoginSignup = () => {
                                 ref={loginTab}
                                 onSubmit={loginSubmit}
                                 role="tabpanel"
-                                aria-labelledby="login-tab"
                                 id="login-panel"
+                                aria-labelledby="login-tab"
                                 aria-hidden={activeTab !== "login"}
                             >
                                 <div className='loginEmail'>
@@ -207,8 +209,8 @@ const LoginSignup = () => {
                                 encType='multipart/form-data'
                                 onSubmit={registerSubmit}
                                 role="tabpanel"
-                                aria-labelledby="register-tab"
                                 id="register-panel"
+                                aria-labelledby="register-tab"
                                 aria-hidden={activeTab !== "register"}
                             >
                                 <div className='signUpName'>
@@ -271,11 +273,11 @@ const LoginSignup = () => {
                                     className='primary-btn'
                                 />
                             </form>
-                        </div>
-                    </div>
-                </Fragment>
+                        </div >
+                    </div >
+                </Fragment >
             )}
-        </Fragment>
+        </Fragment >
     )
 }
 

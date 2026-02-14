@@ -1,14 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import LoginSignup from '../component/User/LoginSignup';
-import { Provider } from 'react-redux';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import '@testing-library/jest-dom';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import LoginSignup from '../component/User/LoginSignup';
 
 // Mock Redux
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
+const mockDispatch = vi.fn();
+vi.mock('react-redux', () => ({
+    ...vi.importActual('react-redux'),
     useDispatch: () => mockDispatch,
     useSelector: (selector) => selector({
         user: {
@@ -20,60 +19,64 @@ jest.mock('react-redux', () => ({
 }));
 
 // Mock Notistack
-jest.mock('notistack', () => ({
+vi.mock('notistack', () => ({
     useSnackbar: () => ({
-        enqueueSnackbar: jest.fn()
+        enqueueSnackbar: vi.fn()
     })
 }));
 
 // Mock Router
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => jest.fn(),
-    useLocation: () => ({ pathname: '/login', search: '' }),
-}));
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return {
+        ...actual,
+        useNavigate: () => vi.fn(),
+        useLocation: () => ({ pathname: '/login', search: '' }),
+    };
+});
 
 
 describe('LoginSignup Component', () => {
-
-    test('renders Login tab by default', () => {
-        render(
-            <BrowserRouter>
-                <LoginSignup />
-            </BrowserRouter>
-        );
-
-        expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Login/i })).toBeInTheDocument();
+    beforeEach(() => {
+        mockDispatch.mockClear();
     });
 
-    test('switches to Register tab', () => {
+    it('renders Login tab by default', () => {
         render(
             <BrowserRouter>
                 <LoginSignup />
             </BrowserRouter>
         );
 
-        const registerTab = screen.getByText('Register');
+        expect(screen.getByLabelText('Login Email')).toBeInTheDocument();
+        expect(screen.getByLabelText('Login Password')).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: /Login/i })).toBeInTheDocument();
+    });
+
+    it('switches to Register tab', () => {
+        render(
+            <BrowserRouter>
+                <LoginSignup />
+            </BrowserRouter>
+        );
+
+        const registerTab = screen.getByRole('tab', { name: /Register/i });
         fireEvent.click(registerTab);
 
         expect(screen.getByPlaceholderText('Name')).toBeInTheDocument();
-        // Check if Register button is visible (might need to check visibility specifically if CSS hides it, 
-        // but checking existence in DOM is a good first step. 
-        // The component uses class manipulation for visibility, which jsdom handles but visual checks strictly rely on styles.
-        // Let's assume input presence confirms tab switch logic execution.)
     });
 
-    test('dispatches login action', () => {
+    it('dispatches login action', () => {
         render(
             <BrowserRouter>
                 <LoginSignup />
             </BrowserRouter>
         );
 
-        fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'test@email.com' } });
-        fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'password' } });
+        const emailInputs = screen.getAllByPlaceholderText('Email');
+        const passwordInputs = screen.getAllByPlaceholderText('Password');
+        fireEvent.change(emailInputs[0], { target: { value: 'test@email.com' } });
+        fireEvent.change(passwordInputs[0], { target: { value: 'password' } });
         fireEvent.click(screen.getByRole('button', { name: /Login/i }));
 
         expect(mockDispatch).toHaveBeenCalled();

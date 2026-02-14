@@ -27,53 +27,53 @@ const ProductCard = ({ product }) => {
         }}
       >
         <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', marginBottom: '16px', background: 'transparent' }}>
-            <img
-              src={product.images[0].url}
-              alt={product.name}
-              // Optimization: Lazy load images to improve initial page load performance
-              loading="lazy"
-              // Optimization: Decode image asynchronously to avoid blocking main thread
-              decoding="async"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-            />
+          <img
+            src={product.images[0].url}
+            alt={product.name}
+            // Optimization: Lazy load images to improve initial page load performance
+            loading="lazy"
+            // Optimization: Decode image asynchronously to avoid blocking main thread
+            decoding="async"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
         </div>
 
         <h3 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.2rem',
-            margin: 0,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            color: 'var(--color-text)'
+          fontFamily: 'var(--font-heading)',
+          fontSize: '1.2rem',
+          margin: 0,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          color: 'var(--color-text)'
         }}>
-            {product.name}
+          {product.name}
         </h3>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Rating {...options} size="small" sx={{
-                    "& .MuiRating-iconFilled": { color: "var(--color-primary)" },
-                    "& .MuiRating-iconEmpty": { color: "#333" }
-                }} />
-                <span style={{ color: 'var(--color-muted)', fontSize: '0.8rem', fontFamily: 'var(--font-body)' }}>
-                    ({product.numOfReviews})
-                </span>
-            </div>
-            <span style={{
-                color: 'var(--color-primary)',
-                fontFamily: 'var(--font-heading)',
-                fontSize: '1.2rem'
-            }}>
-                {`₹${product.price}`}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Rating {...options} size="small" sx={{
+              "& .MuiRating-iconFilled": { color: "var(--color-primary)" },
+              "& .MuiRating-iconEmpty": { color: "#333" }
+            }} />
+            <span style={{ color: 'var(--color-muted)', fontSize: '0.8rem', fontFamily: 'var(--font-body)' }}>
+              ({product.numOfReviews})
             </span>
+          </div>
+          <span style={{
+            color: 'var(--color-primary)',
+            fontFamily: 'var(--font-heading)',
+            fontSize: '1.2rem'
+          }}>
+            {`₹${product.price}`}
+          </span>
         </div>
       </motion.div>
     </Link>

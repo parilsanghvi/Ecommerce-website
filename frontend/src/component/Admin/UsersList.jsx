@@ -5,10 +5,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
-import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SideBar from "./Sidebar";
+import AdminLayout from "./AdminLayout";
+import useErrorNotification from "../../hooks/useErrorNotification";
 import { getAllUsers, clearErrors, deleteUser, deleteUserReset } from "../../features/userSlice";
 
 const UsersList = () => {
@@ -29,27 +29,20 @@ const UsersList = () => {
     dispatch(deleteUser(id));
   };
 
+  useErrorNotification(error, clearErrors);
+  useErrorNotification(deleteError, clearErrors);
+
   useEffect(() => {
     dispatch(getAllUsers());
   }, [dispatch]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
-    if (deleteError) {
-      enqueueSnackbar(deleteError, { variant: "error" });
-      dispatch(clearErrors());
-    }
-
     if (isDeleted) {
       enqueueSnackbar(message, { variant: "success" });
       navigate("/admin/users");
       dispatch(deleteUserReset());
     }
-  }, [dispatch, enqueueSnackbar, error, deleteError, navigate, isDeleted, message]);
+  }, [dispatch, enqueueSnackbar, navigate, isDeleted, message]);
 
   const columns = [
     { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },
@@ -90,7 +83,7 @@ const UsersList = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/user/${params.row.id}`}>
+            <Link to={`/admin/user/${params.row.id}`} aria-label="Edit user">
               <EditIcon />
             </Link>
 
@@ -98,6 +91,7 @@ const UsersList = () => {
               onClick={() =>
                 deleteUserHandler(params.row.id)
               }
+              aria-label="Delete user"
             >
               <DeleteIcon />
             </button>
@@ -120,25 +114,20 @@ const UsersList = () => {
     });
 
   return (
-    <Fragment>
-      <MetaData title={`ALL USERS - Admin`} />
+    <AdminLayout title={`ALL USERS - Admin`}>
+      <div className="productListContainer">
+        <h1 id="productListHeading">ALL USERS</h1>
 
-      <div className="dashboard">
-        <SideBar />
-        <div className="productListContainer">
-          <h1 id="productListHeading">ALL USERS</h1>
-
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
-            className="productListTable"
-            autoHeight
-          />
-        </div>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          className="productListTable"
+          autoHeight
+        />
       </div>
-    </Fragment>
+    </AdminLayout>
   );
 };
 

@@ -18,6 +18,31 @@ export default defineConfig({
     },
     build: {
         outDir: 'build',
+        chunkSizeWarningLimit: 700, // vendor-geo (country-state-city) is ~651KB of pure data, irreducible
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    // React core
+                    'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                    // Redux state management
+                    'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
+                    // Emotion (CSS-in-JS engine for MUI)
+                    'vendor-emotion': ['@emotion/react', '@emotion/styled'],
+                    // MUI core components
+                    'vendor-mui': ['@mui/material'],
+                    // MUI icons (tree-shaken)
+                    'vendor-mui-icons': ['@mui/icons-material'],
+                    // MUI DataGrid
+                    'vendor-datagrid': ['@mui/x-data-grid'],
+                    // Chart.js
+                    'vendor-charts': ['chart.js', 'react-chartjs-2'],
+                    // Country/state data (~651KB, lazy-loaded via Shipping page)
+                    'vendor-geo': ['country-state-city'],
+                    // Animation library
+                    'vendor-motion': ['framer-motion'],
+                },
+            },
+        },
     },
     resolve: {
         alias: {

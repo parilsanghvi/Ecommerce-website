@@ -10,7 +10,6 @@ const productSchema = mongoose.Schema({
         required: [true, "Please enter product name"],
         // dunno this 
         trim: true,
-        index: true // Optimize: Index for faster name search
     },
     description: {
         type: String,
@@ -87,5 +86,9 @@ const productSchema = mongoose.Schema({
         default: Date.now
     }
 })
+
+// Create a text index on the name field for faster search queries
+productSchema.index({ name: 'text' });
+
 // exports mongoose model with productschema in "product" collection if such collection is not present it will create
 module.exports = mongoose.model("product", productSchema);    

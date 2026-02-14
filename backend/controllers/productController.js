@@ -10,24 +10,54 @@ const cloudinary = require("cloudinary")
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     // takes json as input and adds to database according to schema
     // Product.create/find are operations on database with help of mongoose.export taken in Product
-    let images = []
-    if (typeof req.body.images === "string") {
-        images.push(req.body.images)
-    } else if (Array.isArray(req.body.images)) {
-        images = req.body.images
+    let imagesLink = [];
+
+    // Optimized: Use multipart upload (req.files) to reduce payload size and memory usage
+    if (req.files && req.files.length > 0) {
+        imagesLink = await Promise.all(req.files.map((file) => {
+            return new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.v2.uploader.upload_stream(
+                    {
+                        folder: "products",
+                        width: 150,
+                        height: 200,
+                        // crop: "scale",
+                    },
+                    (error, result) => {
+                        if (error) return reject(error);
+                        resolve({
+                            public_id: result.public_id,
+                            url: result.secure_url
+                        });
+                    }
+                );
+                uploadStream.end(file.buffer);
+            });
+        }));
+    } else {
+        // Fallback for Base64 (legacy/JSON support)
+        let images = []
+        if (typeof req.body.images === "string") {
+            images.push(req.body.images)
+        } else if (Array.isArray(req.body.images)) {
+            images = req.body.images
+        }
+
+        if (images.length > 0) {
+            imagesLink = await Promise.all(images.map(async (image) => {
+                const result = await cloudinary.v2.uploader.upload(image, {
+                    folder: "products",
+                    width: 150,
+                    height: 200,
+                    // crop: "scale",
+                });
+                return {
+                    public_id: result.public_id,
+                    url: result.secure_url
+                };
+            }));
+        }
     }
-    const imagesLink = await Promise.all(images.map(async (image) => {
-        const result = await cloudinary.v2.uploader.upload(image, {
-            folder: "products",
-            width: 150,
-            height: 200,
-            // crop: "scale",
-        });
-        return {
-            public_id: result.public_id,
-            url: result.secure_url
-        };
-    }));
 
     req.body.user = req.user.id;
     req.body.images = imagesLink;
@@ -49,13 +79,18 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
         .search()
         .filter();
 
-    let filteredProductsCount = await apifeature.query.clone().countDocuments();
+    const filteredProductsCountPromise = apifeature.query.clone().countDocuments();
 
     apifeature.pagiNation(resultPerPage);
 
     // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
     // Optimized: Exclude reviews to reduce payload size and improve performance
-    const products = await apifeature.query.select("-reviews").lean();
+    const productsPromise = apifeature.query.select("-reviews").lean();
+
+    const [filteredProductsCount, products] = await Promise.all([
+        filteredProductsCountPromise,
+        productsPromise,
+    ]);
 
     res.status(200).json({
         success: true,
