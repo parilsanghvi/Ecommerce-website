@@ -81,6 +81,9 @@ describe('Product Integration Tests (Public)', () => {
                 user: new mongoose.Types.ObjectId()
             }
         ]);
+
+        // Ensure text index is created
+        await Product.ensureIndexes();
     });
 
     // ==================== GET ALL PRODUCTS ====================
