@@ -108,6 +108,12 @@
     margin-bottom: 1rem;
 }
 
+.resetFiltersBtn {
+    width: auto;
+    margin-top: 1rem;
+    padding: 0.5rem 2rem;
+}
+
 @media screen and (max-width: 768px) {
     .products-container {
         flex-direction: column;

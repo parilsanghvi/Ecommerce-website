@@ -40,6 +40,13 @@ const Products = () => {
         setCurrentPage(1);
     }
 
+    const resetFilters = () => {
+        setPrice([0, 25000]);
+        setCategory("");
+        setRating(0);
+        setCurrentPage(1);
+    }
+
     const filteredProducts = useMemo(() => {
         if (!products) return [];
         return products.filter((product) => product.stock !== 0);
@@ -180,6 +187,13 @@ const Products = () => {
                                 <div className="noProducts">
                                     <SearchOffIcon />
                                     <Typography>No Products Found</Typography>
+                                    <button
+                                        onClick={resetFilters}
+                                        className="primary-btn resetFiltersBtn"
+                                        aria-label="Reset all filters"
+                                    >
+                                        Reset Filters
+                                    </button>
                                 </div>
                             )}
 
