@@ -79,7 +79,17 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
         .search()
         .filter();
 
-    const filteredProductsCountPromise = apifeature.query.clone().countDocuments();
+    // Optimized: Only count filtered documents if filters are applied
+    let filteredProductsCountPromise;
+    const { keyword, page, limit, ...filters } = req.query;
+    const hasSearch = typeof keyword === 'string' && keyword.trim() !== "";
+    const hasFilters = Object.keys(filters).length > 0;
+
+    if (!hasSearch && !hasFilters) {
+        filteredProductsCountPromise = Promise.resolve(productsCount);
+    } else {
+        filteredProductsCountPromise = apifeature.query.clone().countDocuments();
+    }
 
     apifeature.pagiNation(resultPerPage);
 
