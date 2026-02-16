@@ -7,6 +7,7 @@ import ProductCard from '../Home/ProductCard'
 import Pagination from "@mui/material/Pagination"
 import Slider from "@mui/material/Slider"
 import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import MetaData from "../layout/MetaData";
 import useErrorNotification from "../../hooks/useErrorNotification";
@@ -37,6 +38,13 @@ const Products = () => {
     }
     const priceHandler = (event, newPrice) => {
         setPrice(newPrice);
+        setCurrentPage(1);
+    }
+
+    const resetFilters = () => {
+        setPrice([0, 25000]);
+        setCategory("");
+        setRating(0);
         setCurrentPage(1);
     }
 
@@ -112,13 +120,21 @@ const Products = () => {
                                     <li className='category-link'
                                         key={cat}
                                         onClick={() => {
-                                            setCategory(cat);
+                                            if (category === cat) {
+                                                setCategory("");
+                                            } else {
+                                                setCategory(cat);
+                                            }
                                             setCurrentPage(1);
                                         }}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
                                                 e.preventDefault();
-                                                setCategory(cat);
+                                                if (category === cat) {
+                                                    setCategory("");
+                                                } else {
+                                                    setCategory(cat);
+                                                }
                                                 setCurrentPage(1);
                                             }
                                         }}
@@ -180,6 +196,14 @@ const Products = () => {
                                 <div className="noProducts">
                                     <SearchOffIcon />
                                     <Typography>No Products Found</Typography>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={resetFilters}
+                                        sx={{ marginTop: '1rem', fontFamily: 'var(--font-heading)' }}
+                                    >
+                                        Reset Filters
+                                    </Button>
                                 </div>
                             )}
 
