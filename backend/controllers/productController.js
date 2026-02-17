@@ -112,8 +112,8 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 })
 exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
     // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
-    // Optimized: Exclude reviews to reduce payload size and improve performance
-    const products = await Product.find().select("-reviews").lean()
+    // Optimized: Select only necessary fields (name, price, stock, _id) to reduce payload size
+    const products = await Product.find().select("name price stock").lean()
     res.status(200).json({
         success: true,
         products,
