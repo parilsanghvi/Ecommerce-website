@@ -228,28 +228,60 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         rating: Number(rating),
         comment,
     }
-    const product = await Product.findById(productId)
-    const isReviewed = product.reviews.find(rev => rev.user.toString() === req.user._id.toString())
-    if (isReviewed) {
-        product.reviews.forEach((rev) => {
-            if (rev.user.toString() === req.user._id.toString())
-                rev.rating = rating, rev.comment = comment;
-        })
-    } else {
-        product.reviews.push(review)
-        product.numOfReviews = product.reviews.length
+
+    // Optimized: Fetch only necessary fields and check for existing review by this user
+    // This avoids fetching the entire reviews array (O(1) payload vs O(N))
+    const product = await Product.findOne(
+        { _id: productId },
+        { ratings: 1, numOfReviews: 1, reviews: { $elemMatch: { user: req.user._id } } }
+    ).lean();
+
+    if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
     }
-    let avg = 0;
-    product.reviews.forEach((rev) => {
-        avg += rev.rating
-    })
-    product.ratings = avg / product.reviews.length;
-    await product.save({
-        validateBeforeSave: false,
-    })
+
+    const isReviewed = product.reviews && product.reviews.length > 0;
+    const currentRatings = product.ratings || 0;
+    const currentNumOfReviews = product.numOfReviews || 0;
+    let newRatings;
+
+    if (isReviewed) {
+        // Update existing review
+        const oldRating = product.reviews[0].rating;
+        // Calculate new average: (OldAvg * Count - OldRating + NewRating) / Count
+        if (currentNumOfReviews === 0) {
+            newRatings = Number(rating);
+        } else {
+            newRatings = ((currentRatings * currentNumOfReviews) - oldRating + Number(rating)) / currentNumOfReviews;
+        }
+
+        await Product.updateOne(
+            { _id: productId, "reviews.user": req.user._id },
+            {
+                $set: {
+                    "reviews.$.rating": Number(rating),
+                    "reviews.$.comment": comment,
+                    ratings: newRatings
+                }
+            }
+        );
+    } else {
+        // Add new review
+        // Calculate new average: (OldAvg * Count + NewRating) / (Count + 1)
+        newRatings = ((currentRatings * currentNumOfReviews) + Number(rating)) / (currentNumOfReviews + 1);
+
+        await Product.updateOne(
+            { _id: productId },
+            {
+                $push: { reviews: review },
+                $set: { ratings: newRatings },
+                $inc: { numOfReviews: 1 }
+            }
+        );
+    }
+
     res.status(200).json({
         success: true,
-        product
     })
 })
 // get all reviews of single product
