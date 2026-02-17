@@ -23,6 +23,9 @@ export const getProduct = createAsyncThunk(
                 link += `&category=${category}`;
             }
 
+            // Optimized: Filter out out-of-stock products on the server side to reduce payload and fix pagination
+            link += `&stock[gt]=0`;
+
             const { data } = await axios.get(link);
             return data;
         } catch (error) {
