@@ -21,11 +21,3 @@
 1. Always apply validation middleware to all public-facing routes, especially authentication-related ones.
 2. Ensure consistent use of `zod` schemas for all request bodies.
 3. Verify that new routes are added with appropriate validation middleware.
-
-## 2025-02-19 - IDOR in Order Details
-**Vulnerability:** The `getSingleOrder` endpoint fetched an order by ID but failed to verify if the authenticated user was the owner of that order. This allowed any authenticated user to access any other user's order details by guessing the order ID.
-**Learning:** Authentication is not Authorization. Even if a user is logged in (`isAuthenticatedUser`), they must only be allowed to access resources they own or have permission to view.
-**Prevention:**
-1. Always implement resource ownership checks in controllers for "get by ID" endpoints.
-2. Use a centralized authorization policy or middleware if possible.
-3. When unit testing controllers with `catchAsyncErrors`, mock the middleware to return the promise to ensure tests wait for async operations.
