@@ -26,7 +26,7 @@ const { registerSchema, loginSchema, updateProfileSchema, forgotPasswordSchema, 
 const rateLimiter = require("../middleware/rateLimiter");
 const router = express.Router()
 
-router.route("/register").post(rateLimiter(15 * 60 * 1000, 5, "Too many registration attempts, please try again later"), upload.any(), validate(registerSchema), registerUser);
+router.route("/register").post(rateLimiter(15 * 60 * 1000, 5, "Too many registration attempts, please try again later"), upload.none(), validate(registerSchema), registerUser);
 
 router.route("/login").post(rateLimiter(15 * 60 * 1000, 10, "Too many login attempts, please try again later"), validate(loginSchema), loginUser)
 
@@ -40,7 +40,7 @@ router.route("/me").get(isAuthenticatedUser, getUserDetails)
 
 router.route("/password/update").put(isAuthenticatedUser, updatePassword)
 
-router.route("/me/update").put(isAuthenticatedUser, upload.any(), validate(updateProfileSchema), updateProfile)
+router.route("/me/update").put(isAuthenticatedUser, upload.none(), validate(updateProfileSchema), updateProfile)
 
 router.route("/admin/users").get(isAuthenticatedUser, authorizedRoles("admin"), getAllUser)
 
