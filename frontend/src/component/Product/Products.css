@@ -33,6 +33,12 @@
     color: var(--color-text);
 }
 
+.clear-filters-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
 .products {
     flex: 1;
     display: grid;

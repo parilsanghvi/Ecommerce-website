@@ -1,4 +1,5 @@
 const Order = require("../../models/orderModel");
+const User = require("../../models/userModel");
 const ErrorHandler = require("../../utlis/errorhandler");
 
 // Mock catchAsyncErrors before requiring the controller
@@ -6,19 +7,9 @@ jest.mock("../../middleware/catchAsyncErrors", () => (func) => (req, res, next) 
   return Promise.resolve(func(req, res, next)).catch(next);
 });
 
-// Mock Order model
+// Mock Order and User models
 jest.mock("../../models/orderModel");
-
-// Mock cloudinary to avoid import errors in productController (even though we test orderController,
-// if orderController imports anything that imports cloudinary indirectly)
-// orderController imports Product model, which might be fine.
-// But let's check orderController imports.
-// It imports Product model.
-// It imports apifeatures.
-// It imports errorhandler.
-
-// If we need to mock other dependencies, we should.
-// But let's try with minimal mocks first.
+jest.mock("../../models/userModel");
 
 const { getSingleOrder } = require("../../controllers/orderController");
 
@@ -28,7 +19,7 @@ describe("getSingleOrder Security (IDOR)", () => {
   beforeEach(() => {
     req = {
       params: { id: "orderId123" },
-      user: { _id: "userB_ID", role: "user" }, // Default to User B
+      user: { _id: "userB_ID", role: "user", name: "User B", email: "userb@example.com" }, // Default to User B
     };
     res = {
       status: jest.fn().mockReturnThis(),
@@ -39,45 +30,52 @@ describe("getSingleOrder Security (IDOR)", () => {
   });
 
   it("should fail (404) when user accesses another user's order", async () => {
-    // Mock order belonging to User A
+    // Mock order belonging to User A.
+    // Since populate is removed, user field is just the ID.
     const mockOrder = {
       _id: "orderId123",
-      user: { _id: "userA_ID", name: "User A", email: "usera@example.com" },
+      user: "userA_ID",
     };
 
-    // Chainable Mongoose mocks: findById -> populate -> lean -> returns mockOrder
+    // Chainable Mongoose mocks: findById -> lean -> returns mockOrder
     const mockLean = jest.fn().mockResolvedValue(mockOrder);
-    const mockPopulate = jest.fn().mockReturnValue({ lean: mockLean });
-    Order.findById.mockReturnValue({ populate: mockPopulate });
+    // Removed populate mock
+    Order.findById.mockReturnValue({ lean: mockLean });
 
     await getSingleOrder(req, res, next);
 
-    // Expectation: Should fail because req.user._id (User B) != order.user._id (User A)
-    // Currently (before fix), this will FAIL the test because it returns 200.
-    // We assert that it SHOULD be unauthorized (404).
+    // Expectation: Should fail because req.user._id (User B) != order.user (User A)
     expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
     expect(next.mock.calls[0][0].statusCode).toBe(404);
   });
 
   it("should succeed when user accesses their own order", async () => {
     req.user._id = "userA_ID"; // Same as order owner
+    req.user.name = "User A";
+    req.user.email = "usera@example.com";
 
     const mockOrder = {
       _id: "orderId123",
-      user: { _id: "userA_ID", name: "User A", email: "usera@example.com" },
+      user: "userA_ID", // ID only
     };
 
     const mockLean = jest.fn().mockResolvedValue(mockOrder);
-    const mockPopulate = jest.fn().mockReturnValue({ lean: mockLean });
-    Order.findById.mockReturnValue({ populate: mockPopulate });
+    Order.findById.mockReturnValue({ lean: mockLean });
 
     await getSingleOrder(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      success: true,
-      order: mockOrder,
-    });
+
+    // Verify that the response includes the attached user details
+    const responseOrder = res.json.mock.calls[0][0].order;
+    expect(responseOrder).toEqual(expect.objectContaining({
+        _id: "orderId123",
+        user: {
+            _id: "userA_ID",
+            name: "User A",
+            email: "usera@example.com"
+        }
+    }));
   });
 
   it("should succeed when admin accesses another user's order", async () => {
@@ -85,19 +83,33 @@ describe("getSingleOrder Security (IDOR)", () => {
 
     const mockOrder = {
       _id: "orderId123",
-      user: { _id: "userA_ID", name: "User A", email: "usera@example.com" },
+      user: "userA_ID",
+    };
+
+    const mockUserA = {
+        _id: "userA_ID",
+        name: "User A",
+        email: "usera@example.com"
     };
 
     const mockLean = jest.fn().mockResolvedValue(mockOrder);
-    const mockPopulate = jest.fn().mockReturnValue({ lean: mockLean });
-    Order.findById.mockReturnValue({ populate: mockPopulate });
+    Order.findById.mockReturnValue({ lean: mockLean });
+
+    // Mock User.findById for admin case
+    const mockUserLean = jest.fn().mockResolvedValue(mockUserA);
+    const mockSelect = jest.fn().mockReturnValue({ lean: mockUserLean });
+    User.findById.mockReturnValue({ select: mockSelect });
 
     await getSingleOrder(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      success: true,
-      order: mockOrder,
-    });
+
+    const responseOrder = res.json.mock.calls[0][0].order;
+    expect(responseOrder).toEqual(expect.objectContaining({
+        _id: "orderId123",
+        user: mockUserA
+    }));
+
+    expect(User.findById).toHaveBeenCalledWith("userA_ID");
   });
 });
