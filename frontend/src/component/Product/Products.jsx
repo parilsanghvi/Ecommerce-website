@@ -24,11 +24,13 @@ const categories = [
     "SmartPhones",
 ]
 
+const MAX_PRICE = 25000;
+
 const Products = () => {
     const dispatch = useDispatch()
     const [ratings, setRating] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
-    const [price, setPrice] = useState([0, 25000])
+    const [price, setPrice] = useState([0, MAX_PRICE])
     const [category, setCategory] = useState("")
     const { products, loading, error, productsCount, resultPerPage, filteredProductsCount } = useSelector((state) => state.product)
     const { keyword } = useParams();
@@ -42,7 +44,7 @@ const Products = () => {
     }
 
     const resetFilters = () => {
-        setPrice([0, 25000]);
+        setPrice([0, MAX_PRICE]);
         setCategory("");
         setRating(0);
         setCurrentPage(1);
@@ -54,6 +56,8 @@ const Products = () => {
     useEffect(() => {
         dispatch(getProduct({ keyword, currentPage, price, category, ratings }));
     }, [dispatch, keyword, currentPage, price, category, ratings]);
+
+    const isFiltered = price[0] !== 0 || price[1] !== MAX_PRICE || category !== "" || ratings > 0;
 
     return (
         <Fragment>
@@ -69,6 +73,25 @@ const Products = () => {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.5 }}
                         >
+                            {isFiltered && (
+                                <div className="clear-filters-container">
+                                    <Button
+                                        variant="text"
+                                        color="secondary"
+                                        size="small"
+                                        onClick={resetFilters}
+                                        aria-label="Clear all filters"
+                                        sx={{
+                                            textTransform: 'none',
+                                            padding: '4px 8px',
+                                            fontFamily: 'var(--font-heading)',
+                                            color: 'var(--color-primary)'
+                                        }}
+                                    >
+                                        Clear Filters
+                                    </Button>
+                                </div>
+                            )}
                             <Typography variant="h6" className="filter-heading" id="range-slider">Price Range</Typography>
                             <Slider
                                 value={price}
@@ -77,7 +100,7 @@ const Products = () => {
                                 valueLabelDisplay='auto'
                                 aria-labelledby='range-slider'
                                 min={0}
-                                max={25000}
+                                max={MAX_PRICE}
                                 sx={{
                                     marginTop: '1rem',
                                     marginBottom: '2rem',
@@ -159,6 +182,7 @@ const Products = () => {
                                     min={0}
                                     max={5}
                                     valueLabelDisplay='auto'
+                                    aria-label="Minimum Rating"
                                     sx={{
                                         marginTop: '0.5rem',
                                         color: 'var(--color-primary)',
