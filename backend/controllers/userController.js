@@ -141,7 +141,7 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
 })
 // update user password
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.user.id).select("+password")
+    const user = await User.findById(req.user._id).select("+password")
     const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
     if (!isPasswordMatched) {
         return next(new ErrorHandler("old password is incorrect ", 401))
@@ -177,7 +177,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
             url: myCloud.secure_url,
         }
     }
-    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    const user = await User.findByIdAndUpdate(req.user._id, newUserData, {
         new: true,
         runValidators: true,
     })

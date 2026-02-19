@@ -59,7 +59,7 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
         }
     }
 
-    req.body.user = req.user.id;
+    req.body.user = req.user._id;
     req.body.images = imagesLink;
     const product = await Product.create(req.body);
     // returns status with success and added object in json

@@ -12,7 +12,8 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = await User.findById(decodedData.id);
+    // Optimized: Use lean() and select only necessary fields for better performance
+    req.user = await User.findById(decodedData.id).select("name email role avatar _id createdAt").lean();
 
     // Security: Check if user still exists in DB
     if (!req.user) {
