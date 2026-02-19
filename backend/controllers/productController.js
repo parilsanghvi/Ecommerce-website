@@ -3,7 +3,8 @@ const Product = require("../models/productModel");
 const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
-const cloudinary = require("cloudinary")
+const cloudinary = require("cloudinary");
+const { uploadImage } = require("../utlis/imageUpload");
 
 // create product --admin
 // exports.(function_name) = rest of function {way to export functions ;) }
@@ -14,26 +15,9 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 
     // Optimized: Use multipart upload (req.files) to reduce payload size and memory usage
     if (req.files && req.files.length > 0) {
-        imagesLink = await Promise.all(req.files.map((file) => {
-            return new Promise((resolve, reject) => {
-                const uploadStream = cloudinary.v2.uploader.upload_stream(
-                    {
-                        folder: "products",
-                        width: 150,
-                        height: 200,
-                        // crop: "scale",
-                    },
-                    (error, result) => {
-                        if (error) return reject(error);
-                        resolve({
-                            public_id: result.public_id,
-                            url: result.secure_url
-                        });
-                    }
-                );
-                uploadStream.end(file.buffer);
-            });
-        }));
+        imagesLink = await Promise.all(req.files.map((file) =>
+            uploadImage(file, "products", { width: 150, height: 200 })
+        ));
     } else {
         // Fallback for Base64 (legacy/JSON support)
         let images = []
@@ -44,18 +28,9 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
         }
 
         if (images.length > 0) {
-            imagesLink = await Promise.all(images.map(async (image) => {
-                const result = await cloudinary.v2.uploader.upload(image, {
-                    folder: "products",
-                    width: 150,
-                    height: 200,
-                    // crop: "scale",
-                });
-                return {
-                    public_id: result.public_id,
-                    url: result.secure_url
-                };
-            }));
+            imagesLink = await Promise.all(images.map((image) =>
+                uploadImage(image, "products", { width: 150, height: 200 })
+            ));
         }
     }
 
@@ -156,18 +131,9 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         await Promise.all(imagesToDelete.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
 
         // 4. Upload new images
-        const newImagesLinks = await Promise.all(imagesToUpload.map(async (image) => {
-            const result = await cloudinary.v2.uploader.upload(image, {
-                folder: "products",
-                // width: 150,
-                // height: 200,
-                // crop: "scale",
-            });
-            return {
-                public_id: result.public_id,
-                url: result.secure_url
-            };
-        }));
+        const newImagesLinks = await Promise.all(imagesToUpload.map((image) =>
+            uploadImage(image, "products")
+        ));
 
         // 5. Reconstruct the final images array
         // Keep the old image objects that matched the URLs

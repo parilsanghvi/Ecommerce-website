@@ -42,6 +42,8 @@ describe('Product Controller', () => {
       },
     }));
 
+    jest.mock('../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next));
+
     // Require modules after mocking
     productController = require('../controllers/productController');
     Product = require('../models/productModel');
@@ -52,7 +54,7 @@ describe('Product Controller', () => {
 
   describe('createProduct', () => {
     // Skipped due to Jest mocking environment issues in sandbox (verified via manual logs and benchmark)
-    it.skip('should create a product with images', async () => {
+    it('should create a product with images', async () => {
       const req = mockRequest();
       const res = mockResponse();
       req.body = {
@@ -84,7 +86,7 @@ describe('Product Controller', () => {
 
   describe('updateProduct', () => {
     // Skipped due to Jest mocking environment issues in sandbox (verified via manual logs and benchmark)
-    it.skip('should update a product and replace images', async () => {
+    it('should update a product and replace images', async () => {
       const req = mockRequest();
       const res = mockResponse();
       req.params.id = 'product_id';
