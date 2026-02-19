@@ -24,6 +24,18 @@ jest.mock('cloudinary', () => ({
     },
 }));
 
+// Mock Stripe
+jest.mock('stripe', () => {
+    return jest.fn().mockReturnValue({
+        paymentIntents: {
+            retrieve: jest.fn().mockResolvedValue({
+                status: 'succeeded',
+                amount: 43600 // Matches itemsPrice=200, tax=36, shipping=200, total=436 * 100
+            })
+        }
+    });
+});
+
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
@@ -91,7 +103,7 @@ describe('Order Integration Tests', () => {
             }],
             paymentInfo: {
                 id: 'pay_test_123',
-                status: 'success'
+                status: 'succeeded'
             },
             paidAt: Date.now(),
             itemsPrice: 200,
@@ -143,7 +155,7 @@ describe('Order Integration Tests', () => {
                     product: testProduct._id
                 }],
                 user: testUser._id,
-                paymentInfo: { id: 'pay_123', status: 'success' },
+                paymentInfo: { id: 'pay_123', status: 'succeeded' },
                 paidAt: Date.now(),
                 itemsPrice: 100,
                 taxPrice: 10,
@@ -191,7 +203,7 @@ describe('Order Integration Tests', () => {
                     product: testProduct._id
                 }],
                 user: testUser._id,
-                paymentInfo: { id: 'pay_123', status: 'success' },
+                paymentInfo: { id: 'pay_123', status: 'succeeded' },
                 paidAt: Date.now(),
                 itemsPrice: 100,
                 taxPrice: 10,

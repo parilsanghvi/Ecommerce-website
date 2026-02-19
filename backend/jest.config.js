@@ -1,7 +1,8 @@
 module.exports = {
+    rootDir: '..',
     testEnvironment: 'node',
     verbose: true,
-    testMatch: ['**/backend/tests/**/*.test.js'],
+    testMatch: ['<rootDir>/backend/tests/**/*.test.js'],
     forceExit: true,
-    setupFiles: ['<rootDir>/tests/setupEnv.js'],
+    setupFiles: ['<rootDir>/backend/tests/setupEnv.js'],
 };

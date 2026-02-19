@@ -5,6 +5,8 @@ const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 // create new order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     const {
@@ -52,6 +54,33 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
     if (isNaN(totalPrice) || Math.abs(Number(totalPrice) - calculatedTotalPrice) > 0.01) {
         return next(new ErrorHandler("Total price mismatch detected. Please refresh and try again.", 400));
+    }
+
+    // Security Fix: Verify payment with Stripe
+    if (!paymentInfo || !paymentInfo.id) {
+        return next(new ErrorHandler("Payment Information is missing", 400));
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentInfo.id);
+
+    if (paymentIntent.status !== "succeeded") {
+        return next(new ErrorHandler("Payment not verified", 400));
+    }
+
+    if (paymentInfo.status !== "succeeded") {
+        return next(new ErrorHandler("Payment status mismatch", 400));
+    }
+
+    // Verify amount matches (Stripe amount is in smallest currency unit, e.g., paise)
+    // calculatedTotalPrice is in major unit (e.g. Rupees)
+    if (paymentIntent.amount !== Math.round(calculatedTotalPrice * 100)) {
+        return next(new ErrorHandler("Payment amount mismatch", 400));
+    }
+
+    // Check if payment is already used (Replay Attack Prevention)
+    const existingOrder = await Order.findOne({ "paymentInfo.id": paymentInfo.id });
+    if (existingOrder) {
+        return next(new ErrorHandler("Payment already used", 400));
     }
 
     const order = await Order.create({
