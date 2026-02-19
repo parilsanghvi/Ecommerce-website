@@ -4,6 +4,23 @@ const Product = require("../models/productModel");
 const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
+const { calculateOrderPrices } = require("../utlis/pricing");
+
+// get pricing details
+exports.getPricing = catchAsyncErrors(async (req, res, next) => {
+    const { itemsPrice } = req.query;
+
+    if (!itemsPrice) {
+        return next(new ErrorHandler("Please provide itemsPrice", 400));
+    }
+
+    const prices = calculateOrderPrices(itemsPrice);
+
+    res.status(200).json({
+        success: true,
+        ...prices,
+    });
+});
 
 // create new order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
@@ -36,11 +53,11 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Security Fix: Validate all price components to prevent tampering
-    // Calculate expected tax (18%) and shipping (Free over 1000, else 200)
-    // Note: This logic duplicates frontend logic and should ideally be centralized
-    const calculatedTaxPrice = calculatedItemsPrice * 0.18;
-    const calculatedShippingPrice = calculatedItemsPrice > 1000 ? 0 : 200;
-    const calculatedTotalPrice = calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice;
+    const {
+        taxPrice: calculatedTaxPrice,
+        shippingPrice: calculatedShippingPrice,
+        totalPrice: calculatedTotalPrice
+    } = calculateOrderPrices(calculatedItemsPrice);
 
     if (isNaN(taxPrice) || Math.abs(Number(taxPrice) - calculatedTaxPrice) > 0.01) {
         return next(new ErrorHandler("Tax price mismatch detected. Please refresh and try again.", 400));

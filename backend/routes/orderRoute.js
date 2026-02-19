@@ -5,13 +5,15 @@ const {
     myOrders,
     getAllOrders,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    getPricing
 } = require('../controllers/orderController')
 const {
     isAuthenticatedUser,
     authorizedRoles
 } = require("../middleware/auth")
 const router = express.Router()
+router.route("/pricing").get(isAuthenticatedUser, getPricing);
 router.route("/order/new").post(isAuthenticatedUser, newOrder);
 router.route("/order/:id").get(isAuthenticatedUser, getSingleOrder);
 router.route("/orders/me").get(isAuthenticatedUser, myOrders);
