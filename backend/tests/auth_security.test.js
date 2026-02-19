@@ -22,7 +22,10 @@ describe('isAuthenticatedUser Middleware Security', () => {
         jwt.verify.mockReturnValue({ id: 'user_id' });
 
         // Mock User.findById to return null (user deleted)
-        User.findById.mockResolvedValue(null);
+        // User.findById(decodedData.id).select(...).lean();
+        const mockLean = jest.fn().mockResolvedValue(null);
+        const mockSelect = jest.fn().mockReturnValue({ lean: mockLean });
+        User.findById.mockReturnValue({ select: mockSelect });
 
         await isAuthenticatedUser(req, res, next);
 
