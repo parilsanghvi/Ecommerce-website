@@ -6,6 +6,8 @@ const sendEmail = require("../utlis/sendEmail")
 const crypto = require("crypto")
 const cloudinary = require("cloudinary")
 
+const MAX_AVATAR_SIZE = 3 * 1024 * 1024; // 3MB base64 string length
+
 // register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 
@@ -16,6 +18,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     } = req.body;
     if (!req.body.avatar) {
         return next(new ErrorHandler("Please upload avatar", 401))
+    }
+    if (typeof req.body.avatar === "string" && req.body.avatar.length > MAX_AVATAR_SIZE) {
+        return next(new ErrorHandler("Avatar image size too large", 400));
     }
     const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
         folder: "avatars",
@@ -162,6 +167,9 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
     if (req.body.avatar !== "") {
         if (!req.body.avatar || req.body.avatar === "undefined") {
             return next(new ErrorHandler("Please upload a new avatar", 401))
+        }
+        if (typeof req.body.avatar === "string" && req.body.avatar.length > MAX_AVATAR_SIZE) {
+            return next(new ErrorHandler("Avatar image size too large", 400));
         }
         // Optimized: Use req.user.avatar directly instead of redundant DB call
         const imageId = req.user.avatar.public_id
