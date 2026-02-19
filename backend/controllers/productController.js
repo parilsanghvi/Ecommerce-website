@@ -21,7 +21,6 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
                         folder: "products",
                         width: 150,
                         height: 200,
-                        // crop: "scale",
                     },
                     (error, result) => {
                         if (error) return reject(error);
@@ -49,7 +48,6 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
                     folder: "products",
                     width: 150,
                     height: 200,
-                    // crop: "scale",
                 });
                 return {
                     public_id: result.public_id,
@@ -159,9 +157,6 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         const newImagesLinks = await Promise.all(imagesToUpload.map(async (image) => {
             const result = await cloudinary.v2.uploader.upload(image, {
                 folder: "products",
-                // width: 150,
-                // height: 200,
-                // crop: "scale",
             });
             return {
                 public_id: result.public_id,
