@@ -17,42 +17,38 @@ const mockResponse = () => {
 
 const mockNext = jest.fn();
 
+// Mock dependencies
+jest.mock('../models/productModel', () => ({
+  create: jest.fn(),
+  findById: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+  deleteOne: jest.fn(),
+}));
+
+jest.mock('cloudinary', () => ({
+  v2: {
+    uploader: {
+      upload: jest.fn(),
+      destroy: jest.fn(),
+      upload_stream: jest.fn(),
+    },
+  },
+}));
+
+jest.mock('../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next));
+
+const productController = require('../controllers/productController');
+const Product = require('../models/productModel');
+const cloudinary = require('cloudinary');
+
 describe('Product Controller', () => {
-  let productController;
-  let Product;
-  let cloudinary;
 
   beforeEach(() => {
-    jest.resetModules(); // Reset cache
-
-    // Define mocks inline to avoid hoisting issues
-    jest.mock('../models/productModel', () => ({
-      create: jest.fn(),
-      findById: jest.fn(),
-      findByIdAndUpdate: jest.fn(),
-      deleteOne: jest.fn(),
-    }));
-
-    jest.mock('cloudinary', () => ({
-      v2: {
-        uploader: {
-          upload: jest.fn(),
-          destroy: jest.fn(),
-        },
-      },
-    }));
-
-    // Require modules after mocking
-    productController = require('../controllers/productController');
-    Product = require('../models/productModel');
-    cloudinary = require('cloudinary');
-
     jest.clearAllMocks();
   });
 
   describe('createProduct', () => {
-    // Skipped due to Jest mocking environment issues in sandbox (verified via manual logs and benchmark)
-    it.skip('should create a product with images', async () => {
+    it('should create a product with images (base64)', async () => {
       const req = mockRequest();
       const res = mockResponse();
       req.body = {
@@ -80,6 +76,41 @@ describe('Product Controller', () => {
       expect(Product.create).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(201);
     });
+
+    it('should create a product with images (multipart)', async () => {
+        const req = mockRequest();
+        const res = mockResponse();
+
+        // Mock files for multipart
+        req.files = [
+            { buffer: Buffer.from('fake image 1') },
+            { buffer: Buffer.from('fake image 2') }
+        ];
+        req.body = {
+          name: 'Test Product Multipart',
+        };
+
+        // Mock upload_stream behavior
+        cloudinary.v2.uploader.upload_stream.mockImplementation((options, callback) => {
+            callback(null, { public_id: 'test_id', secure_url: 'test_url' });
+            return { end: jest.fn() };
+        });
+
+        Product.create.mockResolvedValue({
+          _id: 'product_id',
+          ...req.body,
+          images: [
+              { public_id: 'test_id', url: 'test_url' },
+              { public_id: 'test_id', url: 'test_url' }
+          ]
+        });
+
+        await productController.createProduct(req, res, mockNext);
+
+        expect(cloudinary.v2.uploader.upload_stream).toHaveBeenCalledTimes(2);
+        expect(Product.create).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(201);
+      });
   });
 
   describe('updateProduct', () => {
