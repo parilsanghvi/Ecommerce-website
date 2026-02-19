@@ -19,6 +19,7 @@ import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import NotFound from "./component/layout/Not Found/NotFound";
+import { API_BASE_URL } from "./config";
 
 // Lazy Loaded Components
 const Profile = lazy(() => import("./component/User/Profile"));
@@ -51,7 +52,7 @@ function App() {
 
   async function getStripeApiKey() {
     try {
-      const { data } = await axios.get("/api/v1/stripeapikey");
+      const { data } = await axios.get(`${API_BASE_URL}/stripeapikey`);
       setStripeApiKey(data.stripeApiKey);
     } catch (error) {
       console.log("Stripe API key not found or backend unreachable");
