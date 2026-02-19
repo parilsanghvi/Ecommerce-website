@@ -4,6 +4,7 @@ const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
 const cloudinary = require("cloudinary")
+const { processImagesUpdate } = require("../utlis/imageHandler");
 
 // create product --admin
 // exports.(function_name) = rest of function {way to export functions ;) }
@@ -127,59 +128,8 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Images Handling
-    let images = [];
     if (req.body.images !== undefined) {
-        if (typeof req.body.images === "string") {
-            images.push(req.body.images);
-        } else {
-            images = req.body.images;
-        }
-    }
-
-    if (images.length > 0 || req.body.images !== undefined) {
-        // 1. Separate images into "To Keep" (URLs) and "To Upload" (Base64/New)
-        const imagesToKeep = [];
-        const imagesToUpload = [];
-
-        images.forEach(img => {
-            if (typeof img === 'string' && img.startsWith('http')) {
-                imagesToKeep.push(img);
-            } else {
-                imagesToUpload.push(img);
-            }
-        });
-
-        // 2. Identify images to delete (present in DB but not in imagesToKeep)
-        const imagesToDelete = product.images.filter(img => !imagesToKeep.includes(img.url));
-
-        // 3. Delete removed images from Cloudinary
-        await Promise.all(imagesToDelete.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
-
-        // 4. Upload new images
-        const newImagesLinks = await Promise.all(imagesToUpload.map(async (image) => {
-            const result = await cloudinary.v2.uploader.upload(image, {
-                folder: "products",
-                // width: 150,
-                // height: 200,
-                // crop: "scale",
-            });
-            return {
-                public_id: result.public_id,
-                url: result.secure_url
-            };
-        }));
-
-        // 5. Reconstruct the final images array
-        // Keep the old image objects that matched the URLs
-        const keptImagesObjects = product.images.filter(img => imagesToKeep.includes(img.url));
-
-        req.body.images = [...keptImagesObjects, ...newImagesLinks];
-    } else {
-        // If images is undefined/empty but not explicitly empty string/array, we might want to keep existing?
-        // But if frontend sends empty list, it means delete all. 
-        // Based on existing logic: if invalid/undefined, we might ignore. 
-        // Adapting to safe default: if undefined, do nothing. If empty array, delete all.
-        // The above logic handles empty array (imagesToDelete will be all).
+        req.body.images = await processImagesUpdate(product.images, req.body.images);
     }
 
     product = await Product.findByIdAndUpdate(req.params.id, req.body, {
