@@ -73,7 +73,7 @@ const Payment = () => {
   };
 
   const paymentData = {
-    amount: Math.round(orderInfo.totalPrice * 100),
+    items: cartItems.map((item) => ({ product: item.product, quantity: item.quantity })),
   };
 
   const order = {
