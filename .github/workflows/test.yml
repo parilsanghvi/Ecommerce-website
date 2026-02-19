@@ -16,8 +16,3 @@ jobs:
         run: cd frontend && npm run build
       - name: Run frontend tests with coverage
         run: cd frontend && npx vitest run --coverage
-      - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: frontend/coverage/
