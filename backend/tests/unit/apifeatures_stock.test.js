@@ -40,8 +40,8 @@ describe('Apifeatures Stock Filter', () => {
 
         expect(query.find).toHaveBeenCalledWith(expect.objectContaining({
             stock: { $gt: 0 },
-            // category is processed with regex in filter()
-            category: expect.objectContaining({ $regex: 'Laptop', $options: 'i' }),
+            // category "Laptop" is in KNOWN_CATEGORIES so it is optimized to exact match
+            category: 'Laptop',
             price: { $lte: 1000 }
         }));
     });
