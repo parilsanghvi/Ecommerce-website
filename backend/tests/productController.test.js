@@ -29,6 +29,7 @@ jest.mock('cloudinary', () => ({
     uploader: {
       upload: jest.fn(),
       destroy: jest.fn(),
+      upload_stream: jest.fn(),
     },
   },
 }));
@@ -46,7 +47,7 @@ describe('Product Controller', () => {
   });
 
   describe('createProduct', () => {
-    it('should create a product with images', async () => {
+    it('should create a product with images (base64)', async () => {
       const req = mockRequest();
       const res = mockResponse();
       req.body = {
@@ -63,8 +64,8 @@ describe('Product Controller', () => {
         _id: 'product_id',
         ...req.body,
         images: [
-            { public_id: 'test_id', url: 'test_url' },
-            { public_id: 'test_id', url: 'test_url' }
+          { public_id: 'test_id', url: 'test_url' },
+          { public_id: 'test_id', url: 'test_url' }
         ]
       });
 
@@ -76,6 +77,41 @@ describe('Product Controller', () => {
         user: 'userid',
         images: expect.any(Array)
       }));
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+
+    it('should create a product with images (multipart)', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+
+      // Mock files for multipart
+      req.files = [
+        { buffer: Buffer.from('fake image 1') },
+        { buffer: Buffer.from('fake image 2') }
+      ];
+      req.body = {
+        name: 'Test Product Multipart',
+      };
+
+      // Mock upload_stream behavior
+      cloudinary.v2.uploader.upload_stream.mockImplementation((options, callback) => {
+        callback(null, { public_id: 'test_id', secure_url: 'test_url' });
+        return { end: jest.fn() };
+      });
+
+      Product.create.mockResolvedValue({
+        _id: 'product_id',
+        ...req.body,
+        images: [
+          { public_id: 'test_id', url: 'test_url' },
+          { public_id: 'test_id', url: 'test_url' }
+        ]
+      });
+
+      await productController.createProduct(req, res, mockNext);
+
+      expect(cloudinary.v2.uploader.upload_stream).toHaveBeenCalledTimes(2);
+      expect(Product.create).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(201);
     });
   });
