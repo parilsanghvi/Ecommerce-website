@@ -36,3 +36,11 @@
 **Prevention:**
 1. Always check `result.modifiedCount` (or `nModified`) after an atomic update operation with conditions.
 2. Explicitly throw an error if `modifiedCount === 0` to ensure the operation (e.g., order status update) fails if the dependency (stock deduction) failed.
+
+## 2025-02-20 - Payment Amount Tampering Vulnerability
+**Vulnerability:** The `processPayment` controller trusted the `amount` field sent by the client in the request body to create a Stripe PaymentIntent. This allowed malicious users to pay an arbitrary small amount for an order.
+**Learning:** Never trust client-side calculations for payment amounts. The backend must always recalculate the total based on the items and their current prices in the database.
+**Prevention:**
+1. In payment processing logic, receive the list of items (IDs and quantities) instead of the total amount.
+2. Fetch the product details from the database and calculate the total amount server-side.
+3. Use this server-side calculated amount for payment gateway interactions.
