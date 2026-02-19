@@ -17,10 +17,10 @@ app.use(compression());
 app.set('query parser', 'extended');
 
 // parsing object to json
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser())
 app.use(express.urlencoded({
-  limit: "50mb",
+  limit: "1mb",
   extended: true
 }))
 
