@@ -4,16 +4,58 @@ const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
 const cloudinary = require("cloudinary")
-const { processImages, processImagesUpdate } = require("../utlis/imageHandler");
 
 // create product --admin
 // exports.(function_name) = rest of function {way to export functions ;) }
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     // takes json as input and adds to database according to schema
     // Product.create/find are operations on database with help of mongoose.export taken in Product
+    let imagesLink = [];
 
-    // Process images using helper function
-    const imagesLink = await processImages(req.files, req.body.images);
+    // Optimized: Use multipart upload (req.files) to reduce payload size and memory usage
+    if (req.files && req.files.length > 0) {
+        imagesLink = await Promise.all(req.files.map((file) => {
+            return new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.v2.uploader.upload_stream(
+                    {
+                        folder: "products",
+                        width: 150,
+                        height: 200,
+                    },
+                    (error, result) => {
+                        if (error) return reject(error);
+                        resolve({
+                            public_id: result.public_id,
+                            url: result.secure_url
+                        });
+                    }
+                );
+                uploadStream.end(file.buffer);
+            });
+        }));
+    } else {
+        // Fallback for Base64 (legacy/JSON support)
+        let images = []
+        if (typeof req.body.images === "string") {
+            images.push(req.body.images)
+        } else if (Array.isArray(req.body.images)) {
+            images = req.body.images
+        }
+
+        if (images.length > 0) {
+            imagesLink = await Promise.all(images.map(async (image) => {
+                const result = await cloudinary.v2.uploader.upload(image, {
+                    folder: "products",
+                    width: 150,
+                    height: 200,
+                });
+                return {
+                    public_id: result.public_id,
+                    url: result.secure_url
+                };
+            }));
+        }
+    }
 
     req.body.user = req.user.id;
     req.body.images = imagesLink;
@@ -83,8 +125,56 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Images Handling
+    let images = [];
     if (req.body.images !== undefined) {
-        req.body.images = await processImagesUpdate(product.images, req.body.images);
+        if (typeof req.body.images === "string") {
+            images.push(req.body.images);
+        } else {
+            images = req.body.images;
+        }
+    }
+
+    if (images.length > 0 || req.body.images !== undefined) {
+        // 1. Separate images into "To Keep" (URLs) and "To Upload" (Base64/New)
+        const imagesToKeep = [];
+        const imagesToUpload = [];
+
+        images.forEach(img => {
+            if (typeof img === 'string' && img.startsWith('http')) {
+                imagesToKeep.push(img);
+            } else {
+                imagesToUpload.push(img);
+            }
+        });
+
+        // 2. Identify images to delete (present in DB but not in imagesToKeep)
+        const imagesToDelete = product.images.filter(img => !imagesToKeep.includes(img.url));
+
+        // 3. Delete removed images from Cloudinary
+        await Promise.all(imagesToDelete.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
+
+        // 4. Upload new images
+        const newImagesLinks = await Promise.all(imagesToUpload.map(async (image) => {
+            const result = await cloudinary.v2.uploader.upload(image, {
+                folder: "products",
+            });
+            return {
+                public_id: result.public_id,
+                url: result.secure_url
+            };
+        }));
+
+        // 5. Reconstruct the final images array
+        // Keep the old image objects that matched the URLs
+        const keptImagesObjects = product.images.filter(img => imagesToKeep.includes(img.url));
+
+        req.body.images = [...keptImagesObjects, ...newImagesLinks];
+    } else {
+        // If images is undefined/empty but not explicitly empty string/array, we might want to keep existing?
+        // But if frontend sends empty list, it means delete all. 
+        // Based on existing logic: if invalid/undefined, we might ignore. 
+        // Adapting to safe default: if undefined, do nothing. If empty array, delete all.
+        // The above logic handles empty array (imagesToDelete will be all).
     }
 
     product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -215,20 +305,15 @@ exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
 })
 // delete review
 exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
-    // Optimized: Fetch only necessary fields (stats and the specific review)
-    // Uses $elemMatch to get ONLY the review we want to delete, avoiding fetching the whole array
-    const product = await Product.findOne(
-        { _id: req.query.productId },
-        { ratings: 1, numOfReviews: 1, reviews: { $elemMatch: { _id: req.query.id } } }
-    ).lean();
+    const product = await Product.findById(req.query.productId)
 
     if (!product) {
-        return next(new ErrorHandler("product not found", 404));
+        return next(new ErrorHandler("product not found", 404))
     }
 
-    // Check if the review exists in the returned document
-    // If $elemMatch found no match, reviews array will be empty
-    const review = product.reviews && product.reviews.length > 0 ? product.reviews[0] : null;
+    const review = product.reviews.find(
+        (rev) => rev._id.toString() === req.query.id.toString()
+    );
 
     if (!review) {
         return next(new ErrorHandler("Review not found", 404));
@@ -241,37 +326,35 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Not authorized to delete this review", 403));
     }
 
-    // Calculate new stats mathematically
-    const currentRatings = product.ratings || 0;
-    const currentNumOfReviews = product.numOfReviews || 0;
-    const oldRating = review.rating;
+    const reviews = product.reviews.filter(
+        (rev) => rev._id.toString() !== req.query.id.toString()
+    );
 
-    let newRatings;
-    let newNumOfReviews = currentNumOfReviews - 1;
+    let avg = 0;
 
-    if (newNumOfReviews <= 0) {
-        newRatings = 0;
-        newNumOfReviews = 0;
+    reviews.forEach((rev) => {
+        avg += rev.rating
+    })
+    let ratings = 0
+    if (reviews.length === 0) {
+        ratings = 0
     } else {
-        // (Avg * Count - Rating) / (Count - 1)
-        newRatings = ((currentRatings * currentNumOfReviews) - oldRating) / newNumOfReviews;
+        ratings = avg / reviews.length;
     }
 
-    // Atomic update using $pull to remove the review and $set to update stats
-    // This avoids sending the entire reviews array back to the server
+    const numOfReviews = reviews.length;
+
     await Product.findByIdAndUpdate(req.query.productId, {
-        $pull: { reviews: { _id: req.query.id } },
-        $set: {
-            ratings: newRatings,
-            numOfReviews: newNumOfReviews
-        }
+        reviews,
+        ratings,
+        numOfReviews
     }, {
         new: true,
         runValidators: true,
-        useFindAndModify: false
-    });
+    })
 
     res.status(200).json({
         success: true,
-    });
+
+    })
 })
