@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { createThunkHandler } from "../utils/thunkHandler";
 
 // Initial State
 const initialState = {
@@ -26,91 +27,67 @@ const initialState = {
 // Create Order
 export const createOrder = createAsyncThunk(
     "order/createOrder",
-    async (orderData, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.post("/api/v1/order/new", orderData, config);
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (orderData) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.post("/api/v1/order/new", orderData, config);
+        return data;
+    })
 );
 
 // My Orders
 export const myOrders = createAsyncThunk(
     "order/myOrders",
-    async (_, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get("/api/v1/orders/me");
-            return data.orders;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async () => {
+        const { data } = await axios.get("/api/v1/orders/me");
+        return data.orders;
+    })
 );
 
 // Get All Orders (Admin)
 export const getAllOrders = createAsyncThunk(
     "order/getAllOrders",
-    async (arg = 1, { rejectWithValue }) => {
-        try {
-            let page = 1;
-            let calculateTotal = false;
+    createThunkHandler(async (arg = 1) => {
+        let page = 1;
+        let calculateTotal = false;
 
-            if (typeof arg === 'number') {
-                page = arg;
-            } else if (typeof arg === 'object') {
-                page = arg.page || 1;
-                calculateTotal = arg.calculateTotal || false;
-            }
-
-            const { data } = await axios.get(`/api/v1/admin/orders?page=${page}&calculateTotal=${calculateTotal}`);
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
+        if (typeof arg === 'number') {
+            page = arg;
+        } else if (typeof arg === 'object') {
+            page = arg.page || 1;
+            calculateTotal = arg.calculateTotal || false;
         }
-    }
+
+        const { data } = await axios.get(`/api/v1/admin/orders?page=${page}&calculateTotal=${calculateTotal}`);
+        return data;
+    })
 );
 
 // Update Order (Admin)
 export const updateOrder = createAsyncThunk(
     "order/updateOrder",
-    async ({ id, orderData }, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.put(`/api/v1/admin/order/${id}`, orderData, config);
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async ({ id, orderData }) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.put(`/api/v1/admin/order/${id}`, orderData, config);
+        return data.success;
+    })
 );
 
 // Delete Order (Admin)
 export const deleteOrder = createAsyncThunk(
     "order/deleteOrder",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.delete(`/api/v1/admin/order/${id}`);
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.delete(`/api/v1/admin/order/${id}`);
+        return data.success;
+    })
 );
 
 // Get Order Details
 export const getOrderDetails = createAsyncThunk(
     "order/getOrderDetails",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get(`/api/v1/order/${id}`);
-            return data.order;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.get(`/api/v1/order/${id}`);
+        return data.order;
+    })
 );
 
 // ===== SLICE =====

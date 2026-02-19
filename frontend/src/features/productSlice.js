@@ -1,158 +1,122 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { createThunkHandler } from "../utils/thunkHandler";
 
 // Async Thunks
 export const getProduct = createAsyncThunk(
     "product/getAll",
-    async (
-        { keyword = "", currentPage = 1, price = [0, 25000], category, ratings = 0 } = {},
-        { rejectWithValue }
+    createThunkHandler(async (
+        { keyword = "", currentPage = 1, price = [0, 25000], category, ratings = 0 } = {}
     ) => {
-        try {
-            let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}`;
+        let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}`;
 
-            if (price[0] !== 0 || price[1] !== 25000) {
-                link += `&price[gte]=${price[0]}&price[lte]=${price[1]}`;
-            }
-
-            if (ratings > 0) {
-                link += `&ratings[gte]=${ratings}`;
-            }
-
-            if (category) {
-                link += `&category=${category}`;
-            }
-
-            // Optimized: Filter out out-of-stock products on the server side to reduce payload and fix pagination
-            link += `&stock[gt]=0`;
-
-            const { data } = await axios.get(link);
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
+        if (price[0] !== 0 || price[1] !== 25000) {
+            link += `&price[gte]=${price[0]}&price[lte]=${price[1]}`;
         }
-    }
+
+        if (ratings > 0) {
+            link += `&ratings[gte]=${ratings}`;
+        }
+
+        if (category) {
+            link += `&category=${category}`;
+        }
+
+        // Optimized: Filter out out-of-stock products on the server side to reduce payload and fix pagination
+        link += `&stock[gt]=0`;
+
+        const { data } = await axios.get(link);
+        return data;
+    })
 );
 
 export const getAdminProduct = createAsyncThunk(
     "product/getAdminAll",
-    async (_, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get("/api/v1/admin/products");
-            return data.products;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async () => {
+        const { data } = await axios.get("/api/v1/admin/products");
+        return data.products;
+    })
 );
 
 export const createProduct = createAsyncThunk(
     "product/create",
-    async (productData, { rejectWithValue }) => {
-        try {
-            const config = {
-                headers: { "Content-Type": "application/json" },
-            };
+    createThunkHandler(async (productData) => {
+        const config = {
+            headers: { "Content-Type": "application/json" },
+        };
 
-            // Allow axios to handle Content-Type for FormData
-            if (productData instanceof FormData) {
-                delete config.headers["Content-Type"];
-            }
-
-            const { data } = await axios.post(
-                `/api/v1/admin/product/new`,
-                productData,
-                config
-            );
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
+        // Allow axios to handle Content-Type for FormData
+        if (productData instanceof FormData) {
+            delete config.headers["Content-Type"];
         }
-    }
+
+        const { data } = await axios.post(
+            `/api/v1/admin/product/new`,
+            productData,
+            config
+        );
+        return data;
+    })
 );
 
 export const updateProduct = createAsyncThunk(
     "product/update",
-    async ({ id, productData }, { rejectWithValue }) => {
-        try {
-            const config = {
-                headers: { "Content-Type": "application/json" },
-            };
-            const { data } = await axios.put(
-                `/api/v1/admin/product/${id}`,
-                productData,
-                config
-            );
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async ({ id, productData }) => {
+        const config = {
+            headers: { "Content-Type": "application/json" },
+        };
+        const { data } = await axios.put(
+            `/api/v1/admin/product/${id}`,
+            productData,
+            config
+        );
+        return data.success;
+    })
 );
 
 export const deleteProduct = createAsyncThunk(
     "product/delete",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.delete(`/api/v1/admin/product/${id}`);
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.delete(`/api/v1/admin/product/${id}`);
+        return data.success;
+    })
 );
 
 export const getProductDetails = createAsyncThunk(
     "product/getDetails",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get(`/api/v1/product/${id}`);
-            return data.product;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.get(`/api/v1/product/${id}`);
+        return data.product;
+    })
 );
 
 export const newReview = createAsyncThunk(
     "product/newReview",
-    async (reviewData, { rejectWithValue }) => {
-        try {
-            const config = {
-                headers: { "Content-Type": "application/json" },
-            };
-            const { data } = await axios.put(`/api/v1/review`, reviewData, config);
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (reviewData) => {
+        const config = {
+            headers: { "Content-Type": "application/json" },
+        };
+        const { data } = await axios.put(`/api/v1/review`, reviewData, config);
+        return data.success;
+    })
 );
 
 export const getAllReviews = createAsyncThunk(
     "product/getAllReviews",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get(`/api/v1/reviews?id=${id}`);
-            return data.reviews;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.get(`/api/v1/reviews?id=${id}`);
+        return data.reviews;
+    })
 );
 
 export const deleteReviews = createAsyncThunk(
     "product/deleteReview",
-    async ({ reviewId, productId }, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.delete(
-                `/api/v1/reviews?id=${reviewId}&productId=${productId}`
-            );
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async ({ reviewId, productId }) => {
+        const { data } = await axios.delete(
+            `/api/v1/reviews?id=${reviewId}&productId=${productId}`
+        );
+        return data.success;
+    })
 );
 
 // Slice
