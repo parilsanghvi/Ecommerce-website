@@ -1,175 +1,128 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { createThunkHandler } from "../utils/thunkHandler";
 
 // Async Thunks
 export const login = createAsyncThunk(
     "user/login",
-    async ({ email, password }, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.post(
-                `/api/v1/login`,
-                { email, password },
-                config
-            );
-            return data.user;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async ({ email, password }) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.post(
+            `/api/v1/login`,
+            { email, password },
+            config
+        );
+        return data.user;
+    })
 );
 
 export const register = createAsyncThunk(
     "user/register",
-    async (userData, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "multipart/form-data" } };
-            const { data } = await axios.post(`/api/v1/register`, userData, config);
-            return data.user;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (userData) => {
+        const config = { headers: { "Content-Type": "multipart/form-data" } };
+        const { data } = await axios.post(`/api/v1/register`, userData, config);
+        return data.user;
+    })
 );
 
 export const loadUser = createAsyncThunk(
     "user/loadUser",
-    async (_, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get(`/api/v1/me`);
-            return data.user;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async () => {
+        const { data } = await axios.get(`/api/v1/me`);
+        return data.user;
+    })
 );
 
 export const logout = createAsyncThunk(
     "user/logout",
-    async (_, { rejectWithValue }) => {
-        try {
-            await axios.get(`/api/v1/logout`);
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async () => {
+        await axios.get(`/api/v1/logout`);
+    })
 );
 
 export const updateProfile = createAsyncThunk(
     "user/updateProfile",
-    async (userData, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "multipart/form-data" } };
-            const { data } = await axios.put(`/api/v1/me/update`, userData, config);
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (userData) => {
+        const config = { headers: { "Content-Type": "multipart/form-data" } };
+        const { data } = await axios.put(`/api/v1/me/update`, userData, config);
+        return data.success;
+    })
 );
 
 export const updatePassword = createAsyncThunk(
     "user/updatePassword",
-    async (passwords, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.put(
-                `/api/v1/password/update`,
-                passwords,
-                config
-            );
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (passwords) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.put(
+            `/api/v1/password/update`,
+            passwords,
+            config
+        );
+        return data.success;
+    })
 );
 
 export const forgotPassword = createAsyncThunk(
     "user/forgotPassword",
-    async (email, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.post(
-                `/api/v1/password/forgot`,
-                email,
-                config
-            );
-            return data.message;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (email) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.post(
+            `/api/v1/password/forgot`,
+            email,
+            config
+        );
+        return data.message;
+    })
 );
 
 export const resetPassword = createAsyncThunk(
     "user/resetPassword",
-    async ({ token, passwords }, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.put(
-                `/api/v1/password/reset/${token}`,
-                passwords,
-                config
-            );
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async ({ token, passwords }) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.put(
+            `/api/v1/password/reset/${token}`,
+            passwords,
+            config
+        );
+        return data.success;
+    })
 );
 
 export const getAllUsers = createAsyncThunk(
     "user/getAllUsers",
-    async (_, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get(`/api/v1/admin/users`);
-            return data.users;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async () => {
+        const { data } = await axios.get(`/api/v1/admin/users`);
+        return data.users;
+    })
 );
 
 export const getUserDetails = createAsyncThunk(
     "user/getUserDetails",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.get(`/api/v1/admin/user/${id}`);
-            return data.user;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.get(`/api/v1/admin/user/${id}`);
+        return data.user;
+    })
 );
 
 export const updateUser = createAsyncThunk(
     "user/updateUser",
-    async ({ id, userData }, { rejectWithValue }) => {
-        try {
-            const config = { headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.put(
-                `/api/v1/admin/user/${id}`,
-                userData,
-                config
-            );
-            return data.success;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async ({ id, userData }) => {
+        const config = { headers: { "Content-Type": "application/json" } };
+        const { data } = await axios.put(
+            `/api/v1/admin/user/${id}`,
+            userData,
+            config
+        );
+        return data.success;
+    })
 );
 
 export const deleteUser = createAsyncThunk(
     "user/deleteUser",
-    async (id, { rejectWithValue }) => {
-        try {
-            const { data } = await axios.delete(`/api/v1/admin/user/${id}`);
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
-        }
-    }
+    createThunkHandler(async (id) => {
+        const { data } = await axios.delete(`/api/v1/admin/user/${id}`);
+        return data;
+    })
 );
 
 // Slice
