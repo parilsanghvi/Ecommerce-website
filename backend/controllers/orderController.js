@@ -4,6 +4,7 @@ const Product = require("../models/productModel");
 const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
+const { TAX_RATE, SHIPPING_THRESHOLD, SHIPPING_FEE } = require("../config/constants");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -40,8 +41,8 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     // Security Fix: Validate all price components to prevent tampering
     // Calculate expected tax (18%) and shipping (Free over 1000, else 200)
     // Note: This logic duplicates frontend logic and should ideally be centralized
-    const calculatedTaxPrice = calculatedItemsPrice * 0.18;
-    const calculatedShippingPrice = calculatedItemsPrice > 1000 ? 0 : 200;
+    const calculatedTaxPrice = calculatedItemsPrice * TAX_RATE;
+    const calculatedShippingPrice = calculatedItemsPrice > SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
     const calculatedTotalPrice = calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice;
 
     if (isNaN(taxPrice) || Math.abs(Number(taxPrice) - calculatedTaxPrice) > 0.01) {
