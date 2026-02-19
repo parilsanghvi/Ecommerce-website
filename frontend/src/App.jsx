@@ -1,12 +1,11 @@
 import './App.css';
 import "@fontsource/archivo-black";
 import "@fontsource/space-mono";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import Header from "./component/layout/Header/Header"
 import Footer from "./component/layout/Footer/Footer"
 import Loader from "./component/layout/Loader";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { Suspense, lazy } from 'react';
 import Home from "./component/Home/Home"
 import ProductDetails from "./component/Product/ProductDetails"
 import Products from "./component/Product/Products"
