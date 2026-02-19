@@ -93,7 +93,6 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         totalPrice,
         paidAt: Date.now(),
         user: req.user._id,
-        lala: req.user._id,
     })
     res.status(201).json({
         success: true,
