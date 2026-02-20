@@ -7,10 +7,16 @@ app.set('trust proxy', 1);
 
 const cookieParser = require("cookie-parser");
 const errorMidddleware = require('./middleware/error');
+const securityHeaders = require('./middleware/securityHeaders');
 const path = require("path")
 
 // Enable compression
 app.use(compression());
+
+// Set security headers
+app.use(securityHeaders);
+app.disable('x-powered-by');
+
 // config
 
 // Enable extended query parser for bracket notation (e.g., ratings[gte]=1 -> {ratings: {gte: 1}})

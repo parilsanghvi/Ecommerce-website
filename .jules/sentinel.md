@@ -44,3 +44,8 @@
 1. In payment processing logic, receive the list of items (IDs and quantities) instead of the total amount.
 2. Fetch the product details from the database and calculate the total amount server-side.
 3. Use this server-side calculated amount for payment gateway interactions.
+
+## 2025-02-20 - [Enhancement] Added Security Headers
+**Vulnerability:** Missing standard HTTP security headers (HSTS, X-Frame-Options, X-Content-Type-Options, etc.).
+**Learning:** Even with a decent security baseline (rate limiting, input sanitization), basic headers are often overlooked. Manual implementation is simple and avoids dependencies.
+**Prevention:** Use a middleware to set these headers globally.
