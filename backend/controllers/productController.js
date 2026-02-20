@@ -215,15 +215,21 @@ exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
 })
 // delete review
 exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
+    // Optimized: Fetch only the specific review using projection
     const product = await Product.findById(req.query.productId)
+        .select({
+            reviews: { $elemMatch: { _id: req.query.id } },
+            ratings: 1,
+            numOfReviews: 1
+        })
+        .lean();
 
     if (!product) {
-        return next(new ErrorHandler("product not found", 404))
+        return next(new ErrorHandler("Product not found", 404));
     }
 
-    const review = product.reviews.find(
-        (rev) => rev._id.toString() === req.query.id.toString()
-    );
+    // Check if the specific review was found
+    const review = product.reviews && product.reviews.length > 0 ? product.reviews[0] : null;
 
     if (!review) {
         return next(new ErrorHandler("Review not found", 404));
@@ -236,35 +242,31 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Not authorized to delete this review", 403));
     }
 
-    const reviews = product.reviews.filter(
-        (rev) => rev._id.toString() !== req.query.id.toString()
-    );
+    // Calculate new ratings
+    const currentRatings = product.ratings || 0;
+    const currentNumOfReviews = product.numOfReviews || 0;
+    const reviewRating = review.rating;
 
-    let avg = 0;
+    let newNumOfReviews = currentNumOfReviews - 1;
+    let newRatings = 0;
 
-    reviews.forEach((rev) => {
-        avg += rev.rating
-    })
-    let ratings = 0
-    if (reviews.length === 0) {
-        ratings = 0
+    if (newNumOfReviews > 0) {
+        newRatings = ((currentRatings * currentNumOfReviews) - reviewRating) / newNumOfReviews;
     } else {
-        ratings = avg / reviews.length;
+        newRatings = 0;
+        newNumOfReviews = 0;
     }
 
-    const numOfReviews = reviews.length;
-
+    // Update using atomic operators
     await Product.findByIdAndUpdate(req.query.productId, {
-        reviews,
-        ratings,
-        numOfReviews
+        $pull: { reviews: { _id: req.query.id } },
+        $set: { ratings: newRatings, numOfReviews: newNumOfReviews }
     }, {
         new: true,
         runValidators: true,
-    })
+    });
 
     res.status(200).json({
         success: true,
-
-    })
-})
+    });
+});

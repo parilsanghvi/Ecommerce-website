@@ -25,7 +25,11 @@ describe('deleteReview Authorization Security Test', () => {
     };
 
     // Setup mocks
-    Product.findById.mockResolvedValue(mockProduct);
+    const mockQuery1 = {
+        select: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(mockProduct)
+    };
+    Product.findById.mockReturnValue(mockQuery1);
     Product.findByIdAndUpdate.mockResolvedValue(true);
 
     // 2. Mock Request as Attacker (UserB)
@@ -81,7 +85,11 @@ describe('deleteReview Authorization Security Test', () => {
       reviews: [mockReview],
     };
 
-    Product.findById.mockResolvedValue(mockProduct);
+    const mockQuery2 = {
+        select: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(mockProduct)
+    };
+    Product.findById.mockReturnValue(mockQuery2);
     Product.findByIdAndUpdate.mockResolvedValue(true);
 
     // 2. Mock Request as Owner (UserA)
