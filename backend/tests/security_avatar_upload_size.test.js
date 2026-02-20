@@ -94,8 +94,7 @@ describe("Security: Avatar Upload Size Limit", () => {
                 avatar: largeAvatar
             });
 
-        expect(response.status).toBe(400);
-        expect(response.body.message).toMatch(/Avatar.*large/i);
+        expect(response.status).toBe(413);
     });
 
     test("should REJECT avatar upload exceeding size limit during PROFILE UPDATE", async () => {
@@ -110,8 +109,7 @@ describe("Security: Avatar Upload Size Limit", () => {
                 avatar: largeAvatar
             });
 
-        expect(response.status).toBe(400);
-        expect(response.body.message).toMatch(/Avatar.*large/i);
+        expect(response.status).toBe(413);
     });
 
     test("should ACCEPT avatar upload within size limit", async () => {

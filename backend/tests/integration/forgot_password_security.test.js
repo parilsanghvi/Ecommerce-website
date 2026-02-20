@@ -56,7 +56,7 @@ describe('Forgot Password Security', () => {
 
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(true);
-        expect(res.body.message).toBe('email sent to nonexistent@example.com successfully');
+        expect(res.body.message).toBe('If your email is registered, you will receive a password reset link shortly.');
     });
 
     it('should return 200 if user exists', async () => {
@@ -73,6 +73,6 @@ describe('Forgot Password Security', () => {
 
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(true);
-        expect(res.body.message).toBe('email sent to existing@example.com successfully');
+        expect(res.body.message).toBe('If your email is registered, you will receive a password reset link shortly.');
     });
 });

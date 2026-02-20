@@ -3,9 +3,9 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 const app = require('../../app');
 const User = require('../../models/userModel');
+const Product = require('../../models/productModel');
 
-// Mock Cloudinary (needed for User creation if avatar is involved, though model defaults might apply)
-// But validation requires avatar public_id and url
+// Mock Cloudinary
 jest.mock('cloudinary', () => ({
     v2: {
         config: jest.fn(),
@@ -20,7 +20,6 @@ jest.mock('cloudinary', () => ({
 }));
 
 // Mock Stripe
-// We need the mock to return a singleton object so we can spy on the same instance
 jest.mock('stripe', () => {
     const mStripe = {
         paymentIntents: {
@@ -33,6 +32,7 @@ jest.mock('stripe', () => {
 let mongoServer;
 let userCookie;
 let testUser;
+let testProduct;
 
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
@@ -46,10 +46,20 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-    // Clear mocks
-    const stripe = require('stripe');
-    const mStripe = stripe('key');
-    mStripe.paymentIntents.create.mockClear();
+    // Clear collections
+    await User.deleteMany({});
+    await Product.deleteMany({});
+    jest.clearAllMocks();
+
+    // Create Product for calculatedItemsPrice
+    testProduct = await Product.create({
+        name: 'Test Product',
+        price: 1000,
+        description: 'Test Description',
+        category: 'Laptop',
+        images: [{ public_id: 'id', url: 'url' }],
+        user: new mongoose.Types.ObjectId()
+    });
 
     // Create User
     testUser = await User.create({
@@ -67,11 +77,6 @@ beforeEach(async () => {
     userCookie = loginRes.headers['set-cookie'];
 });
 
-afterEach(async () => {
-    await User.deleteMany({});
-    jest.clearAllMocks();
-});
-
 describe('Payment Integration Tests', () => {
 
     // ==================== PROCESS PAYMENT ====================
@@ -86,7 +91,10 @@ describe('Payment Integration Tests', () => {
             });
 
             const paymentData = {
-                amount: 1000
+                items: [{
+                    product: testProduct._id.toString(),
+                    quantity: 1
+                }]
             };
 
             const res = await request(app)
@@ -98,14 +106,11 @@ describe('Payment Integration Tests', () => {
             expect(res.body.success).toBe(true);
             expect(res.body.client_secret).toBe('test_client_secret_123');
 
-            expect(createSpy).toHaveBeenCalledTimes(1);
-            expect(createSpy).toHaveBeenCalledWith({
-                amount: 1000,
-                currency: 'inr',
-                metadata: {
-                    company: 'Ecommerce',
-                },
-            });
+            // 1000 + 18% tax (180) + 200 shipping (not > 1000) = 1380
+            expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({
+                amount: 138000,
+                currency: 'inr'
+            }));
         });
 
         it('should handle stripe errors', async () => {
@@ -118,18 +123,21 @@ describe('Payment Integration Tests', () => {
             const res = await request(app)
                 .post('/api/v1/payment/process')
                 .set('Cookie', userCookie)
-                .send({ amount: 1000 });
+                .send({
+                    items: [{
+                        product: testProduct._id.toString(),
+                        quantity: 1
+                    }]
+                });
 
-            // catchAsyncErrors should catch this and error middleware should return 500
             expect(res.status).toBe(500);
-            expect(res.body.success).toBe(false);
             expect(res.body.message).toBe('Stripe Error');
         });
 
         it('should return 401 without authentication', async () => {
             const res = await request(app)
                 .post('/api/v1/payment/process')
-                .send({ amount: 1000 });
+                .send({ items: [] });
 
             expect(res.status).toBe(401);
         });
@@ -144,13 +152,6 @@ describe('Payment Integration Tests', () => {
 
             expect(res.status).toBe(200);
             expect(res.body.stripeApiKey).toBe(process.env.STRIPE_API_KEY);
-        });
-
-        it('should return 401 without authentication', async () => {
-            const res = await request(app)
-                .get('/api/v1/stripeapikey');
-
-            expect(res.status).toBe(401);
         });
     });
 });

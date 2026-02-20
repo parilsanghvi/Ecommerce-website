@@ -43,17 +43,27 @@ describe('Apifeatures Class', () => {
     });
 
     describe('filter()', () => {
-        it('should filter by category using case-insensitive regex', () => {
-            const queryStr = { category: 'Laptop' };
+        it('should perform exact match for known categories (optimized)', () => {
+            const queryStr = { category: 'laptop' }; // lowercase input
             const features = new Apifeatures(mockQuery, queryStr);
 
             features.filter();
 
-            // Expect find to be called with regex for category
-            // Note: escapeRegex is internal, so 'Laptop' becomes 'Laptop'
+            // Expect exact match with standardized casing 'Laptop'
+            expect(mockQuery.find).toHaveBeenCalledWith(expect.objectContaining({
+                category: 'Laptop'
+            }));
+        });
+
+        it('should fallback to case-insensitive regex for unknown categories', () => {
+            const queryStr = { category: 'something-else' };
+            const features = new Apifeatures(mockQuery, queryStr);
+
+            features.filter();
+
             expect(mockQuery.find).toHaveBeenCalledWith(expect.objectContaining({
                 category: {
-                    $regex: 'Laptop',
+                    $regex: 'something\\-else',
                     $options: 'i'
                 }
             }));
@@ -117,21 +127,21 @@ describe('Apifeatures Class', () => {
         });
 
         it('should handle non-numeric strings gracefully (not convert them to NaN)', () => {
-             // The code checks !isNaN(queryObj[key][op])
-             const queryStr = {
+            // The code checks !isNaN(queryObj[key][op])
+            const queryStr = {
                 someField: { eq: 'someString' }
-             };
-             // However, the code only iterates if typeof queryObj[key] === 'object'
-             // And assumes operations.
+            };
+            // However, the code only iterates if typeof queryObj[key] === 'object'
+            // And assumes operations.
 
-             // If we pass a string that is not a number, it should remain a string.
-             const features = new Apifeatures(mockQuery, queryStr);
+            // If we pass a string that is not a number, it should remain a string.
+            const features = new Apifeatures(mockQuery, queryStr);
 
-             features.filter();
+            features.filter();
 
-             expect(mockQuery.find).toHaveBeenCalledWith({
-                 someField: { eq: 'someString' }
-             });
+            expect(mockQuery.find).toHaveBeenCalledWith({
+                someField: { eq: 'someString' }
+            });
         });
     });
 

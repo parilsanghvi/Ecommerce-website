@@ -24,7 +24,6 @@ describe('Security: Register Rate Limiting', () => {
     beforeAll(async () => {
         // Enable rate limiting for test environment
         process.env.TEST_RATE_LIMIT = 'true';
-        process.env.TEST_RATE_LIMIT = 'true';
         process.env.NODE_ENV = 'test';
 
         mongoServer = await MongoMemoryServer.create();
@@ -46,40 +45,11 @@ describe('Security: Register Rate Limiting', () => {
         delete process.env.TEST_RATE_LIMIT;
     });
 
-<<<<<<< HEAD
-    it('should block requests after rate limit exceeded', async () => {
-        // We will make 10 requests. Rate limiting is 5/15min.
-        // So the first 5 should be accepted (or fail validation, but not 429)
-        // The 6th should be 429.
-
-        let rateLimited = false;
-        for (let i = 0; i < 10; i++) {
-            const res = await request(app)
-                .post('/api/v1/register')
-                .field('name', `Test User ${i}`)
-                .field('email', `test${i}@example.com`)
-                .field('password', 'password123');
-
-            if (res.status === 429) {
-                rateLimited = true;
-                // Verify the message
-                expect(res.body.message).toBe("Too many registration attempts, please try again later");
-                break;
-            }
-        }
-
-        // Assert that we WERE rate limited
-        expect(rateLimited).toBe(true);
-=======
     it('should allow 5 register attempts and block the 6th', async () => {
-        // We use different emails to avoid 400 Bad Request (User already exists)
-        // Although rate limiter should block regardless of controller outcome.
-        // But cleaner to use unique emails.
-
         const baseUser = {
             name: 'Test User',
             password: 'password123',
-            avatar: 'base64imagestring' // Mocked upload handles this
+            avatar: 'base64imagestring'
         };
 
         // 5 allowed attempts
@@ -88,10 +58,6 @@ describe('Security: Register Rate Limiting', () => {
                 .post('/api/v1/register')
                 .send({ ...baseUser, email: `test${i}@example.com` });
 
-            // Expect 201 Created
-            if (res.status !== 201) {
-                console.error(`Request ${i} failed:`, res.body);
-            }
             expect(res.status).toBe(201);
         }
 
@@ -103,6 +69,5 @@ describe('Security: Register Rate Limiting', () => {
         expect(res.status).toBe(429);
         expect(res.body.success).toBe(false);
         expect(res.body.message).toBe("Too many accounts created from this IP, please try again after an hour");
->>>>>>> origin/sentinel-register-rate-limit-1687530747755633640
     });
 });
