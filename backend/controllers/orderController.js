@@ -24,9 +24,11 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     const productIds = orderItems.map(item => item.product);
     const products = await Product.find({ _id: { $in: productIds } });
 
+    const productMap = new Map(products.map(p => [p._id.toString(), p]));
+
     let calculatedItemsPrice = 0;
     for (const item of orderItems) {
-        const product = products.find(p => p._id.toString() === item.product);
+        const product = productMap.get(String(item.product));
         if (!product) {
             return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
         }
