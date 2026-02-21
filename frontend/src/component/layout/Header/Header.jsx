@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Tooltip } from '@mui/material';
+import { Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Tooltip, Badge } from '@mui/material';
 import { motion } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,6 +14,7 @@ import "./Header.css";
 
 const Header = () => {
     const { isAuthenticated, user } = useSelector((state) => state.user);
+    const { cartItems } = useSelector((state) => state.cart);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const navigate = useNavigate();
@@ -178,7 +179,9 @@ const Header = () => {
                                     }}
                                     aria-label="View cart"
                                 >
-                                    <ShoppingCartIcon />
+                                    <Badge badgeContent={cartItems.length} color="secondary" overlap="circular">
+                                        <ShoppingCartIcon />
+                                    </Badge>
                                 </IconButton>
                             </motion.div>
                         </Tooltip>
