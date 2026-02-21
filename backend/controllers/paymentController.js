@@ -1,8 +1,7 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utlis/errorhandler");
-
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.processPayment = catchAsyncErrors(async (req, res, next) => {
   const { items } = req.body;
