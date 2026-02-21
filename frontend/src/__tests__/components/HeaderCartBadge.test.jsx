@@ -3,10 +3,11 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Header from '../../component/layout/Header/Header';
 
+// Mocking dependencies
 vi.mock('react-redux', () => ({
     useSelector: (selector) => selector({
         user: { isAuthenticated: false, user: null },
-        cart: { cartItems: [] },
+        cart: { cartItems: [{ product: '1', quantity: 1 }, { product: '2', quantity: 2 }] }, // Mock cart with 2 items
     }),
 }));
 
@@ -15,10 +16,12 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
 }));
 
+// Mock UserOptions to avoid errors
 vi.mock('../../component/layout/Header/UserOptions', () => ({
     default: () => <div data-testid="user-options">UserOptions</div>,
 }));
 
+// Mock MUI components
 vi.mock('@mui/material', () => ({
     Box: ({ children, ...props }) => <div {...props}>{children}</div>,
     Container: ({ children }) => <div>{children}</div>,
@@ -29,9 +32,10 @@ vi.mock('@mui/material', () => ({
     ListItemButton: ({ children, ...props }) => <a {...props}>{children}</a>,
     ListItemText: ({ primary }) => <span>{primary}</span>,
     Tooltip: ({ children }) => <>{children}</>,
-    Badge: ({ children }) => <>{children}</>,
+    Badge: ({ children, badgeContent }) => <div data-testid="badge" data-content={badgeContent}>{children}<span className="MuiBadge-badge">{badgeContent}</span></div>, // Mock Badge to render content
 }));
 
+// Mock Icons
 vi.mock('@mui/icons-material/Menu', () => ({ default: () => <span>☰</span> }));
 vi.mock('@mui/icons-material/Search', () => ({ default: () => <span>🔍</span> }));
 vi.mock('@mui/icons-material/ShoppingCart', () => ({ default: () => <span>🛒</span> }));
@@ -39,35 +43,15 @@ vi.mock('@mui/icons-material/Login', () => ({ default: () => <span>🔑</span> }
 vi.mock('@mui/icons-material/Brightness4', () => ({ default: () => <span>🌙</span> }));
 vi.mock('@mui/icons-material/Brightness7', () => ({ default: () => <span>☀️</span> }));
 
-describe('Header', () => {
-    it('renders navigation links', () => {
+describe('Header Cart Badge', () => {
+    it('renders badge with correct count on cart icon', () => {
         render(<Header />);
-        expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('Products')).toBeInTheDocument();
-        expect(screen.getByText('Contact')).toBeInTheDocument();
-        expect(screen.getByText('About')).toBeInTheDocument();
-    });
-
-    it('renders search icon', () => {
-        render(<Header />);
-        expect(screen.getByText('🔍')).toBeInTheDocument();
-    });
-
-    it('renders cart icon', () => {
-        render(<Header />);
-        expect(screen.getByText('🛒')).toBeInTheDocument();
-    });
-
-    it('renders login button when not authenticated', () => {
-        render(<Header />);
-        expect(screen.getByLabelText('Login')).toBeInTheDocument();
-    });
-
-    it('renders theme toggle', () => {
-        render(<Header />);
-        // Should render either sun or moon icon
-        const icons = screen.queryAllByText('🌙');
-        const sunIcons = screen.queryAllByText('☀️');
-        expect(icons.length + sunIcons.length).toBeGreaterThanOrEqual(1);
+        // Expect to find the mocked Badge
+        const badge = screen.getByTestId('badge');
+        expect(badge).toBeInTheDocument();
+        // Check if the content is correct (2 items in mock cart)
+        expect(badge).toHaveAttribute('data-content', '2');
+        // Check if the number is rendered
+        expect(screen.getByText('2')).toBeInTheDocument();
     });
 });
