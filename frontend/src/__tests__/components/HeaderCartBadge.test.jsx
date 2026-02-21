@@ -14,6 +14,7 @@ vi.mock('react-redux', () => ({
 vi.mock('react-router-dom', () => ({
     Link: ({ children, to }) => <a href={to}>{children}</a>,
     useNavigate: () => vi.fn(),
+    useLocation: () => ({ pathname: '/' }),
 }));
 
 // Mock UserOptions to avoid errors
