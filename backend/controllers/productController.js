@@ -15,7 +15,7 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     // Process images using helper function
     const imagesLink = await processImages(req.files, req.body.images);
 
-    req.body.user = req.user.id;
+    req.body.user = req.user._id;
     req.body.images = imagesLink;
     const product = await Product.create(req.body);
     // returns status with success and added object in json
