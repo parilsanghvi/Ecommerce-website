@@ -1,26 +1,52 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector } from "react-redux";
 import MetaData from "../layout/MetaData";
 import "./ConfirmOrder.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
+import axios from "axios";
 
 const ConfirmOrder = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
+  const [pricing, setPricing] = useState({
+    tax: 0,
+    shippingCharges: 0,
+    totalPrice: 0,
+  });
+  const [loading, setLoading] = useState(false);
+
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.quantity * item.price,
     0
   );
 
-  const shippingCharges = subtotal > 1000 ? 0 : 200;
+  const { tax, shippingCharges, totalPrice } = pricing;
 
-  const tax = subtotal * 0.18;
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(`/api/v1/pricing?itemsPrice=${subtotal}`);
+        setPricing({
+          tax: data.taxPrice,
+          shippingCharges: data.shippingPrice,
+          totalPrice: data.totalPrice,
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
 
-  const totalPrice = subtotal + tax + shippingCharges;
+    if (subtotal >= 0) {
+      fetchPricing();
+    }
+  }, [subtotal]);
 
   const address = `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pinCode}, ${shippingInfo.country}`;
 
@@ -105,7 +131,7 @@ const ConfirmOrder = () => {
               <span>₹{totalPrice}</span>
             </div>
 
-            <button className="primary-btn" onClick={proceedToPayment}>Proceed To Payment</button>
+            <button className="primary-btn" onClick={proceedToPayment} disabled={loading}>Proceed To Payment</button>
           </div>
         </div>
       </div>
