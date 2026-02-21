@@ -47,4 +47,14 @@ describe('JWT Token Utility', () => {
 
         expect(options).toHaveProperty('secure', false);
     });
+
+    it('should NOT include token in JSON response', () => {
+        sendToken(user, 200, res);
+
+        const jsonCall = res.json.mock.calls[0][0];
+
+        expect(jsonCall).not.toHaveProperty('token');
+        expect(jsonCall).toHaveProperty('success', true);
+        expect(jsonCall).toHaveProperty('user');
+    });
 });

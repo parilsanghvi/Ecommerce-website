@@ -10,29 +10,25 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("No items provided for payment", 400));
   }
 
-  // Fetch products from database
   const productIds = items.map((item) => item.product);
   const products = await Product.find({ _id: { $in: productIds } });
 
-  // Security: Calculate price on server
-  let subtotal = 0;
+  let calculatedItemsPrice = 0;
   for (const item of items) {
     const product = products.find((p) => p._id.toString() === item.product);
     if (!product) {
-       return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
+      return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
     }
-    subtotal += product.price * item.quantity;
+    calculatedItemsPrice += product.price * item.quantity;
   }
 
-  const shippingCharges = subtotal > 1000 ? 0 : 200;
-  const tax = subtotal * 0.18;
-  const totalPrice = subtotal + tax + shippingCharges;
-
-  // Convert to lowest currency unit (paise) and round to avoid float issues
-  const amount = Math.round(totalPrice * 100);
+  const calculatedTaxPrice = calculatedItemsPrice * 0.18;
+  const calculatedShippingPrice = calculatedItemsPrice > 1000 ? 0 : 200;
+  const calculatedTotalPrice =
+    calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice;
 
   const myPayment = await stripe.paymentIntents.create({
-    amount: amount,
+    amount: Math.round(calculatedTotalPrice * 100),
     currency: "inr",
     metadata: {
       company: "Ecommerce",

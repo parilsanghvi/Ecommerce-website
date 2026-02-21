@@ -29,3 +29,18 @@
 1. Always implement resource ownership checks in controllers for "get by ID" endpoints.
 2. Use a centralized authorization policy or middleware if possible.
 3. When unit testing controllers with `catchAsyncErrors`, mock the middleware to return the promise to ensure tests wait for async operations.
+
+## 2025-02-19 - Inventory Race Condition & Silent Failure
+**Vulnerability:** The `updateStock` function used a `findById` -> `subtract` -> `save` pattern, which is susceptible to race conditions (two requests reading the same stock). A proposed fix using `updateOne` with `$inc` and `$gte` (to prevent negative stock) introduced a silent failure: if stock was insufficient, `updateOne` returned `modifiedCount: 0`, but the code proceeded to mark the order as "Shipped".
+**Learning:** Atomic updates with conditions (like `{ stock: { $gte: quantity } }`) fail "silently" if the condition isn't met (i.e., they don't throw, they just don't modify anything).
+**Prevention:**
+1. Always check `result.modifiedCount` (or `nModified`) after an atomic update operation with conditions.
+2. Explicitly throw an error if `modifiedCount === 0` to ensure the operation (e.g., order status update) fails if the dependency (stock deduction) failed.
+
+## 2025-02-20 - Payment Amount Tampering Vulnerability
+**Vulnerability:** The `processPayment` controller trusted the `amount` field sent by the client in the request body to create a Stripe PaymentIntent. This allowed malicious users to pay an arbitrary small amount for an order.
+**Learning:** Never trust client-side calculations for payment amounts. The backend must always recalculate the total based on the items and their current prices in the database.
+**Prevention:**
+1. In payment processing logic, receive the list of items (IDs and quantities) instead of the total amount.
+2. Fetch the product details from the database and calculate the total amount server-side.
+3. Use this server-side calculated amount for payment gateway interactions.
