@@ -4,6 +4,24 @@ const Product = require("../models/productModel");
 const ErrorHandler = require("../utlis/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
+const { calculateOrderPrices } = require("../utlis/pricing");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+// get pricing details
+exports.getPricing = catchAsyncErrors(async (req, res, next) => {
+    const { itemsPrice } = req.query;
+
+    if (!itemsPrice) {
+        return next(new ErrorHandler("Please provide itemsPrice", 400));
+    }
+
+    const prices = calculateOrderPrices(itemsPrice);
+
+    res.status(200).json({
+        success: true,
+        ...prices,
+    });
+});
 
 // create new order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
@@ -21,9 +39,11 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     const productIds = orderItems.map(item => item.product);
     const products = await Product.find({ _id: { $in: productIds } });
 
+    const productMap = new Map(products.map(p => [p._id.toString(), p]));
+
     let calculatedItemsPrice = 0;
     for (const item of orderItems) {
-        const product = products.find(p => p._id.toString() === item.product);
+        const product = productMap.get(String(item.product));
         if (!product) {
             return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
         }
@@ -36,11 +56,11 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Security Fix: Validate all price components to prevent tampering
-    // Calculate expected tax (18%) and shipping (Free over 1000, else 200)
-    // Note: This logic duplicates frontend logic and should ideally be centralized
-    const calculatedTaxPrice = calculatedItemsPrice * 0.18;
-    const calculatedShippingPrice = calculatedItemsPrice > 1000 ? 0 : 200;
-    const calculatedTotalPrice = calculatedItemsPrice + calculatedTaxPrice + calculatedShippingPrice;
+    const {
+        taxPrice: calculatedTaxPrice,
+        shippingPrice: calculatedShippingPrice,
+        totalPrice: calculatedTotalPrice
+    } = calculateOrderPrices(calculatedItemsPrice);
 
     if (isNaN(taxPrice) || Math.abs(Number(taxPrice) - calculatedTaxPrice) > 0.01) {
         return next(new ErrorHandler("Tax price mismatch detected. Please refresh and try again.", 400));
@@ -54,6 +74,33 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Total price mismatch detected. Please refresh and try again.", 400));
     }
 
+    // Security Fix: Verify payment with Stripe
+    if (!paymentInfo || !paymentInfo.id) {
+        return next(new ErrorHandler("Payment Information is missing", 400));
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentInfo.id);
+
+    if (paymentIntent.status !== "succeeded") {
+        return next(new ErrorHandler("Payment not verified", 400));
+    }
+
+    if (paymentInfo.status !== "succeeded") {
+        return next(new ErrorHandler("Payment status mismatch", 400));
+    }
+
+    // Verify amount matches (Stripe amount is in smallest currency unit, e.g., paise)
+    // calculatedTotalPrice is in major unit (e.g. Rupees)
+    if (paymentIntent.amount !== Math.round(calculatedTotalPrice * 100)) {
+        return next(new ErrorHandler("Payment amount mismatch", 400));
+    }
+
+    // Check if payment is already used (Replay Attack Prevention)
+    const existingOrder = await Order.findOne({ "paymentInfo.id": paymentInfo.id });
+    if (existingOrder) {
+        return next(new ErrorHandler("Payment already used", 400));
+    }
+
     const order = await Order.create({
         shippingInfo,
         orderItems,
@@ -64,7 +111,6 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         totalPrice,
         paidAt: Date.now(),
         user: req.user._id,
-        lala: req.user._id,
     })
     res.status(201).json({
         success: true,
@@ -204,6 +250,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         success: true,
     });
 });
+
 
 
 // delete order --admin

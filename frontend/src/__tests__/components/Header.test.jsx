@@ -6,6 +6,7 @@ import Header from '../../component/layout/Header/Header';
 vi.mock('react-redux', () => ({
     useSelector: (selector) => selector({
         user: { isAuthenticated: false, user: null },
+        cart: { cartItems: [] },
     }),
 }));
 
@@ -28,6 +29,7 @@ vi.mock('@mui/material', () => ({
     ListItemButton: ({ children, ...props }) => <a {...props}>{children}</a>,
     ListItemText: ({ primary }) => <span>{primary}</span>,
     Tooltip: ({ children }) => <>{children}</>,
+    Badge: ({ children }) => <>{children}</>,
 }));
 
 vi.mock('@mui/icons-material/Menu', () => ({ default: () => <span>☰</span> }));

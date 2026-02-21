@@ -1,12 +1,11 @@
 import './App.css';
 import "@fontsource/archivo-black";
 import "@fontsource/space-mono";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import Header from "./component/layout/Header/Header"
 import Footer from "./component/layout/Footer/Footer"
 import Loader from "./component/layout/Loader";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { Suspense, lazy } from 'react';
 import Home from "./component/Home/Home"
 import ProductDetails from "./component/Product/ProductDetails"
 import Products from "./component/Product/Products"
@@ -19,6 +18,7 @@ import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import NotFound from "./component/layout/Not Found/NotFound";
+import { API_BASE_URL } from "./config";
 
 // Lazy Loaded Components
 const Profile = lazy(() => import("./component/User/Profile"));
@@ -51,7 +51,7 @@ function App() {
 
   async function getStripeApiKey() {
     try {
-      const { data } = await axios.get("/api/v1/stripeapikey");
+      const { data } = await axios.get(`${API_BASE_URL}/stripeapikey`);
       setStripeApiKey(data.stripeApiKey);
     } catch (error) {
       console.log("Stripe API key not found or backend unreachable");
@@ -61,7 +61,7 @@ function App() {
     store.dispatch(loadUser());
     getStripeApiKey();
   }, [])
-  // window.addEventListener("contextmenu", (e) => e.preventDefault());
+
   return (
     <Router>
       <Header />

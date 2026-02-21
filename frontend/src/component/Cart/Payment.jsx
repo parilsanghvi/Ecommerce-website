@@ -11,9 +11,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import {
-  removeItemsFromCart
-} from "../../features/cartSlice"
+import { removeItemsFromCart } from "../../features/cartSlice";
 import axios from "axios";
 import "./payment.css";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
@@ -41,39 +39,43 @@ const Payment = () => {
 
   useEffect(() => {
     const checkTheme = () => {
-      const theme = document.documentElement.getAttribute('data-theme');
-      setIsDarkMode(theme !== 'light');
+      const theme = document.documentElement.getAttribute("data-theme");
+      setIsDarkMode(theme !== "light");
     };
 
     checkTheme();
 
-    // Optional: observe theme changes
     const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
 
     return () => observer.disconnect();
   }, []);
 
-  // Dynamic Stripe Element styles based on theme
   const stripeElementStyle = {
     style: {
       base: {
-        color: isDarkMode ? '#ffffff' : '#0a0a0a',
-        fontSize: '16px',
+        color: isDarkMode ? "#ffffff" : "#0a0a0a",
+        fontSize: "16px",
         fontFamily: '"Space Mono", monospace',
-        '::placeholder': {
-          color: isDarkMode ? '#888888' : '#666666',
+        "::placeholder": {
+          color: isDarkMode ? "#888888" : "#666666",
         },
       },
       invalid: {
-        color: '#ff3333',
-        iconColor: '#ff3333',
+        color: "#ff3333",
+        iconColor: "#ff3333",
       },
     },
   };
 
   const paymentData = {
-    amount: Math.round(orderInfo.totalPrice * 100),
+    items: cartItems.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+    })),
   };
 
   const order = {
@@ -136,12 +138,14 @@ const Payment = () => {
 
           dispatch(createOrder(order));
           for (let i = 0; i < order.orderItems.length; i++) {
-            let id = order.orderItems[i].product
-            dispatch(removeItemsFromCart(id))
+            let id = order.orderItems[i].product;
+            dispatch(removeItemsFromCart(id));
           }
           navigate("/success");
         } else {
-          enqueueSnackbar("There's some issue while processing payment ", { variant: "error" });
+          enqueueSnackbar("There's some issue while processing payment ", {
+            variant: "error",
+          });
         }
       }
     } catch (error) {
@@ -190,4 +194,3 @@ const Payment = () => {
 };
 
 export default Payment;
-

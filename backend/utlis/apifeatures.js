@@ -3,6 +3,18 @@ function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
+// Known categories for optimized exact matching
+// This list should be kept in sync with the frontend (frontend/src/component/Product/Products.jsx)
+const KNOWN_CATEGORIES = [
+    "Laptop",
+    "Footwear",
+    "Bottom",
+    "Tops",
+    "Attire",
+    "Camera",
+    "SmartPhones",
+];
+
 class Apifeatures {
     constructor(query, querystr) {
         this.query = query
@@ -47,10 +59,18 @@ class Apifeatures {
 
         // Case insensitive filter for category
         if (queryObj.category && typeof queryObj.category === 'string') {
-            queryObj.category = {
-                $regex: escapeRegex(queryObj.category),
-                $options: "i",
-            };
+            const matchedCategory = KNOWN_CATEGORIES.find(c => c.toLowerCase() === queryObj.category.toLowerCase());
+
+            if (matchedCategory) {
+                // Optimization: Use exact match if category is known
+                queryObj.category = matchedCategory;
+            } else {
+                // Fallback: Use regex for unknown categories
+                queryObj.category = {
+                    $regex: escapeRegex(queryObj.category),
+                    $options: "i",
+                };
+            }
         }
 
         this.query = this.query.find(queryObj);

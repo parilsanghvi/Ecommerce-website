@@ -6,6 +6,8 @@ const sendEmail = require("../utlis/sendEmail")
 const crypto = require("crypto")
 const cloudinary = require("cloudinary")
 
+const MAX_AVATAR_SIZE = 3 * 1024 * 1024; // 3MB base64 string length
+
 // register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 
@@ -16,6 +18,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     } = req.body;
     if (!req.body.avatar) {
         return next(new ErrorHandler("Please upload avatar", 401))
+    }
+    if (typeof req.body.avatar === "string" && req.body.avatar.length > MAX_AVATAR_SIZE) {
+        return next(new ErrorHandler("Avatar image size too large", 400));
     }
     const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
         folder: "avatars",
@@ -141,7 +146,7 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
 })
 // update user password
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
-    const user = await User.findById(req.user.id).select("+password")
+    const user = await User.findById(req.user._id).select("+password")
     const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
     if (!isPasswordMatched) {
         return next(new ErrorHandler("old password is incorrect ", 401))
@@ -163,6 +168,9 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
         if (!req.body.avatar || req.body.avatar === "undefined") {
             return next(new ErrorHandler("Please upload a new avatar", 401))
         }
+        if (typeof req.body.avatar === "string" && req.body.avatar.length > MAX_AVATAR_SIZE) {
+            return next(new ErrorHandler("Avatar image size too large", 400));
+        }
         // Optimized: Use req.user.avatar directly instead of redundant DB call
         const imageId = req.user.avatar.public_id
         await cloudinary.v2.uploader.destroy(imageId);
@@ -177,7 +185,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
             url: myCloud.secure_url,
         }
     }
-    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    const user = await User.findByIdAndUpdate(req.user._id, newUserData, {
         new: true,
         runValidators: true,
     })

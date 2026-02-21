@@ -45,28 +45,29 @@ describe('Security: Register Rate Limiting', () => {
         delete process.env.TEST_RATE_LIMIT;
     });
 
-    it('should block requests after rate limit exceeded', async () => {
-        // We will make 10 requests. Rate limiting is 5/15min.
-        // So the first 5 should be accepted (or fail validation, but not 429)
-        // The 6th should be 429.
+    it('should allow 5 register attempts and block the 6th', async () => {
+        const baseUser = {
+            name: 'Test User',
+            password: 'password123',
+            avatar: 'base64imagestring'
+        };
 
-        let rateLimited = false;
-        for (let i = 0; i < 10; i++) {
+        // 5 allowed attempts
+        for (let i = 0; i < 5; i++) {
             const res = await request(app)
                 .post('/api/v1/register')
-                .field('name', `Test User ${i}`)
-                .field('email', `test${i}@example.com`)
-                .field('password', 'password123');
+                .send({ ...baseUser, email: `test${i}@example.com` });
 
-            if (res.status === 429) {
-                rateLimited = true;
-                // Verify the message
-                expect(res.body.message).toBe("Too many registration attempts, please try again later");
-                break;
-            }
+            expect(res.status).toBe(201);
         }
 
-        // Assert that we WERE rate limited
-        expect(rateLimited).toBe(true);
+        // 6th attempt - Should be Blocked (429)
+        const res = await request(app)
+            .post('/api/v1/register')
+            .send({ ...baseUser, email: 'test_block@example.com' });
+
+        expect(res.status).toBe(429);
+        expect(res.body.success).toBe(false);
+        expect(res.body.message).toBe("Too many accounts created from this IP, please try again after an hour");
     });
 });
