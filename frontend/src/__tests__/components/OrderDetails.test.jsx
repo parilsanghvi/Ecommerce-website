@@ -26,6 +26,8 @@ vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/layout/Loader', () => ({ default: () => <div data-testid="loader">Loading...</div> }));
 vi.mock('@mui/material', () => ({
     Typography: ({ children, ...props }) => <span {...props}>{children}</span>,
+    Tooltip: ({ children, title }) => <div title={title}>{children}</div>,
+    IconButton: ({ children, onClick, ...props }) => <button onClick={onClick} {...props}>{children}</button>,
 }));
 
 describe('OrderDetails', () => {

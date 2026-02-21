@@ -25,8 +25,15 @@ describe('deleteReview Authorization Security Test', () => {
     };
 
     // Setup mocks
-    Product.findById.mockResolvedValue(mockProduct);
-    Product.findByIdAndUpdate.mockResolvedValue(true);
+    // Optimized deleteReview uses findOne().lean()
+    Product.findOne = jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+            ...mockProduct,
+            ratings: 5,
+            numOfReviews: 1
+        })
+    });
+    Product.findByIdAndUpdate = jest.fn().mockResolvedValue(true);
 
     // 2. Mock Request as Attacker (UserB)
     const req = {
@@ -81,8 +88,15 @@ describe('deleteReview Authorization Security Test', () => {
       reviews: [mockReview],
     };
 
-    Product.findById.mockResolvedValue(mockProduct);
-    Product.findByIdAndUpdate.mockResolvedValue(true);
+    // Optimized deleteReview uses findOne().lean()
+    Product.findOne = jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue({
+            ...mockProduct,
+            ratings: 5,
+            numOfReviews: 1
+        })
+    });
+    Product.findByIdAndUpdate = jest.fn().mockResolvedValue(true);
 
     // 2. Mock Request as Owner (UserA)
     const req = {

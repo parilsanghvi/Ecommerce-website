@@ -26,7 +26,7 @@ const { registerSchema, loginSchema, updateProfileSchema, forgotPasswordSchema, 
 const rateLimiter = require("../middleware/rateLimiter");
 const router = express.Router()
 
-router.route("/register").post(rateLimiter(15 * 60 * 1000, 5, "Too many registration attempts, please try again later"), upload.none(), validate(registerSchema), registerUser);
+router.route("/register").post(rateLimiter(60 * 60 * 1000, 5, "Too many accounts created from this IP, please try again after an hour"), upload.none(), validate(registerSchema), registerUser);
 
 router.route("/login").post(rateLimiter(15 * 60 * 1000, 10, "Too many login attempts, please try again later"), validate(loginSchema), loginUser)
 

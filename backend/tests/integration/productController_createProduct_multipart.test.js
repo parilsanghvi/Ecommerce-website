@@ -39,7 +39,7 @@ describe('createProduct Integration Test (Multipart)', () => {
   it('should create product with multipart file upload', async () => {
     const userId = new mongoose.Types.ObjectId();
     const req = {
-      user: { id: userId },
+      user: { _id: userId },
       body: {
         name: 'Test Product',
         price: 100,
@@ -94,7 +94,7 @@ describe('createProduct Integration Test (Multipart)', () => {
   it('should fallback to base64 if no files provided', async () => {
      const userId = new mongoose.Types.ObjectId();
      const req = {
-       user: { id: userId },
+       user: { _id: userId },
        body: {
          name: 'Test Product Base64',
          price: 100,

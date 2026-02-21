@@ -3,7 +3,10 @@ import "./orderDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
 import { Link, useParams } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Typography, Tooltip, IconButton } from "@mui/material";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import { getOrderDetails, clearErrors } from "../../features/orderSlice";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
@@ -14,6 +17,13 @@ const OrderDetails = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
+
+  const copyToClipboard = () => {
+    if (order && order._id) {
+      navigator.clipboard.writeText(order._id);
+      enqueueSnackbar("Order ID Copied!", { variant: "success" });
+    }
+  };
 
   useEffect(() => {
     dispatch(getOrderDetails(params.id));
@@ -34,9 +44,16 @@ const OrderDetails = () => {
           <MetaData title="Order Details" />
           <div className="orderDetailsPage">
             <div className="orderDetailsContainer">
-              <Typography component="h1" className="order-id-heading">
-                Order #{order && order._id}
-              </Typography>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Typography component="h1" className="order-id-heading">
+                  Order #{order && order._id}
+                </Typography>
+                <Tooltip title="Copy Order ID">
+                  <IconButton onClick={copyToClipboard} aria-label="Copy Order ID">
+                    <ContentCopyIcon color="primary" />
+                  </IconButton>
+                </Tooltip>
+              </div>
               <Typography className="section-heading">Shipping Info</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
@@ -60,19 +77,32 @@ const OrderDetails = () => {
               <Typography className="section-heading">Payment</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
-                  <p
+                  <div
                     className={
                       order.paymentInfo &&
                         order.paymentInfo.status === "succeeded"
                         ? "greenColor"
                         : "redColor"
                     }
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                   >
-                    {order.paymentInfo &&
-                      order.paymentInfo.status === "succeeded"
-                      ? "PAID"
-                      : "NOT PAID"}
-                  </p>
+                    {order.paymentInfo && order.paymentInfo.status === "succeeded" ? (
+                      <CheckCircleIcon aria-hidden="true" />
+                    ) : (
+                      <ErrorIcon aria-hidden="true" />
+                    )}
+                    <p className={
+                      order.paymentInfo &&
+                        order.paymentInfo.status === "succeeded"
+                        ? "greenColor"
+                        : "redColor"
+                    } style={{ margin: 0 }}>
+                      {order.paymentInfo &&
+                        order.paymentInfo.status === "succeeded"
+                        ? "PAID"
+                        : "NOT PAID"}
+                    </p>
+                  </div>
                 </div>
 
                 <div>
@@ -84,15 +114,27 @@ const OrderDetails = () => {
               <Typography className="section-heading">Order Status</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
-                  <p
+                  <div
                     className={
                       order.orderStatus && order.orderStatus === "Delivered"
                         ? "greenColor"
                         : "redColor"
                     }
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                   >
-                    {order.orderStatus && order.orderStatus}
-                  </p>
+                    {order.orderStatus && order.orderStatus === "Delivered" ? (
+                      <CheckCircleIcon aria-hidden="true" />
+                    ) : (
+                      <ErrorIcon aria-hidden="true" />
+                    )}
+                    <p className={
+                      order.orderStatus && order.orderStatus === "Delivered"
+                        ? "greenColor"
+                        : "redColor"
+                    } style={{ margin: 0 }}>
+                      {order.orderStatus && order.orderStatus}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
