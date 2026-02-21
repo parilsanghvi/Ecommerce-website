@@ -11,6 +11,12 @@ const path = require("path")
 
 // Enable compression
 app.use(compression());
+
+// Security Headers
+app.disable('x-powered-by');
+const securityHeaders = require('./middleware/securityHeaders');
+app.use(securityHeaders);
+
 // config
 
 // Enable extended query parser for bracket notation (e.g., ratings[gte]=1 -> {ratings: {gte: 1}})
