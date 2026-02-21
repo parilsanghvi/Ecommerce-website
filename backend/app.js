@@ -17,6 +17,8 @@ app.disable('x-powered-by');
 const securityHeaders = require('./middleware/securityHeaders');
 app.use(securityHeaders);
 
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
 // config
 
 // Enable extended query parser for bracket notation (e.g., ratings[gte]=1 -> {ratings: {gte: 1}})
@@ -34,7 +36,7 @@ const cors = require('cors');
 const mongoSanitize = require('./middleware/mongoSanitize');
 
 const allowedOrigins = [
-  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : []),
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(url => url.trim().replace(/\/$/, "")) : []),
   'http://localhost:3000',
 ].filter(Boolean);
 
@@ -68,7 +70,6 @@ app.use("/api/v1", user);
 app.use("/api/v1", order);
 app.use("/api/v1", payment);
 
-app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.get(/^(.*)$/, (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 });
