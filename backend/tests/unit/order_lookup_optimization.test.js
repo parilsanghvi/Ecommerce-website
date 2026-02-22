@@ -6,6 +6,17 @@ const ErrorHandler = require('../../utlis/errorhandler');
 jest.mock('../../models/productModel');
 jest.mock('../../models/orderModel');
 jest.mock('../../models/userModel');
+// Mock Stripe
+jest.mock('stripe', () => {
+    return jest.fn(() => ({
+        paymentIntents: {
+            retrieve: jest.fn().mockResolvedValue({
+                status: 'succeeded',
+                amount: 79000 // 790 * 100
+            }),
+        }
+    }));
+});
 // Mock catchAsyncErrors to just pass through the function
 jest.mock('../../middleware/catchAsyncErrors', () => (fn) => (req, res, next) => fn(req, res, next));
 
