@@ -41,3 +41,11 @@
 ## 2025-05-23 - Framer Motion and Test Environments
 **Learning:** When using `layoutId` with `framer-motion` inside `Link` components (which are often mocked in tests), React may warn about unknown props being passed to DOM elements if the mock doesn't filter them out.
 **Action:** When mocking `framer-motion` for tests, ensure the mock implementation explicitly destructures and filters out `layoutId` and other animation-specific props to prevent them from leaking to the underlying DOM element and causing console warnings.
+
+## 2025-05-27 - Auto-focus on Search
+**Learning:** For dedicated search pages or modals, users expect to type immediately. Requiring an extra click to focus the input is a friction point.
+**Action:** Always add `autoFocus` to the primary input of a search page or search modal to reduce interaction cost.
+
+## 2025-05-27 - Button Focus Styles
+**Learning:** Found that `.primary-btn` explicitly removes `outline` without providing a fallback focus style, making keyboard navigation difficult.
+**Action:** When removing `outline` for aesthetic reasons, always ensure `focus-visible` styles are provided (e.g., `outline: 2px solid var(--color-secondary)`) to maintain accessibility.
