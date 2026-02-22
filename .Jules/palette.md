@@ -37,3 +37,7 @@
 ## 2025-02-18 - Decorative Elements as Interactive
 **Learning:** Found an empty `<button>` element used solely for a visual sliding underline effect. This pollutes the accessibility tree and confuses screen reader users.
 **Action:** Replace purely decorative interactive elements with `<div>` or `<span>` and apply styles via CSS. Ensure these elements are removed from the focus order and accessibility tree.
+
+## 2025-05-23 - Framer Motion and Test Environments
+**Learning:** When using `layoutId` with `framer-motion` inside `Link` components (which are often mocked in tests), React may warn about unknown props being passed to DOM elements if the mock doesn't filter them out.
+**Action:** When mocking `framer-motion` for tests, ensure the mock implementation explicitly destructures and filters out `layoutId` and other animation-specific props to prevent them from leaking to the underlying DOM element and causing console warnings.

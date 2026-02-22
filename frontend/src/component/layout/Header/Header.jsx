@@ -7,7 +7,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import UserOptions from "./UserOptions";
 import { useSelector } from 'react-redux';
 import "./Header.css";
@@ -18,6 +18,7 @@ const Header = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
@@ -50,15 +51,30 @@ const Header = () => {
             onKeyDown={toggleDrawer(false)}
         >
             <List>
-                {navLinks.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton component={Link} to={item.path} sx={{
-                            '&:hover': { backgroundColor: 'var(--color-primary)', color: 'black' }
-                        }}>
-                            <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'var(--font-heading)' }} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                {navLinks.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <ListItem key={item.text} disablePadding>
+                            <ListItemButton
+                                component={Link}
+                                to={item.path}
+                                selected={isActive}
+                                sx={{
+                                    '&:hover': { backgroundColor: 'var(--color-primary)', color: 'black' },
+                                    '&.Mui-selected': {
+                                        color: 'var(--color-primary)',
+                                    },
+                                    '&.Mui-selected:hover': {
+                                        backgroundColor: 'var(--color-primary)',
+                                        color: 'black'
+                                    }
+                                }}
+                            >
+                                <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'var(--font-heading)' }} />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
             </List>
         </Box>
     );
@@ -112,25 +128,41 @@ const Header = () => {
 
                     {/* Desktop Nav */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4 }}>
-                        {navLinks.map((page) => (
-                            <Link
-                                key={page.text}
-                                to={page.path}
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <motion.div
-                                    whileHover={{ y: -2, color: 'var(--color-primary)' }}
-                                    style={{
-                                        color: 'var(--color-text)',
-                                        fontFamily: 'var(--font-heading)',
-                                        fontSize: '1rem',
-                                        position: 'relative'
-                                    }}
+                        {navLinks.map((page) => {
+                            const isActive = location.pathname === page.path;
+                            return (
+                                <Link
+                                    key={page.text}
+                                    to={page.path}
+                                    style={{ textDecoration: 'none' }}
                                 >
-                                    {page.text}
-                                </motion.div>
-                            </Link>
-                        ))}
+                                    <motion.div
+                                        whileHover={{ y: -2, color: 'var(--color-primary)' }}
+                                        style={{
+                                            color: isActive ? 'var(--color-primary)' : 'var(--color-text)',
+                                            fontFamily: 'var(--font-heading)',
+                                            fontSize: '1rem',
+                                            position: 'relative'
+                                        }}
+                                    >
+                                        {page.text}
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="underline"
+                                                style={{
+                                                    position: 'absolute',
+                                                    bottom: -4,
+                                                    left: 0,
+                                                    right: 0,
+                                                    height: '2px',
+                                                    backgroundColor: 'var(--color-primary)'
+                                                }}
+                                            />
+                                        )}
+                                    </motion.div>
+                                </Link>
+                            );
+                        })}
                     </Box>
 
                     {/* Icons */}

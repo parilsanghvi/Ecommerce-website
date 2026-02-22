@@ -5,7 +5,7 @@ vi.mock('framer-motion', () => ({
     motion: new Proxy({}, {
         get: (_, tag) => {
             return ({ children, ...props }) => {
-                const { initial, animate, transition, whileHover, whileTap, whileInView, variants, ...domProps } = props;
+                const { initial, animate, transition, whileHover, whileTap, whileInView, variants, layoutId, ...domProps } = props;
                 const DomTag = tag;
                 return <DomTag {...domProps}>{children}</DomTag>;
             };
