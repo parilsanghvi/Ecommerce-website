@@ -77,13 +77,14 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 })
 // update product --admin
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-        return next(new ErrorHandler("product not found", 404))
-    }
+    let product;
 
-    // Images Handling
+    // Optimized: Only fetch product if image update is required (to process old images)
     if (req.body.images !== undefined) {
+        product = await Product.findById(req.params.id);
+        if (!product) {
+            return next(new ErrorHandler("product not found", 404));
+        }
         req.body.images = await processImagesUpdate(product.images, req.body.images);
     }
 
@@ -92,6 +93,10 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         runValidators: true,
         useFindAndModify: false,
     });
+
+    if (!product) {
+        return next(new ErrorHandler("product not found", 404));
+    }
 
     res.status(200).json({
         success: true,

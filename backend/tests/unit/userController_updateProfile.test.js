@@ -25,6 +25,7 @@ describe('updateProfile Controller', () => {
         req = {
             user: {
                 id: 'user123',
+                _id: 'user123',
                 avatar: {
                     public_id: 'old_public_id',
                     url: 'old_url'
