@@ -1,0 +1,25 @@
+
+> frontend@0.1.0 start
+> vite
+
+
+  VITE v7.3.1  ready in 333 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+2:28:19 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:28:19 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:28:46 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:28:46 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

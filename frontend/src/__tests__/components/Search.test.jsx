@@ -52,4 +52,10 @@ describe('Search', () => {
         fireEvent.submit(input.closest('form'));
         expect(mockNavigate).toHaveBeenCalledWith('/products');
     });
+
+    it('should have focus on mount', () => {
+        render(<Search />);
+        const input = screen.getByLabelText('Search products');
+        expect(input).toHaveFocus();
+    });
 });
