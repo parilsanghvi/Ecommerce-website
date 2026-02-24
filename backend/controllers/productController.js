@@ -142,11 +142,13 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Rating must be between 0 and 5", 400));
     }
 
+    const sanitizedComment = comment ? String(comment).replace(/<[^>]*>?/gm, '') : comment;
+
     const review = {
         user: req.user._id,
         name: req.user.name,
         rating: Number(rating),
-        comment,
+        comment: sanitizedComment,
     }
 
     // Optimized: Fetch only necessary fields and check for existing review by this user
@@ -180,7 +182,7 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
             {
                 $set: {
                     "reviews.$.rating": Number(rating),
-                    "reviews.$.comment": comment,
+                    "reviews.$.comment": sanitizedComment,
                     ratings: newRatings
                 }
             }
