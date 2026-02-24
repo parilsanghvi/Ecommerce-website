@@ -50,8 +50,18 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     apifeature.pagiNation(resultPerPage);
 
     // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
-    // Optimized: Exclude reviews to reduce payload size and improve performance
-    const productsPromise = apifeature.query.select("-reviews").lean();
+    // Optimized: Exclude heavy fields and slice images to reduce payload size without breaking UI features
+    const productsPromise = apifeature.query
+        .select({
+            description: 0,
+            reviews: 0,
+            user: 0,
+            __v: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            images: { $slice: 1 }
+        })
+        .lean();
 
     const [filteredProductsCount, products] = await Promise.all([
         filteredProductsCountPromise,
