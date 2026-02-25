@@ -106,6 +106,31 @@ const ProductDetails = () => {
     setQuantity(quantity - 1);
   };
 
+  const handleQuantityChange = (e) => {
+    const value = e.target.value;
+    if (value === "") {
+      setQuantity("");
+      return;
+    }
+    const numValue = Number(value);
+    if (!isNaN(numValue)) {
+      setQuantity(numValue);
+    }
+  };
+
+  const handleQuantityBlur = () => {
+    let newQty = Number(quantity);
+    if (isNaN(newQty) || newQty < 1) {
+      newQty = 1;
+    }
+    const stock = product.stock || 0;
+    if (stock > 0 && newQty > stock) {
+      newQty = stock;
+      enqueueSnackbar(`Only ${stock} items available`, { variant: "info" });
+    }
+    setQuantity(newQty);
+  };
+
   const addToCartHandler = async () => {
     setAddingToCart(true);
     const resultAction = await dispatch(addItemsToCart({ id, quantity }));
@@ -208,7 +233,13 @@ const ProductDetails = () => {
                     <Tooltip title={quantity <= 1 ? "Minimum quantity is 1" : ""}>
                       <button onClick={quantity <= 1 ? undefined : decreaseQuantity} aria-disabled={quantity <= 1} aria-label="Decrease quantity">-</button>
                     </Tooltip>
-                    <input readOnly type="number" value={quantity} aria-label="Product quantity" />
+                    <input
+                      type="number"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      onBlur={handleQuantityBlur}
+                      aria-label="Product quantity"
+                    />
                     <Tooltip title={product.stock <= quantity ? "Maximum stock reached" : ""}>
                       <button onClick={product.stock <= quantity ? undefined : increaseQuantity} aria-disabled={product.stock <= quantity} aria-label="Increase quantity">+</button>
                     </Tooltip>

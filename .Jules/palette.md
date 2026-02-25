@@ -42,6 +42,10 @@
 **Learning:** When using `layoutId` with `framer-motion` inside `Link` components (which are often mocked in tests), React may warn about unknown props being passed to DOM elements if the mock doesn't filter them out.
 **Action:** When mocking `framer-motion` for tests, ensure the mock implementation explicitly destructures and filters out `layoutId` and other animation-specific props to prevent them from leaking to the underlying DOM element and causing console warnings.
 
+## 2024-05-23 - Testing onBlur in JSDOM
+**Learning:** Testing `onBlur` events in `jsdom` using `vitest` and `@testing-library/react` (specifically with `userEvent.tab()` or `click(document.body)`) proved unreliable for validating input validation logic in this specific setup.
+**Action:** When testing blur logic, if standard `fireEvent` or `userEvent` fails to trigger handlers despite correct implementation, verify logic by isolating the handler or rely on `onChange` verification + manual/browser testing, rather than spending excessive time fighting the test environment.
+
 ## 2025-05-27 - Auto-focus on Search
 **Learning:** For dedicated search pages or modals, users expect to type immediately. Requiring an extra click to focus the input is a friction point.
 **Action:** Always add `autoFocus` to the primary input of a search page or search modal to reduce interaction cost.
