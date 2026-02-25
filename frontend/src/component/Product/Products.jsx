@@ -29,8 +29,10 @@ const MAX_PRICE = 25000;
 const Products = () => {
     const dispatch = useDispatch()
     const [ratings, setRating] = useState(0)
+    const [sliderRatings, setSliderRatings] = useState(0); // For UI slider
     const [currentPage, setCurrentPage] = useState(1)
     const [price, setPrice] = useState([0, MAX_PRICE])
+    const [sliderPrice, setSliderPrice] = useState([0, MAX_PRICE]); // For UI slider
     const [category, setCategory] = useState("")
     const { products, loading, error, productsCount, resultPerPage, filteredProductsCount } = useSelector((state) => state.product)
     const { keyword } = useParams();
@@ -40,13 +42,16 @@ const Products = () => {
     }
     const priceHandler = (event, newPrice) => {
         setPrice(newPrice);
+        setSliderPrice(newPrice); // Ensure sync
         setCurrentPage(1);
     }
 
     const resetFilters = () => {
         setPrice([0, MAX_PRICE]);
+        setSliderPrice([0, MAX_PRICE]);
         setCategory("");
         setRating(0);
+        setSliderRatings(0);
         setCurrentPage(1);
     }
     const filteredProducts = products || [];
@@ -94,8 +99,9 @@ const Products = () => {
                             )}
                             <Typography variant="h6" className="filter-heading" id="range-slider">Price Range</Typography>
                             <Slider
-                                value={price}
-                                onChange={(event, newPrice) => setPrice(newPrice)}
+                                // Optimization: Use local state for value to prevent API calls on every drag event
+                                value={sliderPrice}
+                                onChange={(event, newPrice) => setSliderPrice(newPrice)}
                                 onChangeCommitted={priceHandler}
                                 valueLabelDisplay='auto'
                                 aria-labelledby='range-slider'
@@ -173,10 +179,12 @@ const Products = () => {
                                     Rating
                                 </Typography>
                                 <Slider
-                                    value={ratings}
-                                    onChange={(e, newRating) => setRating(newRating)}
+                                    // Optimization: Use local state for value to prevent API calls on every drag event
+                                    value={sliderRatings}
+                                    onChange={(e, newRating) => setSliderRatings(newRating)}
                                     onChangeCommitted={(e, newRating) => {
                                         setRating(newRating);
+                                        setSliderRatings(newRating); // Ensure sync
                                         setCurrentPage(1);
                                     }}
                                     min={0}
