@@ -7,10 +7,6 @@ import Footer from "./component/layout/Footer/Footer"
 import Loader from "./component/layout/Loader";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from "./component/Home/Home"
-import ProductDetails from "./component/Product/ProductDetails"
-import Products from "./component/Product/Products"
-import Search from "./component/Product/Search"
-import LoginSignup from './component/User/LoginSignup';
 import store from "./store"
 import { loadUser } from "./features/userSlice"
 import ProtectedRoute from './component/Route/ProtectedRoute';
@@ -21,6 +17,10 @@ import NotFound from "./component/layout/Not Found/NotFound";
 import { API_BASE_URL } from "./config";
 
 // Lazy Loaded Components
+const ProductDetails = lazy(() => import("./component/Product/ProductDetails"));
+const Products = lazy(() => import("./component/Product/Products"));
+const Search = lazy(() => import("./component/Product/Search"));
+const LoginSignup = lazy(() => import('./component/User/LoginSignup'));
 const Profile = lazy(() => import("./component/User/Profile"));
 const UpdateProfile = lazy(() => import('./component/User/UpdateProfile'));
 const UpdatePassword = lazy(() => import('./component/User/UpdatePassword'));

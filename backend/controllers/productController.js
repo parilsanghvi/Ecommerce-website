@@ -50,8 +50,18 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     apifeature.pagiNation(resultPerPage);
 
     // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
-    // Optimized: Exclude reviews to reduce payload size and improve performance
-    const productsPromise = apifeature.query.select("-reviews").lean();
+    // Optimized: Exclude heavy fields and slice images to reduce payload size without breaking UI features
+    const productsPromise = apifeature.query
+        .select({
+            description: 0,
+            reviews: 0,
+            user: 0,
+            __v: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            images: { $slice: 1 }
+        })
+        .lean();
 
     const [filteredProductsCount, products] = await Promise.all([
         filteredProductsCountPromise,
@@ -77,13 +87,14 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 })
 // update product --admin
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-        return next(new ErrorHandler("product not found", 404))
-    }
+    let product;
 
-    // Images Handling
+    // Optimized: Only fetch product if image update is required (to process old images)
     if (req.body.images !== undefined) {
+        product = await Product.findById(req.params.id);
+        if (!product) {
+            return next(new ErrorHandler("product not found", 404));
+        }
         req.body.images = await processImagesUpdate(product.images, req.body.images);
     }
 
@@ -92,6 +103,10 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         runValidators: true,
         useFindAndModify: false,
     });
+
+    if (!product) {
+        return next(new ErrorHandler("product not found", 404));
+    }
 
     res.status(200).json({
         success: true,
@@ -137,11 +152,13 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Rating must be between 0 and 5", 400));
     }
 
+    const sanitizedComment = comment ? String(comment).replace(/<[^>]*>?/gm, '') : comment;
+
     const review = {
         user: req.user._id,
         name: req.user.name,
         rating: Number(rating),
-        comment,
+        comment: sanitizedComment,
     }
 
     // Optimized: Fetch only necessary fields and check for existing review by this user
@@ -175,7 +192,7 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
             {
                 $set: {
                     "reviews.$.rating": Number(rating),
-                    "reviews.$.comment": comment,
+                    "reviews.$.comment": sanitizedComment,
                     ratings: newRatings
                 }
             }

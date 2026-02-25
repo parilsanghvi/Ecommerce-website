@@ -44,3 +44,11 @@
 1. In payment processing logic, receive the list of items (IDs and quantities) instead of the total amount.
 2. Fetch the product details from the database and calculate the total amount server-side.
 3. Use this server-side calculated amount for payment gateway interactions.
+
+## 2025-02-25 - Stored XSS in Product Reviews
+**Vulnerability:** The `createProductReview` controller stored user-submitted comments directly into the database without sanitization. This allowed attackers to inject malicious scripts (Stored XSS) that would execute when other users viewed the product page.
+**Learning:** While frontend frameworks (like React) often escape output by default, relying solely on them is insufficient (defense in depth). Raw data might be consumed by other clients (mobile apps, admin dashboards, emails) that don't auto-escape.
+**Prevention:**
+1. Sanitize user input on the server side before storage, especially for rich text or free-form fields.
+2. Use a dedicated sanitization library (like `dompurify` or `validator`) or, for simple cases, a strict allowlist/regex stripper.
+3. Always implement input validation and sanitization at the API boundary.

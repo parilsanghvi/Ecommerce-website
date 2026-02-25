@@ -45,3 +45,11 @@
 ## 2024-05-23 - Testing onBlur in JSDOM
 **Learning:** Testing `onBlur` events in `jsdom` using `vitest` and `@testing-library/react` (specifically with `userEvent.tab()` or `click(document.body)`) proved unreliable for validating input validation logic in this specific setup.
 **Action:** When testing blur logic, if standard `fireEvent` or `userEvent` fails to trigger handlers despite correct implementation, verify logic by isolating the handler or rely on `onChange` verification + manual/browser testing, rather than spending excessive time fighting the test environment.
+
+## 2025-05-27 - Auto-focus on Search
+**Learning:** For dedicated search pages or modals, users expect to type immediately. Requiring an extra click to focus the input is a friction point.
+**Action:** Always add `autoFocus` to the primary input of a search page or search modal to reduce interaction cost.
+
+## 2025-05-27 - Button Focus Styles
+**Learning:** Found that `.primary-btn` explicitly removes `outline` without providing a fallback focus style, making keyboard navigation difficult.
+**Action:** When removing `outline` for aesthetic reasons, always ensure `focus-visible` styles are provided (e.g., `outline: 2px solid var(--color-secondary)`) to maintain accessibility.

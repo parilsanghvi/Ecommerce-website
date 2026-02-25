@@ -23,6 +23,7 @@ const Search = () => {
                     type="text"
                     placeholder="Search products..."
                     aria-label="Search products" // Added for accessibility
+                    autoFocus
                     onChange={(e) => setKeyword(e.target.value)}
                 />
                 <input type="submit" value="Search" className="primary-btn" style={{ width: 'auto', padding: '0 2rem', height: '60px' }} />
