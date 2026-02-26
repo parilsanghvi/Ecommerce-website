@@ -37,6 +37,18 @@ describe('JWT Token Utility', () => {
         expect(options).toHaveProperty('sameSite', 'strict'); // Fixed security gap
     });
 
+    it('should set secure cookie in production (lowercase)', () => {
+        process.env.NODE_ENV = 'production';
+
+        sendToken(user, 200, res);
+
+        const cookieCall = res.cookie.mock.calls[0];
+        const options = cookieCall[2];
+
+        expect(options).toHaveProperty('secure', true);
+        expect(options).toHaveProperty('sameSite', 'strict');
+    });
+
     it('should NOT set secure cookie in DEVELOPMENT', () => {
         process.env.NODE_ENV = 'DEVELOPMENT';
 
