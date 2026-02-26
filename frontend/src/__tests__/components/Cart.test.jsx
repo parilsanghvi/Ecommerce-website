@@ -18,6 +18,7 @@ vi.mock('@mui/icons-material/RemoveShoppingCart', () => ({
 vi.mock('@mui/material', () => ({
     Typography: ({ children, ...props }) => <span {...props}>{children}</span>,
     Tooltip: ({ children }) => <>{children}</>,
+    CircularProgress: () => <div data-testid="circular-progress" />,
 }));
 
 // Mock CartItemCard

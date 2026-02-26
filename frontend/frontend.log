@@ -1,0 +1,52 @@
+
+> frontend@0.1.0 start /app/frontend
+> vite
+
+
+  VITE v7.3.1  ready in 396 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+2:18:14 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:18:14 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:19:02 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:19:02 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:19:25 PM [vite] (client) hmr update /src/component/Cart/Cart.jsx
+2:19:35 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:19:35 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:19:52 PM [vite] (client) hmr update /src/component/Cart/Cart.jsx
+2:20:01 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:20:01 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:20:17 PM [vite] (client) hmr update /src/component/Cart/Cart.jsx
+2:20:27 PM [vite] http proxy error: /api/v1/me
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:20:27 PM [vite] http proxy error: /api/v1/stripeapikey
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
