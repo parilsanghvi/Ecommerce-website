@@ -39,7 +39,10 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    resetPasswordToken: String,
+    resetPasswordToken: {
+        type: String,
+        index: true // Optimize: Index for password reset token lookup
+    },
     resetPasswordExpire: Date,
 })
 userSchema.pre("save", async function () {
