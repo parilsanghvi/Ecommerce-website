@@ -70,7 +70,9 @@ describe('Security: XSS in Product Reviews', () => {
 
         expect(storedComment).not.toContain('<script>');
         expect(storedComment).not.toContain('</script>');
-        expect(storedComment).toBe('alert("XSS")');
+        // Expect escaped output instead of stripped
+        // validator.escape() escapes / to &#x2F;
+        expect(storedComment).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;');
     });
 
     it('should sanitize HTML tags when UPDATING an existing review', async () => {
@@ -106,6 +108,8 @@ describe('Security: XSS in Product Reviews', () => {
 
         expect(storedComment).not.toContain('<script>');
         expect(storedComment).not.toContain('</script>');
-        expect(storedComment).toBe('alert("XSS")');
+        // Expect escaped output instead of stripped
+        // validator.escape() escapes / to &#x2F;
+        expect(storedComment).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;');
     });
 });
