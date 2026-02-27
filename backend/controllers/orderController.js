@@ -153,9 +153,14 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
 // get loggedin user order
 exports.myOrders = catchAsyncErrors(async (req, res, next) => {
     // Optimized: Use lean() to improve performance when fetching multiple orders
+    // Bolt Optimization: Exclude heavy fields (shippingInfo, paymentInfo, user) that are not needed for the list view.
+    // This reduces payload size significantly while preserving core order details like items and dates.
     const orders = await Order.find({
         user: req.user._id
-    }).lean()
+    })
+    .select("-shippingInfo -paymentInfo -user")
+    .lean()
+
     res.status(200).json({
         success: true,
         orders,
