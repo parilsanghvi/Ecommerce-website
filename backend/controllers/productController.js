@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 // takes model for object insertion from prodectmodel
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/errorhandler");
@@ -184,6 +185,7 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
     const sanitizedComment = comment ? validator.escape(String(comment)) : comment;
 
     const review = {
+        _id: new mongoose.Types.ObjectId(),
         user: req.user._id,
         name: req.user.name,
         rating: Number(rating),
@@ -202,42 +204,68 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
     }
 
     const isReviewed = product.reviews && product.reviews.length > 0;
-    const currentRatings = product.ratings || 0;
-    const currentNumOfReviews = product.numOfReviews || 0;
-    let newRatings;
 
     if (isReviewed) {
         // Update existing review
-        const oldRating = product.reviews[0].rating;
-        // Calculate new average: (OldAvg * Count - OldRating + NewRating) / Count
-        if (currentNumOfReviews === 0) {
-            newRatings = Number(rating);
-        } else {
-            newRatings = ((currentRatings * currentNumOfReviews) - oldRating + Number(rating)) / currentNumOfReviews;
-        }
-
         await Product.updateOne(
             { _id: productId, "reviews.user": req.user._id },
-            {
-                $set: {
-                    "reviews.$.rating": Number(rating),
-                    "reviews.$.comment": sanitizedComment,
-                    ratings: newRatings
+            [
+                {
+                    $set: {
+                        "reviews": {
+                            $map: {
+                                input: "$reviews",
+                                as: "r",
+                                in: {
+                                    $cond: [
+                                        { $eq: ["$$r.user", req.user._id] },
+                                        {
+                                            $mergeObjects: [
+                                                "$r",
+                                                {
+                                                    rating: Number(rating),
+                                                    comment: sanitizedComment
+                                                }
+                                            ]
+                                        },
+                                        "$$r"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $set: {
+                        ratings: { $avg: "$reviews.rating" }
+                    }
                 }
-            }
+            ],
+            { updatePipeline: true }
         );
     } else {
         // Add new review
-        // Calculate new average: (OldAvg * Count + NewRating) / (Count + 1)
-        newRatings = ((currentRatings * currentNumOfReviews) + Number(rating)) / (currentNumOfReviews + 1);
-
         await Product.updateOne(
             { _id: productId },
-            {
-                $push: { reviews: review },
-                $set: { ratings: newRatings },
-                $inc: { numOfReviews: 1 }
-            }
+            [
+                {
+                    $set: {
+                        reviews: {
+                            $concatArrays: [
+                                { $ifNull: ["$reviews", []] },
+                                [review]
+                            ]
+                        }
+                    }
+                },
+                {
+                    $set: {
+                        numOfReviews: { $size: "$reviews" },
+                        ratings: { $avg: "$reviews.rating" }
+                    }
+                }
+            ],
+            { updatePipeline: true }
         );
     }
 

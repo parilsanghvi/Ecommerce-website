@@ -1,27 +1,15 @@
-const productController = require('../controllers/productController');
-const Product = require('../models/productModel');
+const validator = require('validator');
 
-// Mock Mongoose model
+// Mock models and services BEFORE requiring controllers
 jest.mock('../models/productModel', () => ({
     findOne: jest.fn(),
-    updateOne: jest.fn(),
-    findById: jest.fn(),
+    updateOne: jest.fn()
 }));
+jest.mock('../middleware/catchAsyncErrors', () => (fn) => fn);
+jest.mock('cloudinary');
 
-// Mock cloudinary
-jest.mock('cloudinary', () => ({
-    v2: {
-        uploader: {
-            upload: jest.fn(),
-            destroy: jest.fn()
-        }
-    }
-}));
-
-// Mock catchAsyncErrors to execute the controller
-jest.mock('../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {
-    return Promise.resolve(func(req, res, next)).catch(next);
-});
+const Product = require('../models/productModel');
+const productController = require('../controllers/productController');
 
 describe('Security: XSS in Product Reviews', () => {
     let req, res, next;
@@ -30,9 +18,9 @@ describe('Security: XSS in Product Reviews', () => {
         req = {
             user: { _id: 'user123', name: 'Test User' },
             body: {
+                productId: 'product123',
                 rating: 5,
-                comment: '<script>alert("XSS")</script>',
-                productId: 'product123'
+                comment: '<script>alert("XSS")</script> Good product!'
             }
         };
         res = {
@@ -44,72 +32,65 @@ describe('Security: XSS in Product Reviews', () => {
     });
 
     it('should sanitize HTML tags when CREATING a new review', async () => {
-        // Mock product found, no existing review
+        // Product found, no reviews
         Product.findOne.mockReturnValue({
             lean: jest.fn().mockResolvedValue({
                 _id: 'product123',
                 ratings: 4,
-                numOfReviews: 1,
+                numOfReviews: 10,
                 reviews: []
             })
         });
 
-        // Mock updateOne
-        Product.updateOne.mockResolvedValue({});
+        Product.updateOne.mockResolvedValue({ modifiedCount: 1 });
 
         await productController.createProductReview(req, res, next);
 
-        // Verify that updateOne was called
         expect(Product.updateOne).toHaveBeenCalled();
 
-        // Get the arguments passed to updateOne
+        // Extract the arguments passed to Product.updateOne
         const updateArgs = Product.updateOne.mock.calls[0][1];
 
-        // Check if the comment in $push.reviews is sanitized
-        const storedComment = updateArgs.$push.reviews.comment;
+        // The update is a pipeline, so find the object that sets the review
+        // In the pipeline: [ { $set: { reviews: { $concatArrays: [ ... ] } } }, ... ]
+        const setReviewsObj = updateArgs.find(step => step.$set && step.$set.reviews && step.$set.reviews.$concatArrays);
+        const storedComment = setReviewsObj.$set.reviews.$concatArrays[1][0].comment;
 
         expect(storedComment).not.toContain('<script>');
         expect(storedComment).not.toContain('</script>');
-        // Expect escaped output instead of stripped
-        // validator.escape() escapes / to &#x2F;
-        expect(storedComment).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;');
+
+        // Check exact encoding (validator.escape behavior)
+        expect(storedComment).toContain('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt; Good product!');
     });
 
     it('should sanitize HTML tags when UPDATING an existing review', async () => {
-        // Mock product found, WITH existing review
+        // Product found, with existing review by this user
         Product.findOne.mockReturnValue({
             lean: jest.fn().mockResolvedValue({
                 _id: 'product123',
                 ratings: 4,
-                numOfReviews: 1,
-                reviews: [
-                    {
-                        user: 'user123',
-                        rating: 4,
-                        comment: 'Old comment'
-                    }
-                ]
+                numOfReviews: 10,
+                reviews: [{ user: 'user123', rating: 4, comment: 'Old comment' }]
             })
         });
 
-        // Mock updateOne
-        Product.updateOne.mockResolvedValue({});
+        Product.updateOne.mockResolvedValue({ modifiedCount: 1 });
 
         await productController.createProductReview(req, res, next);
 
-        // Verify that updateOne was called
         expect(Product.updateOne).toHaveBeenCalled();
 
-        // Get the arguments passed to updateOne
+        // Extract the arguments passed to Product.updateOne
         const updateArgs = Product.updateOne.mock.calls[0][1];
 
-        // Check if the comment in $set is sanitized
-        const storedComment = updateArgs.$set["reviews.$.comment"];
+        // The update is a pipeline, find the map operation that sets the comment
+        const setReviewsObj = updateArgs.find(step => step.$set && step.$set.reviews && step.$set.reviews.$map);
+        const storedComment = setReviewsObj.$set.reviews.$map.in.$cond[1].$mergeObjects[1].comment;
 
         expect(storedComment).not.toContain('<script>');
         expect(storedComment).not.toContain('</script>');
-        // Expect escaped output instead of stripped
-        // validator.escape() escapes / to &#x2F;
-        expect(storedComment).toBe('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;');
+
+        // Check exact encoding (validator.escape behavior)
+        expect(storedComment).toContain('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt; Good product!');
     });
 });

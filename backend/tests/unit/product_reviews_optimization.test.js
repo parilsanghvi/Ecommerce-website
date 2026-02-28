@@ -39,30 +39,39 @@ describe('Product Controller - createProductReview Optimization', () => {
         await productController.createProductReview(req, res, next);
 
         // Verify findOne was called with projection (O(1) fetch)
-        // The implementation should use findOne with projection to fetch only necessary fields
         expect(Product.findOne).toHaveBeenCalledWith(
             { _id: 'productId123' },
             { ratings: 1, numOfReviews: 1, reviews: { $elemMatch: { user: 'userId123' } } }
         );
 
-        // Verify updateOne was called correctly for NEW review
-        // New avg calculation: (4 * 10 + 5) / 11 = 45 / 11 = 4.0909...
-        const expectedRating = (40 + 5) / 11;
-
         expect(Product.updateOne).toHaveBeenCalledWith(
             { _id: 'productId123' },
-            expect.objectContaining({
-                $push: {
-                    reviews: expect.objectContaining({
-                        user: 'userId123',
-                        name: 'Test User',
-                        rating: 5,
-                        comment: 'Great product'
-                    })
+            [
+                {
+                    $set: {
+                        reviews: {
+                            $concatArrays: [
+                                { $ifNull: ["$reviews", []] },
+                                [
+                                    expect.objectContaining({
+                                        user: 'userId123',
+                                        name: 'Test User',
+                                        rating: 5,
+                                        comment: 'Great product'
+                                    })
+                                ]
+                            ]
+                        }
+                    }
                 },
-                $set: { ratings: expectedRating },
-                $inc: { numOfReviews: 1 }
-            })
+                {
+                    $set: {
+                        numOfReviews: { $size: "$reviews" },
+                        ratings: { $avg: "$reviews.rating" }
+                    }
+                }
+            ],
+            { updatePipeline: true }
         );
 
         expect(res.status).toHaveBeenCalledWith(200);
@@ -84,22 +93,41 @@ describe('Product Controller - createProductReview Optimization', () => {
 
         await productController.createProductReview(req, res, next);
 
-        // Verify updateOne was called correctly for EXISTING review
-        // Old avg = 4, count = 10. Total score = 40.
-        // Old rating = 3. New rating = 5.
-        // New total = 40 - 3 + 5 = 42.
-        // New avg = 42 / 10 = 4.2.
-        const expectedRating = (40 - 3 + 5) / 10;
-
         expect(Product.updateOne).toHaveBeenCalledWith(
             { _id: 'productId123', "reviews.user": 'userId123' },
-            expect.objectContaining({
-                $set: {
-                    "reviews.$.rating": 5,
-                    "reviews.$.comment": 'Great product',
-                    ratings: expectedRating
+            [
+                {
+                    $set: {
+                        "reviews": {
+                            $map: {
+                                input: "$reviews",
+                                as: "r",
+                                in: {
+                                    $cond: [
+                                        { $eq: ["$$r.user", 'userId123'] },
+                                        {
+                                            $mergeObjects: [
+                                                "$r",
+                                                {
+                                                    rating: 5,
+                                                    comment: 'Great product'
+                                                }
+                                            ]
+                                        },
+                                        "$$r"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $set: {
+                        ratings: { $avg: "$reviews.rating" }
+                    }
                 }
-            })
+            ],
+            { updatePipeline: true }
         );
 
         expect(res.status).toHaveBeenCalledWith(200);
