@@ -1,6 +1,6 @@
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
-const ErrorHandler = require('../utlis/errorhandler');
+const ErrorHandler = require('../utils/errorhandler');
 
 // Mock dependencies
 jest.mock('../models/orderModel');

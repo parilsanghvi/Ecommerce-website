@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Product = require('../backend/models/productModel');
-const Apifeatures = require('../backend/utlis/apifeatures');
+const Apifeatures = require('../backend/utils/apifeatures');
 
 async function runBenchmark() {
     let mongoServer;

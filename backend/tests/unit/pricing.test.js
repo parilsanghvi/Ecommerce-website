@@ -1,4 +1,4 @@
-const { calculateOrderPrices } = require("../../utlis/pricing");
+const { calculateOrderPrices } = require("../../utils/pricing");
 
 describe("Pricing Utility", () => {
   test("should calculate correct tax and shipping for price below threshold", () => {

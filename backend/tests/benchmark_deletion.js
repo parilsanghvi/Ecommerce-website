@@ -62,7 +62,7 @@ require.cache[productModelPath] = { exports: mockProductModel };
 const catchAsyncErrorsPath = path.resolve(__dirname, '../middleware/catchAsyncErrors.js');
 require.cache[catchAsyncErrorsPath] = { exports: mockCatchAsyncErrors };
 
-const errorHandlerPath = path.resolve(__dirname, '../utlis/errorhandler.js');
+const errorHandlerPath = path.resolve(__dirname, '../utils/errorhandler.js');
 require.cache[errorHandlerPath] = { exports: MockErrorHandler };
 
 

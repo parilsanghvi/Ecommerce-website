@@ -1,5 +1,5 @@
 
-const ErrorHandler = require('../utlis/errorhandler');
+const ErrorHandler = require('../utils/errorhandler');
 const productController = require('../controllers/productController');
 const Product = require('../models/productModel');
 
