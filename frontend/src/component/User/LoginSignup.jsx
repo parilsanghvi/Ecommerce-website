@@ -1,6 +1,5 @@
 import React, { Fragment, useRef, useState, useEffect } from 'react'
 import "./LoginSignup.css"
-import Loader from "../layout/Loader"
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
@@ -119,164 +118,169 @@ const LoginSignup = () => {
     }
     return (
         <Fragment>
-            {loading ? (<Loader />
-            ) : (
-                <Fragment>
-                    <div className='LoginSignUpContainer'>
-                        <div className='LoginSignUpBox'>
-                            <div>
-                                <div className='login_signUp_toggle' role="tablist">
-                                    <button
-                                        className="toggle-btn"
-                                        onClick={(e) => switchTabs(e, "login")}
-                                        role="tab"
-                                        aria-selected={activeTab === "login"}
-                                        aria-controls="login-panel"
-                                        id="login-tab"
-                                    >
-                                        Login
-                                    </button>
-                                    <button
-                                        className="toggle-btn"
-                                        onClick={(e) => switchTabs(e, "register")}
-                                        role="tab"
-                                        aria-selected={activeTab === "register"}
-                                        aria-controls="register-panel"
-                                        id="register-tab"
-                                    >
-                                        Register
-                                    </button>
-                                </div>
-                                <div className="slider-line" ref={switcherTab}></div>
-                            </div >
-                            {(error || localError) && (
-                                <div className="loginError">
-                                    <MdErrorOutline />
-                                    <span>{localError || (error === "Field value too long" ? "File is too large" : error)}</span>
-                                </div>
-                            )}
-                            <form
-                                className='loginForm'
-                                ref={loginTab}
-                                onSubmit={loginSubmit}
-                                role="tabpanel"
-                                id="login-panel"
-                                aria-labelledby="login-tab"
-                                aria-hidden={activeTab !== "login"}
+            <div className='LoginSignUpContainer'>
+                <div className='LoginSignUpBox'>
+                    <div>
+                        <div className='login_signUp_toggle' role="tablist">
+                            <button
+                                className="toggle-btn"
+                                onClick={(e) => switchTabs(e, "login")}
+                                role="tab"
+                                aria-selected={activeTab === "login"}
+                                aria-controls="login-panel"
+                                id="login-tab"
+                                disabled={loading}
                             >
-                                <div className='loginEmail'>
-                                    <MailOutlineIcon />
-                                    <input
-                                        type="email"
-                                        placeholder="Email"
-                                        aria-label="Login Email"
-                                        required
-                                        value={loginEmail}
-                                        onChange={(e) => {
-                                            setLoginEmail(e.target.value);
-                                            clearLocalAndGlobalErrors();
-                                        }}
-                                    />
-                                </div>
-                                <div className='loginPassword'>
-                                    <LockOpenIcon />
-                                    <input
-                                        type={showLoginPassword ? "text" : "password"}
-                                        placeholder="Password"
-                                        aria-label="Login Password"
-                                        required
-                                        value={loginPassword}
-                                        onChange={(e) => {
-                                            setLoginPassword(e.target.value);
-                                            clearLocalAndGlobalErrors();
-                                        }}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowLoginPassword(!showLoginPassword)}
-                                        className="password-toggle-btn"
-                                        aria-label={showLoginPassword ? "Hide password" : "Show password"}
-                                    >
-                                        {showLoginPassword ? <VisibilityOff /> : <Visibility />}
-                                    </button>
-                                </div>
-                                <Link to="/password/forgot">Forgot Password ?</Link>
-                                <input type="submit" value="Login" className='primary-btn' />
-                            </form>
-                            <form
-                                className='signUpForm'
-                                ref={registerTab}
-                                encType='multipart/form-data'
-                                onSubmit={registerSubmit}
-                                role="tabpanel"
-                                id="register-panel"
-                                aria-labelledby="register-tab"
-                                aria-hidden={activeTab !== "register"}
+                                Login
+                            </button>
+                            <button
+                                className="toggle-btn"
+                                onClick={(e) => switchTabs(e, "register")}
+                                role="tab"
+                                aria-selected={activeTab === "register"}
+                                aria-controls="register-panel"
+                                id="register-tab"
+                                disabled={loading}
                             >
-                                <div className='signUpName'>
-                                    <FaceIcon />
-                                    <input
-                                        type="text"
-                                        placeholder="Name"
-                                        aria-label="Name"
-                                        required
-                                        name="name"
-                                        value={name}
-                                        onChange={registerDataChange}
-                                    />
-                                </div>
-                                <div className='signUpEmail'>
-                                    <MailOutlineIcon />
-                                    <input
-                                        type="email"
-                                        placeholder="Email"
-                                        aria-label="Email"
-                                        required
-                                        name='email'
-                                        value={email}
-                                        onChange={registerDataChange}
-                                    />
-                                </div>
-                                <div className='signUpPassword'>
-                                    <LockOpenIcon />
-                                    <input
-                                        type={showRegisterPassword ? "text" : "password"}
-                                        placeholder="Password"
-                                        aria-label="Password"
-                                        required
-                                        name='password'
-                                        value={password}
-                                        onChange={registerDataChange}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                                        className="password-toggle-btn"
-                                        aria-label={showRegisterPassword ? "Hide password" : "Show password"}
-                                    >
-                                        {showRegisterPassword ? <VisibilityOff /> : <Visibility />}
-                                    </button>
-                                </div>
-                                <div id='registerImage'>
-                                    <img src={avatarPreview} alt="avatar preview" />
-                                    <input
-                                        type="file"
-                                        name='avatar'
-                                        accept='image/*'
-                                        aria-label="Avatar Upload"
-                                        onChange={registerDataChange}
-                                    />
-                                </div>
-                                <input
-                                    type="submit"
-                                    value="Register"
-                                    className='primary-btn'
-                                />
-                            </form>
-                        </div >
+                                Register
+                            </button>
+                        </div>
+                        <div className="slider-line" ref={switcherTab}></div>
                     </div >
-                </Fragment >
-            )}
+                    {(error || localError) && (
+                        <div className="loginError">
+                            <MdErrorOutline />
+                            <span>{localError || (error === "Field value too long" ? "File is too large" : error)}</span>
+                        </div>
+                    )}
+                    <form
+                        className='loginForm'
+                        ref={loginTab}
+                        onSubmit={loginSubmit}
+                        role="tabpanel"
+                        id="login-panel"
+                        aria-labelledby="login-tab"
+                        aria-hidden={activeTab !== "login"}
+                    >
+                        <div className='loginEmail'>
+                            <MailOutlineIcon />
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                aria-label="Login Email"
+                                required
+                                value={loginEmail}
+                                disabled={loading}
+                                onChange={(e) => {
+                                    setLoginEmail(e.target.value);
+                                    clearLocalAndGlobalErrors();
+                                }}
+                            />
+                        </div>
+                        <div className='loginPassword'>
+                            <LockOpenIcon />
+                            <input
+                                type={showLoginPassword ? "text" : "password"}
+                                placeholder="Password"
+                                aria-label="Login Password"
+                                required
+                                value={loginPassword}
+                                disabled={loading}
+                                onChange={(e) => {
+                                    setLoginPassword(e.target.value);
+                                    clearLocalAndGlobalErrors();
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                className="password-toggle-btn"
+                                aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                                disabled={loading}
+                            >
+                                {showLoginPassword ? <VisibilityOff /> : <Visibility />}
+                            </button>
+                        </div>
+                        <Link to="/password/forgot">Forgot Password ?</Link>
+                        <button type="submit" className='primary-btn' disabled={loading}>
+                            {loading ? "Logging In..." : "Login"}
+                        </button>
+                    </form>
+                    <form
+                        className='signUpForm'
+                        ref={registerTab}
+                        encType='multipart/form-data'
+                        onSubmit={registerSubmit}
+                        role="tabpanel"
+                        id="register-panel"
+                        aria-labelledby="register-tab"
+                        aria-hidden={activeTab !== "register"}
+                    >
+                        <div className='signUpName'>
+                            <FaceIcon />
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                aria-label="Name"
+                                required
+                                name="name"
+                                value={name}
+                                disabled={loading}
+                                onChange={registerDataChange}
+                            />
+                        </div>
+                        <div className='signUpEmail'>
+                            <MailOutlineIcon />
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                aria-label="Email"
+                                required
+                                name='email'
+                                value={email}
+                                disabled={loading}
+                                onChange={registerDataChange}
+                            />
+                        </div>
+                        <div className='signUpPassword'>
+                            <LockOpenIcon />
+                            <input
+                                type={showRegisterPassword ? "text" : "password"}
+                                placeholder="Password"
+                                aria-label="Password"
+                                required
+                                name='password'
+                                value={password}
+                                disabled={loading}
+                                onChange={registerDataChange}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                className="password-toggle-btn"
+                                aria-label={showRegisterPassword ? "Hide password" : "Show password"}
+                                disabled={loading}
+                            >
+                                {showRegisterPassword ? <VisibilityOff /> : <Visibility />}
+                            </button>
+                        </div>
+                        <div id='registerImage'>
+                            <img src={avatarPreview} alt="avatar preview" />
+                            <input
+                                type="file"
+                                name='avatar'
+                                accept='image/*'
+                                aria-label="Avatar Upload"
+                                disabled={loading}
+                                onChange={registerDataChange}
+                            />
+                        </div>
+                        <button type="submit" className='primary-btn' disabled={loading}>
+                            {loading ? "Registering..." : "Register"}
+                        </button>
+                    </form>
+                </div >
+            </div >
         </Fragment >
     )
 }
