@@ -9,3 +9,6 @@
 ## 2025-02-23 - Frontend Re-render Computations
 **Learning:** Derived state calculated from expensive array operations like `reduce` (e.g., calculating cart totals) runs synchronously on every render. If these components re-render often (e.g., due to loading states or form inputs), this becomes a bottleneck.
 **Action:** Always wrap `Array.prototype.reduce`, `map`, or `filter` operations that derive data from props/state in a `useMemo` hook with strict dependencies.
+## 2025-02-13 - [Performance improvement] Debounce Price Slider API Calls
+**Learning:** Using `useEffect` to dispatch API requests directly on range slider dependency changes causes a high volume of redundant API requests whenever the user is actively sliding or interacting with UI elements that immediately update filter state. Adding a simple `setTimeout` and `clearTimeout` acts as a basic yet powerful debounce, effectively batching and preventing unneeded rapid-fire requests.
+**Action:** Always implement a debounce pattern (using custom hooks or a `setTimeout` within `useEffect`) when triggering API calls based on rapidly-updating UI input controls like text fields or sliders to save client and server resources. Furthermore, when adding a debounce, testing suites should be updated to expect asynchronous state changes using helpers like `waitFor`.
