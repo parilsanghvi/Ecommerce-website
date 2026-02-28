@@ -112,15 +112,16 @@ describe('updateProfile Controller', () => {
         expect(res.status).toHaveBeenCalledWith(200);
     });
 
-    it('should fail if avatar is undefined (missing in body)', async () => {
-        // If avatar is missing from body, req.body.avatar is undefined
+    it('should skip avatar upload if avatar is undefined (missing in body)', async () => {
         req.body.avatar = undefined;
+
+        User.findByIdAndUpdate.mockResolvedValue({});
 
         await userController.updateProfile(req, res, next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
-        expect(next.mock.calls[0][0].statusCode).toBe(401);
-        expect(next.mock.calls[0][0].message).toBe("Please upload a new avatar");
+        expect(cloudinary.v2.uploader.destroy).not.toHaveBeenCalled();
+        expect(cloudinary.v2.uploader.upload).not.toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(200);
     });
 
     it('should handle Cloudinary errors gracefully', async () => {

@@ -164,10 +164,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
         name: req.body.name,
         email: req.body.email,
     }
-    if (req.body.avatar !== "") {
-        if (!req.body.avatar || req.body.avatar === "undefined") {
-            return next(new ErrorHandler("Please upload a new avatar", 401))
-        }
+    if (req.body.avatar && req.body.avatar !== "" && req.body.avatar !== "undefined") {
         if (typeof req.body.avatar === "string" && req.body.avatar.length > MAX_AVATAR_SIZE) {
             return next(new ErrorHandler("Avatar image size too large", 400));
         }
