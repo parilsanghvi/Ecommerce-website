@@ -1,7 +1,7 @@
 
 const productController = require('../../controllers/productController');
 const Product = require('../../models/productModel');
-const Apifeatures = require('../../utlis/apifeatures');
+const Apifeatures = require('../../utils/apifeatures');
 
 // Mock catchAsyncErrors
 jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next).catch(next));

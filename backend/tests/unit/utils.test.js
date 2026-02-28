@@ -1,4 +1,4 @@
-const sendEmail = require('../../utlis/sendEmail');
+const sendEmail = require('../../utils/sendEmail');
 // We need to mock 'resend' package
 const { Resend } = require('resend');
 

@@ -1,11 +1,11 @@
 const userController = require('../controllers/userController');
 const User = require('../models/userModel');
-const sendToken = require('../utlis/jwtToken');
+const sendToken = require('../utils/jwtToken');
 
 // Mock dependencies
 jest.mock('../models/userModel');
-jest.mock('../utlis/jwtToken', () => jest.fn()); // Mock as a function directly
-jest.mock('../utlis/sendEmail');
+jest.mock('../utils/jwtToken', () => jest.fn()); // Mock as a function directly
+jest.mock('../utils/sendEmail');
 jest.mock('cloudinary');
 
 describe('Login Authentication Bypass', () => {

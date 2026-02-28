@@ -1,10 +1,10 @@
 // takes model for object insertion from prodectmodel
 const Product = require("../models/productModel");
-const ErrorHandler = require("../utlis/errorhandler");
+const ErrorHandler = require("../utils/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const Apifeatures = require("../utlis/apifeatures");
+const Apifeatures = require("../utils/apifeatures");
 const cloudinary = require("cloudinary")
-const { processImages, processImagesUpdate } = require("../utlis/imageHandler");
+const { processImages, processImagesUpdate } = require("../utils/imageHandler");
 const validator = require("validator");
 
 // create product --admin
@@ -104,32 +104,26 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     let product;
 
+    // Security Fix: Prevent Mass Assignment Vulnerability
+    // Only allow specific fields to be updated by the user/admin
+    const allowedUpdates = ['name', 'price', 'description', 'category', 'stock'];
+    const updateData = {};
+
+    allowedUpdates.forEach(field => {
+        if (req.body[field] !== undefined) {
+            updateData[field] = req.body[field];
+        }
+    });
+
     // Optimized: Only fetch product if image update is required (to process old images)
     if (req.body.images !== undefined) {
         product = await Product.findById(req.params.id);
         if (!product) {
             return next(new ErrorHandler("product not found", 404));
         }
-        req.body.images = await processImagesUpdate(product.images, req.body.images);
+        updateData.images = await processImagesUpdate(product.images, req.body.images);
     }
 
-    // Security: Prevent mass assignment using an allowlist
-    const { name, description, price, category, stock } = req.body;
-
-    const updateData = {
-        name,
-        description,
-        price,
-        category,
-        stock
-    };
-
-    if (req.body.images !== undefined) {
-        updateData.images = req.body.images;
-    }
-
-    // Remove undefined fields so we only update what was actually sent
-    Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
     product = await Product.findByIdAndUpdate(req.params.id, updateData, {
         new: true,

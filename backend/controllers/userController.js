@@ -1,8 +1,8 @@
-const ErrorHandler = require("../utlis/errorhandler");
+const ErrorHandler = require("../utils/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
-const sendToken = require("../utlis/jwtToken");
-const sendEmail = require("../utlis/sendEmail")
+const sendToken = require("../utils/jwtToken");
+const sendEmail = require("../utils/sendEmail")
 const crypto = require("crypto")
 const cloudinary = require("cloudinary")
 
@@ -87,12 +87,13 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save({
         validateBeforeSave: false
     });
-    // Use FRONTEND_URL if set to prevent Host Header Injection (Security Fix)
-    const clientUrl = process.env.FRONTEND_URL
-        ? process.env.FRONTEND_URL.replace(/\/$/, "")
-        : `${req.protocol}://${req.get("host")}`;
+    // Security Fix: Enforce the use of FRONTEND_URL to prevent Host Header Injection
+    if (!process.env.FRONTEND_URL) {
+        return next(new ErrorHandler("FRONTEND_URL is not configured on the server.", 500));
+    }
 
-    const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`
+    const clientUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
+    const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`;
     const message = `your password reset token is :- \n\n ${resetPasswordUrl} \n\n if you have not requested this email then please ignore it`;
     try {
         await sendEmail({
@@ -164,21 +165,24 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
         name: req.body.name,
         email: req.body.email,
     }
-    if (req.body.avatar !== "") {
-        if (!req.body.avatar || req.body.avatar === "undefined") {
-            return next(new ErrorHandler("Please upload a new avatar", 401))
-        }
+    if (req.body.avatar && req.body.avatar !== "" && req.body.avatar !== "undefined") {
         if (typeof req.body.avatar === "string" && req.body.avatar.length > MAX_AVATAR_SIZE) {
             return next(new ErrorHandler("Avatar image size too large", 400));
         }
         // Optimized: Use req.user.avatar directly instead of redundant DB call
-        const imageId = req.user.avatar.public_id
-        await cloudinary.v2.uploader.destroy(imageId);
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-            folder: "avatars",
-            width: 150,
-            crop: "scale",
-        })
+        const imageId = req.user.avatar.public_id;
+
+        // ⚡ Bolt: [performance improvement] Parallelize Cloudinary destroy and upload operations
+        // Previously these were sequential, taking T(destroy) + T(upload) time.
+        // Now they run concurrently, taking MAX(T(destroy), T(upload)) time.
+        const [, myCloud] = await Promise.all([
+            cloudinary.v2.uploader.destroy(imageId),
+            cloudinary.v2.uploader.upload(req.body.avatar, {
+                folder: "avatars",
+                width: 150,
+                crop: "scale",
+            })
+        ]);
 
         newUserData.avatar = {
             public_id: myCloud.public_id,

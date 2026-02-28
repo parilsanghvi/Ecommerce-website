@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Product = require("../models/productModel");
-const ErrorHandler = require("../utlis/errorhandler");
+const ErrorHandler = require("../utils/errorhandler");
 
 exports.processPayment = catchAsyncErrors(async (req, res, next) => {
   const { items } = req.body;
@@ -13,9 +13,14 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
   const productIds = items.map((item) => item.product);
   const products = await Product.find({ _id: { $in: productIds } });
 
+  // ⚡ Bolt: [performance improvement] Convert products array to Map for O(1) lookups
+  // This reduces the overall time complexity from O(N^2) to O(N) when iterating over items.
+  const productsMap = new Map();
+  products.forEach((p) => productsMap.set(p._id.toString(), p));
+
   let calculatedItemsPrice = 0;
   for (const item of items) {
-    const product = products.find((p) => p._id.toString() === item.product);
+    const product = productsMap.get(item.product);
     if (!product) {
       return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
     }

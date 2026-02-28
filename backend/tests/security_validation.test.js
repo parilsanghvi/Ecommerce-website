@@ -19,7 +19,7 @@ jest.mock('cloudinary', () => ({
     },
 }));
 
-jest.mock('../utlis/sendEmail', () => jest.fn().mockResolvedValue(true));
+jest.mock('../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
 
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();

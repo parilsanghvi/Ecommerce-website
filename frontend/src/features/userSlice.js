@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
@@ -8,7 +9,7 @@ export const login = createAsyncThunk(
     createThunkHandler(async ({ email, password }) => {
         const config = { headers: { "Content-Type": "application/json" } };
         const { data } = await axios.post(
-            `/api/v1/login`,
+            `${API_BASE_URL}/login`,
             { email, password },
             config
         );
@@ -20,7 +21,7 @@ export const register = createAsyncThunk(
     "user/register",
     createThunkHandler(async (userData) => {
         const config = { headers: { "Content-Type": "multipart/form-data" } };
-        const { data } = await axios.post(`/api/v1/register`, userData, config);
+        const { data } = await axios.post(`${API_BASE_URL}/register`, userData, config);
         return data.user;
     })
 );
@@ -28,7 +29,7 @@ export const register = createAsyncThunk(
 export const loadUser = createAsyncThunk(
     "user/loadUser",
     createThunkHandler(async () => {
-        const { data } = await axios.get(`/api/v1/me`);
+        const { data } = await axios.get(`${API_BASE_URL}/me`);
         return data.user;
     })
 );
@@ -36,7 +37,7 @@ export const loadUser = createAsyncThunk(
 export const logout = createAsyncThunk(
     "user/logout",
     createThunkHandler(async () => {
-        await axios.get(`/api/v1/logout`);
+        await axios.get(`${API_BASE_URL}/logout`);
     })
 );
 
@@ -44,7 +45,7 @@ export const updateProfile = createAsyncThunk(
     "user/updateProfile",
     createThunkHandler(async (userData) => {
         const config = { headers: { "Content-Type": "multipart/form-data" } };
-        const { data } = await axios.put(`/api/v1/me/update`, userData, config);
+        const { data } = await axios.put(`${API_BASE_URL}/me/update`, userData, config);
         return data.success;
     })
 );
@@ -54,7 +55,7 @@ export const updatePassword = createAsyncThunk(
     createThunkHandler(async (passwords) => {
         const config = { headers: { "Content-Type": "application/json" } };
         const { data } = await axios.put(
-            `/api/v1/password/update`,
+            `${API_BASE_URL}/password/update`,
             passwords,
             config
         );
@@ -67,7 +68,7 @@ export const forgotPassword = createAsyncThunk(
     createThunkHandler(async (email) => {
         const config = { headers: { "Content-Type": "application/json" } };
         const { data } = await axios.post(
-            `/api/v1/password/forgot`,
+            `${API_BASE_URL}/password/forgot`,
             email,
             config
         );
@@ -80,7 +81,7 @@ export const resetPassword = createAsyncThunk(
     createThunkHandler(async ({ token, passwords }) => {
         const config = { headers: { "Content-Type": "application/json" } };
         const { data } = await axios.put(
-            `/api/v1/password/reset/${token}`,
+            `${API_BASE_URL}/password/reset/${token}`,
             passwords,
             config
         );
@@ -91,7 +92,7 @@ export const resetPassword = createAsyncThunk(
 export const getAllUsers = createAsyncThunk(
     "user/getAllUsers",
     createThunkHandler(async () => {
-        const { data } = await axios.get(`/api/v1/admin/users`);
+        const { data } = await axios.get(`${API_BASE_URL}/admin/users`);
         return data.users;
     })
 );
@@ -99,7 +100,7 @@ export const getAllUsers = createAsyncThunk(
 export const getUserDetails = createAsyncThunk(
     "user/getUserDetails",
     createThunkHandler(async (id) => {
-        const { data } = await axios.get(`/api/v1/admin/user/${id}`);
+        const { data } = await axios.get(`${API_BASE_URL}/admin/user/${id}`);
         return data.user;
     })
 );
@@ -109,7 +110,7 @@ export const updateUser = createAsyncThunk(
     createThunkHandler(async ({ id, userData }) => {
         const config = { headers: { "Content-Type": "application/json" } };
         const { data } = await axios.put(
-            `/api/v1/admin/user/${id}`,
+            `${API_BASE_URL}/admin/user/${id}`,
             userData,
             config
         );
@@ -120,7 +121,7 @@ export const updateUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
     "user/deleteUser",
     createThunkHandler(async (id) => {
-        const { data } = await axios.delete(`/api/v1/admin/user/${id}`);
+        const { data } = await axios.delete(`${API_BASE_URL}/admin/user/${id}`);
         return data;
     })
 );

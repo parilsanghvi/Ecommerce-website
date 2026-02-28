@@ -32,7 +32,7 @@ jest.mock('resend', () => {
 });
 
 // Mock sendEmail utility if it's used directly instead of Resend
-jest.mock('../utlis/sendEmail', () => jest.fn().mockResolvedValue(true));
+jest.mock('../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
 
 
 beforeAll(async () => {
@@ -52,6 +52,16 @@ afterEach(async () => {
 });
 
 describe('Security: Forgot Password Enumeration', () => {
+    const originalEnv = process.env.FRONTEND_URL;
+
+    beforeEach(() => {
+        process.env.FRONTEND_URL = 'http://localhost:3000';
+    });
+
+    afterEach(() => {
+        process.env.FRONTEND_URL = originalEnv;
+    });
+
     it('should return generic success message for non-existent email', async () => {
         const res = await request(app)
             .post('/api/v1/password/forgot')

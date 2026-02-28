@@ -1,4 +1,4 @@
-const Apifeatures = require('../../utlis/apifeatures');
+const Apifeatures = require('../../utils/apifeatures');
 
 describe('Apifeatures Security (Regex Injection)', () => {
     let mockQuery;

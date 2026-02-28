@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
@@ -29,7 +30,7 @@ export const createOrder = createAsyncThunk(
     "order/createOrder",
     createThunkHandler(async (orderData) => {
         const config = { headers: { "Content-Type": "application/json" } };
-        const { data } = await axios.post("/api/v1/order/new", orderData, config);
+        const { data } = await axios.post("${API_BASE_URL}/order/new", orderData, config);
         return data;
     })
 );
@@ -38,7 +39,7 @@ export const createOrder = createAsyncThunk(
 export const myOrders = createAsyncThunk(
     "order/myOrders",
     createThunkHandler(async () => {
-        const { data } = await axios.get("/api/v1/orders/me");
+        const { data } = await axios.get("${API_BASE_URL}/orders/me");
         return data.orders;
     })
 );
@@ -57,7 +58,7 @@ export const getAllOrders = createAsyncThunk(
             calculateTotal = arg.calculateTotal || false;
         }
 
-        const { data } = await axios.get(`/api/v1/admin/orders?page=${page}&calculateTotal=${calculateTotal}`);
+        const { data } = await axios.get(`${API_BASE_URL}/admin/orders?page=${page}&calculateTotal=${calculateTotal}`);
         return data;
     })
 );
@@ -67,7 +68,7 @@ export const updateOrder = createAsyncThunk(
     "order/updateOrder",
     createThunkHandler(async ({ id, orderData }) => {
         const config = { headers: { "Content-Type": "application/json" } };
-        const { data } = await axios.put(`/api/v1/admin/order/${id}`, orderData, config);
+        const { data } = await axios.put(`${API_BASE_URL}/admin/order/${id}`, orderData, config);
         return data.success;
     })
 );
@@ -76,7 +77,7 @@ export const updateOrder = createAsyncThunk(
 export const deleteOrder = createAsyncThunk(
     "order/deleteOrder",
     createThunkHandler(async (id) => {
-        const { data } = await axios.delete(`/api/v1/admin/order/${id}`);
+        const { data } = await axios.delete(`${API_BASE_URL}/admin/order/${id}`);
         return data.success;
     })
 );
@@ -85,7 +86,7 @@ export const deleteOrder = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
     "order/getOrderDetails",
     createThunkHandler(async (id) => {
-        const { data } = await axios.get(`/api/v1/order/${id}`);
+        const { data } = await axios.get(`${API_BASE_URL}/order/${id}`);
         return data.order;
     })
 );
