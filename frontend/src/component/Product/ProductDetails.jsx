@@ -29,19 +29,8 @@ const ProductDetails = () => {
     const { className, style, onClick } = props;
     return (
       <NavigateNextIcon
-        className={className}
-        style={{
-          ...style,
-          display: "block",
-          color: "var(--color-primary)",
-          background: "var(--color-surface)",
-          borderRadius: "50%",
-          border: "1px solid var(--color-text)",
-          zIndex: 2,
-          width: "40px",
-          height: "40px",
-          right: "10px"
-        }}
+        className={`${className} slick-custom-arrow slick-custom-next`}
+        style={style}
         onClick={onClick}
         role="button"
         aria-label="Next Slide"
@@ -53,19 +42,8 @@ const ProductDetails = () => {
     const { className, style, onClick } = props;
     return (
       <NavigateBeforeIcon
-        className={className}
-        style={{
-          ...style,
-          display: "block",
-          color: "var(--color-primary)",
-          background: "var(--color-surface)",
-          borderRadius: "50%",
-          border: "1px solid var(--color-text)",
-          zIndex: 2,
-          width: "40px",
-          height: "40px",
-          left: "10px"
-        }}
+        className={`${className} slick-custom-arrow slick-custom-prev`}
+        style={style}
         onClick={onClick}
         role="button"
         aria-label="Previous Slide"

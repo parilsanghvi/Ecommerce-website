@@ -295,3 +295,22 @@
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--color-text);
 }
+/* Custom Slick Arrows */
+.slick-custom-arrow {
+  display: block;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border-radius: 50%;
+  border: 1px solid var(--color-text);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+}
+
+.slick-custom-next {
+  right: 10px;
+}
+
+.slick-custom-prev {
+  left: 10px;
+}
