@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, getProductDetails, newReview, newReviewReset } from "../../features/productSlice";
+import { getTransformedImageUrl } from "../../utils/cloudinary";
 import ReviewCard from "./ReviewCard";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
@@ -187,7 +188,7 @@ const ProductDetails = () => {
                       <div key={i}>
                         <img
                           className="CarouselImage"
-                          src={item.url}
+                          src={getTransformedImageUrl(item.url, { width: 800, height: 800, crop: "fill" })}
                           alt={`${product.name} - View ${i + 1}`}
                           width={600}
                           height={600}
