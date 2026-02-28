@@ -3,30 +3,50 @@ import "./Cart.css";
 import CartItemCard from "./CartItemCard";
 import { useSelector, useDispatch } from "react-redux";
 import { addItemsToCart, removeItemsFromCart } from "../../features/cartSlice";
-import { Typography, Tooltip } from "@mui/material";
+import { Typography, Tooltip, CircularProgress } from "@mui/material";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
+  const [updatingItems, setUpdatingItems] = useState({});
 
-  const increaseQuantity = (id, quantity, stock) => {
+  const increaseQuantity = async (id, quantity, stock) => {
     const newQty = quantity + 1;
     if (stock <= quantity) {
       return;
     }
-    dispatch(addItemsToCart({ id, quantity: newQty }));
+    setUpdatingItems((prev) => ({ ...prev, [id]: "increase" }));
+    try {
+      await dispatch(addItemsToCart({ id, quantity: newQty }));
+    } finally {
+      setUpdatingItems((prev) => {
+        const newState = { ...prev };
+        delete newState[id];
+        return newState;
+      });
+    }
   };
 
-  const decreaseQuantity = (id, quantity) => {
+  const decreaseQuantity = async (id, quantity) => {
     const newQty = quantity - 1;
     if (1 >= quantity) {
       return;
     }
-    dispatch(addItemsToCart({ id, quantity: newQty }));
+    setUpdatingItems((prev) => ({ ...prev, [id]: "decrease" }));
+    try {
+      await dispatch(addItemsToCart({ id, quantity: newQty }));
+    } finally {
+      setUpdatingItems((prev) => {
+        const newState = { ...prev };
+        delete newState[id];
+        return newState;
+      });
+    }
   };
 
   const deleteCartItems = (id) => {
@@ -70,10 +90,15 @@ const Cart = () => {
                         onClick={() =>
                           decreaseQuantity(item.product, item.quantity)
                         }
-                        aria-disabled={item.quantity <= 1}
+                        disabled={!!updatingItems[item.product]}
+                        aria-disabled={item.quantity <= 1 || !!updatingItems[item.product]}
                         aria-label="Decrease quantity"
                       >
-                        -
+                        {updatingItems[item.product] === "decrease" ? (
+                          <CircularProgress size={20} sx={{ color: 'var(--color-primary)' }} />
+                        ) : (
+                          "-"
+                        )}
                       </button>
                     </Tooltip>
                     <input
@@ -81,6 +106,7 @@ const Cart = () => {
                       value={item.quantity}
                       readOnly
                       aria-label="Product quantity"
+                      aria-busy={!!updatingItems[item.product]}
                     />
                     <Tooltip title={item.stock <= item.quantity ? "Maximum stock reached" : ""}>
                       <button
@@ -91,10 +117,15 @@ const Cart = () => {
                             item.stock
                           )
                         }
-                        aria-disabled={item.stock <= item.quantity}
+                        disabled={!!updatingItems[item.product]}
+                        aria-disabled={item.stock <= item.quantity || !!updatingItems[item.product]}
                         aria-label="Increase quantity"
                       >
-                        +
+                        {updatingItems[item.product] === "increase" ? (
+                          <CircularProgress size={20} sx={{ color: 'var(--color-primary)' }} />
+                        ) : (
+                          "+"
+                        )}
                       </button>
                     </Tooltip>
                   </div>
