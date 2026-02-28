@@ -10,9 +10,6 @@ import Home from "./component/Home/Home"
 import store from "./store"
 import { loadUser } from "./features/userSlice"
 import ProtectedRoute from './component/Route/ProtectedRoute';
-import axios from "axios";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import NotFound from "./component/layout/Not Found/NotFound";
 import { API_BASE_URL } from "./config";
 
@@ -29,7 +26,7 @@ const ResetPassword = lazy(() => import('./component/User/ResetPassword'));
 const Cart = lazy(() => import('./component/Cart/Cart'));
 const Shipping = lazy(() => import('./component/Cart/Shipping'));
 const ConfirmOrder = lazy(() => import("./component/Cart/ConfirmOrder"));
-const Payment = lazy(() => import("./component/Cart/Payment"));
+const PaymentWrapper = lazy(() => import("./component/Cart/PaymentWrapper"));
 const OrderSuccess = lazy(() => import("./component/Cart/OrderSuccess"));
 const MyOrders = lazy(() => import("./component/Order/MyOrders"));
 const OrderDetails = lazy(() => import("./component/Order/OrderDetails"));
@@ -47,19 +44,8 @@ const About = lazy(() => import("./component/layout/About/About"));
 
 function App() {
 
-  const [stripeApiKey, setStripeApiKey] = useState("");
-
-  async function getStripeApiKey() {
-    try {
-      const { data } = await axios.get(`${API_BASE_URL}/stripeapikey`);
-      setStripeApiKey(data.stripeApiKey);
-    } catch (error) {
-      console.log("Stripe API key not found or backend unreachable");
-    }
-  }
   useEffect(() => {
     store.dispatch(loadUser());
-    getStripeApiKey();
   }, [])
 
   return (
@@ -94,17 +80,9 @@ function App() {
           <Route
             path="/process/payment"
             element={
-              stripeApiKey ? (
-                <Elements stripe={loadStripe(stripeApiKey)}>
-                  <ProtectedRoute>
-                    <Payment />
-                  </ProtectedRoute>
-                </Elements>
-              ) : (
-                <ProtectedRoute>
-                  <Loader />
-                </ProtectedRoute>
-              )
+              <ProtectedRoute>
+                <PaymentWrapper />
+              </ProtectedRoute>
             }
           />
 

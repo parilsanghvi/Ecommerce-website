@@ -9,3 +9,6 @@
 ## 2025-02-23 - Frontend Re-render Computations
 **Learning:** Derived state calculated from expensive array operations like `reduce` (e.g., calculating cart totals) runs synchronously on every render. If these components re-render often (e.g., due to loading states or form inputs), this becomes a bottleneck.
 **Action:** Always wrap `Array.prototype.reduce`, `map`, or `filter` operations that derive data from props/state in a `useMemo` hook with strict dependencies.
+## 2025-02-28 - Defer Stripe API Initialization
+**Learning:** Initializing third-party heavy dependencies like Stripe (`@stripe/react-stripe-js`) and eagerly fetching their API configuration in the root `App` component unnecessarily inflates initial load times and network bandwidth for users who might not reach the checkout flow.
+**Action:** Move API fetching and provider initialization logic into lazy-loaded route wrappers (e.g., `PaymentWrapper.jsx`) to code-split the logic. Store the initialized `loadStripe(apiKey)` instance in a React state hook to prevent continuous re-initialization.
