@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../config";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
 
@@ -126,6 +126,25 @@ export const deleteUser = createAsyncThunk(
     })
 );
 
+
+const userThunks = [
+    login,
+    register,
+    loadUser,
+    logout,
+    updateProfile,
+    updatePassword,
+    forgotPassword,
+    resetPassword
+];
+
+const adminThunks = [
+    getAllUsers,
+    getUserDetails,
+    updateUser,
+    deleteUser
+];
+
 // Slice
 const userSlice = createSlice({
     name: "user",
@@ -162,7 +181,6 @@ const userSlice = createSlice({
         builder
             // Login
             .addCase(login.pending, (state) => {
-                state.loading = true;
                 state.isAuthenticated = false;
             })
             .addCase(login.fulfilled, (state, action) => {
@@ -171,15 +189,12 @@ const userSlice = createSlice({
                 state.user = action.payload;
             })
             .addCase(login.rejected, (state, action) => {
-                state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
-                state.error = action.payload;
             })
 
             // Register
             .addCase(register.pending, (state) => {
-                state.loading = true;
                 state.isAuthenticated = false;
             })
             .addCase(register.fulfilled, (state, action) => {
@@ -188,26 +203,20 @@ const userSlice = createSlice({
                 state.user = action.payload;
             })
             .addCase(register.rejected, (state, action) => {
-                state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
-                state.error = action.payload;
             })
 
             // Load User
-            .addCase(loadUser.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(loadUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isAuthenticated = true;
                 state.user = action.payload;
             })
             .addCase(loadUser.rejected, (state, action) => {
-                state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
-                // state.error = action.payload; // Optional: suppress error on load failure
             })
 
             // Logout
@@ -216,114 +225,92 @@ const userSlice = createSlice({
                 state.user = null;
                 state.isAuthenticated = false;
             })
-            .addCase(logout.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Update Profile
-            .addCase(updateProfile.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(updateProfile.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updateProfile.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Update Password
-            .addCase(updatePassword.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(updatePassword.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updatePassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Forgot Password
             .addCase(forgotPassword.pending, (state) => {
-                state.loading = true;
                 state.error = null;
             })
             .addCase(forgotPassword.fulfilled, (state, action) => {
                 state.loading = false;
                 state.message = action.payload;
             })
-            .addCase(forgotPassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Reset Password
             .addCase(resetPassword.pending, (state) => {
-                state.loading = true;
                 state.error = null;
             })
             .addCase(resetPassword.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = action.payload;
             })
-            .addCase(resetPassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // All Users (Admin)
-            .addCase(getAllUsers.pending, (state) => {
-                state.usersLoading = true;
-            })
+
             .addCase(getAllUsers.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.users = action.payload;
             })
-            .addCase(getAllUsers.rejected, (state, action) => {
-                state.usersLoading = false;
-                state.error = action.payload;
-            })
+
 
             // User Details (Admin)
-            .addCase(getUserDetails.pending, (state) => {
-                state.usersLoading = true;
-            })
+
             .addCase(getUserDetails.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.userDetails = action.payload;
             })
-            .addCase(getUserDetails.rejected, (state, action) => {
-                state.usersLoading = false;
-                state.error = action.payload;
-            })
+
 
             // Update User (Admin)
-            .addCase(updateUser.pending, (state) => {
-                state.usersLoading = true;
-            })
+
             .addCase(updateUser.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updateUser.rejected, (state, action) => {
-                state.usersLoading = false;
-                state.error = action.payload;
-            })
+
 
             // Delete User (Admin)
-            .addCase(deleteUser.pending, (state) => {
-                state.usersLoading = true;
-            })
+
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.isDeleted = action.payload.success;
                 state.message = action.payload.message;
             })
-            .addCase(deleteUser.rejected, (state, action) => {
+
+
+            // Matchers for common loading and error states
+            .addMatcher(isPending(...userThunks), (state) => {
+                state.loading = true;
+            })
+            .addMatcher(isRejected(...userThunks), (state, action) => {
+                state.loading = false;
+                // Suppress error on loadUser failure to prevent console spam
+                if (action.type !== loadUser.rejected.type) {
+                    state.error = action.payload;
+                }
+            })
+            .addMatcher(isPending(...adminThunks), (state) => {
+                state.usersLoading = true;
+            })
+            .addMatcher(isRejected(...adminThunks), (state, action) => {
                 state.usersLoading = false;
                 state.error = action.payload;
             });

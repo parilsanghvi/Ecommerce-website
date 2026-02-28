@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../config";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
 
@@ -120,6 +120,19 @@ export const deleteReviews = createAsyncThunk(
     })
 );
 
+
+const thunks = [
+    getProduct,
+    getAdminProduct,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    getProductDetails,
+    newReview,
+    getAllReviews,
+    deleteReviews
+];
+
 // Slice
 const productSlice = createSlice({
     name: "product",
@@ -160,7 +173,6 @@ const productSlice = createSlice({
         builder
             // Get All Products
             .addCase(getProduct.pending, (state) => {
-                state.loading = true;
                 state.products = [];
             })
             .addCase(getProduct.fulfilled, (state, action) => {
@@ -170,114 +182,82 @@ const productSlice = createSlice({
                 state.resultPerPage = action.payload.resultPerPage;
                 state.filteredProductsCount = action.payload.filteredProductsCount;
             })
-            .addCase(getProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Get Admin Products
             .addCase(getAdminProduct.pending, (state) => {
-                state.loading = true;
                 state.products = [];
             })
             .addCase(getAdminProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.products = action.payload;
             })
-            .addCase(getAdminProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Create Product
-            .addCase(createProduct.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(createProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = action.payload.success;
                 state.product = action.payload.product;
             })
-            .addCase(createProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Update Product
-            .addCase(updateProduct.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(updateProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updateProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Delete Product
-            .addCase(deleteProduct.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(deleteProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isDeleted = action.payload;
             })
-            .addCase(deleteProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Product Details
             .addCase(getProductDetails.pending, (state) => {
-                state.loading = true;
                 state.product = {};
             })
             .addCase(getProductDetails.fulfilled, (state, action) => {
                 state.loading = false;
                 state.product = action.payload;
             })
-            .addCase(getProductDetails.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // New Review
-            .addCase(newReview.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(newReview.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = action.payload;
             })
-            .addCase(newReview.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Get All Reviews
-            .addCase(getAllReviews.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(getAllReviews.fulfilled, (state, action) => {
                 state.loading = false;
                 state.reviews = action.payload;
             })
-            .addCase(getAllReviews.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Delete Review
-            .addCase(deleteReviews.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(deleteReviews.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isDeleted = action.payload;
             })
-            .addCase(deleteReviews.rejected, (state, action) => {
+
+
+            // Matchers for common loading and error states
+            .addMatcher(isPending(...thunks), (state) => {
+                state.loading = true;
+            })
+            .addMatcher(isRejected(...thunks), (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
