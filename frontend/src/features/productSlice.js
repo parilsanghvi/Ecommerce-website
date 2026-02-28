@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../config";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
@@ -8,7 +9,7 @@ export const getProduct = createAsyncThunk(
     createThunkHandler(async (
         { keyword = "", currentPage = 1, price = [0, 25000], category, ratings = 0 } = {}
     ) => {
-        let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}`;
+        let link = `${API_BASE_URL}/products?keyword=${keyword}&page=${currentPage}`;
 
         if (price[0] !== 0 || price[1] !== 25000) {
             link += `&price[gte]=${price[0]}&price[lte]=${price[1]}`;
@@ -33,7 +34,7 @@ export const getProduct = createAsyncThunk(
 export const getAdminProduct = createAsyncThunk(
     "product/getAdminAll",
     createThunkHandler(async () => {
-        const { data } = await axios.get("/api/v1/admin/products");
+        const { data } = await axios.get("${API_BASE_URL}/admin/products");
         return data.products;
     })
 );
@@ -51,7 +52,7 @@ export const createProduct = createAsyncThunk(
         }
 
         const { data } = await axios.post(
-            `/api/v1/admin/product/new`,
+            `${API_BASE_URL}/admin/product/new`,
             productData,
             config
         );
@@ -66,7 +67,7 @@ export const updateProduct = createAsyncThunk(
             headers: { "Content-Type": "application/json" },
         };
         const { data } = await axios.put(
-            `/api/v1/admin/product/${id}`,
+            `${API_BASE_URL}/admin/product/${id}`,
             productData,
             config
         );
@@ -77,7 +78,7 @@ export const updateProduct = createAsyncThunk(
 export const deleteProduct = createAsyncThunk(
     "product/delete",
     createThunkHandler(async (id) => {
-        const { data } = await axios.delete(`/api/v1/admin/product/${id}`);
+        const { data } = await axios.delete(`${API_BASE_URL}/admin/product/${id}`);
         return data.success;
     })
 );
@@ -85,7 +86,7 @@ export const deleteProduct = createAsyncThunk(
 export const getProductDetails = createAsyncThunk(
     "product/getDetails",
     createThunkHandler(async (id) => {
-        const { data } = await axios.get(`/api/v1/product/${id}`);
+        const { data } = await axios.get(`${API_BASE_URL}/product/${id}`);
         return data.product;
     })
 );
@@ -96,7 +97,7 @@ export const newReview = createAsyncThunk(
         const config = {
             headers: { "Content-Type": "application/json" },
         };
-        const { data } = await axios.put(`/api/v1/review`, reviewData, config);
+        const { data } = await axios.put(`${API_BASE_URL}/review`, reviewData, config);
         return data.success;
     })
 );
@@ -104,7 +105,7 @@ export const newReview = createAsyncThunk(
 export const getAllReviews = createAsyncThunk(
     "product/getAllReviews",
     createThunkHandler(async (id) => {
-        const { data } = await axios.get(`/api/v1/reviews?id=${id}`);
+        const { data } = await axios.get(`${API_BASE_URL}/reviews?id=${id}`);
         return data.reviews;
     })
 );
@@ -113,7 +114,7 @@ export const deleteReviews = createAsyncThunk(
     "product/deleteReview",
     createThunkHandler(async ({ reviewId, productId }) => {
         const { data } = await axios.delete(
-            `/api/v1/reviews?id=${reviewId}&productId=${productId}`
+            `${API_BASE_URL}/reviews?id=${reviewId}&productId=${productId}`
         );
         return data.success;
     })
