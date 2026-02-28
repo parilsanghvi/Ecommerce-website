@@ -31,19 +31,21 @@ const processImagesUpdate = async (currentImages, newImagesInput) => {
     // Identify images to delete (present in DB but not in imagesToKeep)
     const imagesToDelete = currentImages.filter(img => !imagesToKeep.includes(img.url));
 
-    // Delete removed images from Cloudinary
-    await Promise.all(imagesToDelete.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
-
-    // Upload new images
-    const newImagesLinks = await Promise.all(imagesToUpload.map(async (image) => {
-        const result = await cloudinary.v2.uploader.upload(image, {
-            folder: "products",
-        });
-        return {
-            public_id: result.public_id,
-            url: result.secure_url
-        };
-    }));
+    // ⚡ Bolt: Execute delete and upload operations concurrently to reduce total wait time
+    const [, newImagesLinks] = await Promise.all([
+        // Delete removed images from Cloudinary
+        Promise.all(imagesToDelete.map(image => cloudinary.v2.uploader.destroy(image.public_id))),
+        // Upload new images
+        Promise.all(imagesToUpload.map(async (image) => {
+            const result = await cloudinary.v2.uploader.upload(image, {
+                folder: "products",
+            });
+            return {
+                public_id: result.public_id,
+                url: result.secure_url
+            };
+        }))
+    ]);
 
     // Keep the old image objects that matched the URLs
     const keptImagesObjects = currentImages.filter(img => imagesToKeep.includes(img.url));
