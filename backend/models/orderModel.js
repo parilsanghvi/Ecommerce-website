@@ -59,7 +59,8 @@ const orderSchema = new mongoose.Schema({
     paymentInfo: {
         id: {
             type: String,
-            required: true
+            required: true,
+            index: true // Optimize: Index for payment deduplication check
         },
         status: {
             type: String,
