@@ -172,13 +172,19 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Avatar image size too large", 400));
         }
         // Optimized: Use req.user.avatar directly instead of redundant DB call
-        const imageId = req.user.avatar.public_id
-        await cloudinary.v2.uploader.destroy(imageId);
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-            folder: "avatars",
-            width: 150,
-            crop: "scale",
-        })
+        const imageId = req.user.avatar.public_id;
+
+        // ⚡ Bolt: [performance improvement] Parallelize Cloudinary destroy and upload operations
+        // Previously these were sequential, taking T(destroy) + T(upload) time.
+        // Now they run concurrently, taking MAX(T(destroy), T(upload)) time.
+        const [, myCloud] = await Promise.all([
+            cloudinary.v2.uploader.destroy(imageId),
+            cloudinary.v2.uploader.upload(req.body.avatar, {
+                folder: "avatars",
+                width: 150,
+                crop: "scale",
+            })
+        ]);
 
         newUserData.avatar = {
             public_id: myCloud.public_id,
