@@ -30,7 +30,7 @@ describe('Host Header Injection in forgotPassword', () => {
         delete process.env.FRONTEND_URL;
     });
 
-    it('should use Host header when FRONTEND_URL is not set (Vulnerability Reproduction)', async () => {
+    it('should return error when FRONTEND_URL is not set (Security Fix)', async () => {
         // Mock user found
         const mockUser = {
             email: 'test@example.com',
@@ -44,12 +44,14 @@ describe('Host Header Injection in forgotPassword', () => {
 
         await userController.forgotPassword(req, res, next);
 
-        // Verify sendEmail was called
-        expect(sendEmail).toHaveBeenCalled();
-        const emailOptions = sendEmail.mock.calls[0][0];
+        // Verify sendEmail was NOT called
+        expect(sendEmail).not.toHaveBeenCalled();
 
-        // The vulnerability: link uses evil.com
-        expect(emailOptions.message).toContain('http://evil.com/password/reset/dummyToken');
+        // Verify next was called with an ErrorHandler (Internal Server Error)
+        expect(next).toHaveBeenCalled();
+        const errorArg = next.mock.calls[0][0];
+        expect(errorArg.statusCode).toBe(500);
+        expect(errorArg.message).toBe("FRONTEND_URL is not configured on the server.");
     });
 
     it('should use FRONTEND_URL when set (Fix Verification)', async () => {

@@ -87,12 +87,13 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save({
         validateBeforeSave: false
     });
-    // Use FRONTEND_URL if set to prevent Host Header Injection (Security Fix)
-    const clientUrl = process.env.FRONTEND_URL
-        ? process.env.FRONTEND_URL.replace(/\/$/, "")
-        : `${req.protocol}://${req.get("host")}`;
+    // Security Fix: Enforce the use of FRONTEND_URL to prevent Host Header Injection
+    if (!process.env.FRONTEND_URL) {
+        return next(new ErrorHandler("FRONTEND_URL is not configured on the server.", 500));
+    }
 
-    const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`
+    const clientUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
+    const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`;
     const message = `your password reset token is :- \n\n ${resetPasswordUrl} \n\n if you have not requested this email then please ignore it`;
     try {
         await sendEmail({

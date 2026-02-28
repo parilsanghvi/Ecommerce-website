@@ -49,6 +49,16 @@ afterEach(async () => {
 });
 
 describe('Forgot Password Security', () => {
+    const originalEnv = process.env.FRONTEND_URL;
+
+    beforeEach(() => {
+        process.env.FRONTEND_URL = 'http://localhost:3000';
+    });
+
+    afterEach(() => {
+        process.env.FRONTEND_URL = originalEnv;
+    });
+
     it('should return 200 even if user does not exist (Security Fix)', async () => {
         const res = await request(app)
             .post('/api/v1/password/forgot')
