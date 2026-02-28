@@ -9,6 +9,8 @@ import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import LockIcon from "@mui/icons-material/Lock"
 import VpnKeyIcon from "@mui/icons-material/VpnKey"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useNavigate } from "react-router-dom";
 
 const UpdatePassword = () => {
@@ -21,6 +23,9 @@ const UpdatePassword = () => {
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const updatePasswordSubmit = (e) => {
     e.preventDefault();
@@ -64,30 +69,57 @@ const UpdatePassword = () => {
               >
                 <div className='loginPassword'>
                   <VpnKeyIcon />
-                  <input type="password"
+                  <input
+                    type={showOldPassword ? "text" : "password"}
                     placeholder="Old Password"
                     required
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowOldPassword(!showOldPassword)}
+                    className="password-toggle-btn"
+                    aria-label={showOldPassword ? "Hide old password" : "Show old password"}
+                  >
+                    {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
                 </div>
                 <div className='loginPassword'>
                   <LockOpenIcon />
-                  <input type="password"
+                  <input
+                    type={showNewPassword ? "text" : "password"}
                     placeholder="New Password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="password-toggle-btn"
+                    aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+                  >
+                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
                 </div>
                 <div className='loginPassword'>
                   <LockIcon />
-                  <input type="password"
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="password-toggle-btn"
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
                 </div>
                 <input
                   type="submit"
