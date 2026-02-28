@@ -241,6 +241,11 @@ select:focus {
   box-shadow: 2px 2px 0 var(--color-text);
 }
 
+.primary-btn:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 4px;
+}
+
 .primary-btn:disabled {
   background-color: var(--color-muted);
   color: var(--color-bg);
