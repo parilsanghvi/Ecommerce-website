@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
@@ -99,7 +100,7 @@ const Payment = () => {
         },
       };
       const { data } = await axios.post(
-        "/api/v1/payment/process",
+        `${API_BASE_URL}/payment/process`,
         paymentData,
         config
       );

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../config";
 import React, { Fragment, useState, useEffect } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector } from "react-redux";
@@ -30,7 +31,7 @@ const ConfirmOrder = () => {
     const fetchPricing = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`/api/v1/pricing?itemsPrice=${subtotal}`);
+        const { data } = await axios.get(`${API_BASE_URL}/pricing?itemsPrice=${subtotal}`);
         setPricing({
           tax: data.taxPrice,
           shippingCharges: data.shippingPrice,
