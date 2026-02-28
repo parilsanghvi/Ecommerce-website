@@ -32,7 +32,7 @@ jest.mock('resend', () => {
 });
 
 // Mock sendEmail utility if it's used directly instead of Resend
-jest.mock('../utlis/sendEmail', () => jest.fn().mockResolvedValue(true));
+jest.mock('../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
 
 
 beforeAll(async () => {

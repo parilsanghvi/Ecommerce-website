@@ -1,9 +1,9 @@
 const userController = require('../controllers/userController');
 const User = require('../models/userModel');
-const sendEmail = require('../utlis/sendEmail');
+const sendEmail = require('../utils/sendEmail');
 
 jest.mock('../models/userModel');
-jest.mock('../utlis/sendEmail');
+jest.mock('../utils/sendEmail');
 
 // Mock catchAsyncErrors to just execute the function
 jest.mock('../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {

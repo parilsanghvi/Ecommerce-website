@@ -1,7 +1,7 @@
 const { isAuthenticatedUser, authorizedRoles } = require('../../middleware/auth');
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
-const ErrorHandler = require('../../utlis/errorhandler');
+const ErrorHandler = require('../../utils/errorhandler');
 
 jest.mock('../../models/userModel');
 jest.mock('jsonwebtoken');

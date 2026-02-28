@@ -1,10 +1,10 @@
 // takes model for object insertion from prodectmodel
 const Product = require("../models/productModel");
-const ErrorHandler = require("../utlis/errorhandler");
+const ErrorHandler = require("../utils/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const Apifeatures = require("../utlis/apifeatures");
+const Apifeatures = require("../utils/apifeatures");
 const cloudinary = require("cloudinary")
-const { processImages, processImagesUpdate } = require("../utlis/imageHandler");
+const { processImages, processImagesUpdate } = require("../utils/imageHandler");
 const validator = require("validator");
 
 // create product --admin

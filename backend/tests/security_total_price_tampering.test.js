@@ -1,7 +1,7 @@
 const orderController = require('../controllers/orderController');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
-const ErrorHandler = require('../utlis/errorhandler');
+const ErrorHandler = require('../utils/errorhandler');
 
 // Mock Mongoose Models
 jest.mock('../models/productModel');

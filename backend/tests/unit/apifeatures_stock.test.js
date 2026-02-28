@@ -1,4 +1,4 @@
-const Apifeatures = require('../../utlis/apifeatures');
+const Apifeatures = require('../../utils/apifeatures');
 
 describe('Apifeatures Stock Filter', () => {
     it('should convert stock[gt]=0 to { stock: { $gt: 0 } }', () => {

@@ -1,9 +1,9 @@
 const Product = require("../../models/productModel");
-const ErrorHandler = require("../../utlis/errorhandler");
+const ErrorHandler = require("../../utils/errorhandler");
 
 // Mock dependencies
 jest.mock("../../models/productModel");
-jest.mock("../../utlis/errorhandler", () => {
+jest.mock("../../utils/errorhandler", () => {
     return class ErrorHandler extends Error {
         constructor(message, statusCode) {
             super(message);

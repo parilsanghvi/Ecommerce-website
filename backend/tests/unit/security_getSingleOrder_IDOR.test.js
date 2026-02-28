@@ -1,6 +1,6 @@
 const Order = require("../../models/orderModel");
 const User = require("../../models/userModel");
-const ErrorHandler = require("../../utlis/errorhandler");
+const ErrorHandler = require("../../utils/errorhandler");
 
 // Mock catchAsyncErrors before requiring the controller
 jest.mock("../../middleware/catchAsyncErrors", () => (func) => (req, res, next) => {

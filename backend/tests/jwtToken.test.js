@@ -1,5 +1,5 @@
 
-const sendToken = require('../utlis/jwtToken');
+const sendToken = require('../utils/jwtToken');
 
 describe('JWT Token Utility', () => {
     let req, res, user;
