@@ -5,6 +5,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Apifeatures = require("../utlis/apifeatures");
 const cloudinary = require("cloudinary")
 const { processImages, processImagesUpdate } = require("../utlis/imageHandler");
+const validator = require("validator");
 
 // create product --admin
 // exports.(function_name) = rest of function {way to export functions ;) }
@@ -152,7 +153,9 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Rating must be between 0 and 5", 400));
     }
 
-    const sanitizedComment = comment ? String(comment).replace(/<[^>]*>?/gm, '') : comment;
+    // Security: Escape HTML characters to prevent XSS instead of just stripping them
+    // This converts <script> to &lt;script&gt;
+    const sanitizedComment = comment ? validator.escape(String(comment)) : comment;
 
     const review = {
         user: req.user._id,
