@@ -1,7 +1,7 @@
 const userController = require('../../controllers/userController');
 const User = require('../../models/userModel');
 const cloudinary = require('cloudinary');
-const ErrorHandler = require('../../utlis/errorhandler');
+const ErrorHandler = require('../../utils/errorhandler');
 
 // Mock dependencies
 jest.mock('../../models/userModel');

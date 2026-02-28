@@ -3,7 +3,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 
 // Mock dependencies
-jest.mock('../utlis/sendEmail', () => jest.fn());
+jest.mock('../utils/sendEmail', () => jest.fn());
 jest.mock('cloudinary', () => ({
     v2: {
         config: jest.fn(),

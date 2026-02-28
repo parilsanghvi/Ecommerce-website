@@ -1,10 +1,10 @@
 const Order = require("../models/orderModel")
 const User = require("../models/userModel");
 const Product = require("../models/productModel");
-const ErrorHandler = require("../utlis/errorhandler");
+const ErrorHandler = require("../utils/errorhandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const Apifeatures = require("../utlis/apifeatures");
-const { calculateOrderPrices } = require("../utlis/pricing");
+const Apifeatures = require("../utils/apifeatures");
+const { calculateOrderPrices } = require("../utils/pricing");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // get pricing details

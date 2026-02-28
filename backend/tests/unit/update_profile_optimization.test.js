@@ -13,7 +13,7 @@ jest.mock('cloudinary', () => ({
     }
 }));
 jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next));
-jest.mock('../../utlis/errorhandler');
+jest.mock('../../utils/errorhandler');
 
 describe('updateProfile Optimization', () => {
     let req, res, next;

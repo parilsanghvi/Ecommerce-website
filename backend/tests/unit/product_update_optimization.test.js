@@ -1,6 +1,6 @@
 const productController = require('../../controllers/productController');
 const Product = require('../../models/productModel');
-const imageHandler = require('../../utlis/imageHandler');
+const imageHandler = require('../../utils/imageHandler');
 
 // Mock dependencies
 jest.mock('cloudinary', () => ({
@@ -17,7 +17,7 @@ jest.mock('../../models/productModel', () => ({
     findByIdAndUpdate: jest.fn(),
 }));
 
-jest.mock('../../utlis/imageHandler', () => ({
+jest.mock('../../utils/imageHandler', () => ({
     processImagesUpdate: jest.fn(),
 }));
 

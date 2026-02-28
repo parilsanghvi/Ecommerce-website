@@ -1,5 +1,5 @@
 const errorMiddleware = require('../../middleware/error');
-const ErrorHandler = require('../../utlis/errorhandler');
+const ErrorHandler = require('../../utils/errorhandler');
 
 describe('Error Middleware', () => {
     let req, res, next;

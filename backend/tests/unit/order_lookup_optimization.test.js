@@ -1,7 +1,7 @@
 const { newOrder } = require('../../controllers/orderController');
 const Product = require('../../models/productModel');
 const Order = require('../../models/orderModel');
-const ErrorHandler = require('../../utlis/errorhandler');
+const ErrorHandler = require('../../utils/errorhandler');
 
 jest.mock('../../models/productModel');
 jest.mock('../../models/orderModel');

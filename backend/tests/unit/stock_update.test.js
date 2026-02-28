@@ -1,7 +1,7 @@
 const { updateOrder } = require('../../controllers/orderController');
 const Order = require('../../models/orderModel');
 const Product = require('../../models/productModel');
-const ErrorHandler = require('../../utlis/errorhandler');
+const ErrorHandler = require('../../utils/errorhandler');
 
 // Mock middleware
 jest.mock('../../middleware/catchAsyncErrors', () => (fn) => fn);
