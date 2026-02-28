@@ -90,16 +90,27 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     let product;
 
+    // Security Fix: Prevent Mass Assignment Vulnerability
+    // Only allow specific fields to be updated by the user/admin
+    const allowedUpdates = ['name', 'price', 'description', 'category', 'stock'];
+    const updateData = {};
+
+    allowedUpdates.forEach(field => {
+        if (req.body[field] !== undefined) {
+            updateData[field] = req.body[field];
+        }
+    });
+
     // Optimized: Only fetch product if image update is required (to process old images)
     if (req.body.images !== undefined) {
         product = await Product.findById(req.params.id);
         if (!product) {
             return next(new ErrorHandler("product not found", 404));
         }
-        req.body.images = await processImagesUpdate(product.images, req.body.images);
+        updateData.images = await processImagesUpdate(product.images, req.body.images);
     }
 
-    product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    product = await Product.findByIdAndUpdate(req.params.id, updateData, {
         new: true,
         runValidators: true,
         useFindAndModify: false,
