@@ -6,7 +6,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 const cookieParser = require("cookie-parser");
-const errorMidddleware = require('./middleware/error');
+const errorMiddleware = require('./middleware/error');
 const path = require("path")
 
 // Enable compression
@@ -74,7 +74,7 @@ app.get(/^(.*)$/, (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 });
 // middleware for error
-app.use(errorMidddleware);
+app.use(errorMiddleware);
 
 
 // export app routes to server
