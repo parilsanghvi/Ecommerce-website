@@ -38,7 +38,7 @@ const Dashboard = () => {
   // error
   const { totalAmount = 0, totalOrders } = useSelector((state) => state.order);
   // error
-  const { users } = useSelector((state) => state.user);
+  const { totalUsers } = useSelector((state) => state.user);
   // console.log(orders.length);
   let outOfStock = 0;
   products &&
@@ -99,7 +99,7 @@ const Dashboard = () => {
           </Link>
           <Link to="/admin/users">
             <p>Users</p>
-            <p>{users && users.length}</p>
+            <p>{totalUsers && totalUsers}</p>
           </Link>
         </div>
       </div>

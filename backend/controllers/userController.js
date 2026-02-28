@@ -5,6 +5,7 @@ const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail")
 const crypto = require("crypto")
 const cloudinary = require("cloudinary")
+const Apifeatures = require("../utils/apifeatures");
 
 const MAX_AVATAR_SIZE = 3 * 1024 * 1024; // 3MB base64 string length
 
@@ -199,11 +200,25 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 })
 // get all users
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
+    const resultPerPage = 10;
+
+    const usersCountPromise = User.estimatedDocumentCount();
+
+    const apifeature = new Apifeatures(User.find(), req.query).pagiNation(resultPerPage);
+
     // Optimized: Use lean() for faster read-only performance
-    const users = await User.find().lean();
+    const usersPromise = apifeature.query.lean();
+
+    const [totalUsers, users] = await Promise.all([
+        usersCountPromise,
+        usersPromise
+    ]);
+
     res.status(200).json({
         success: true,
-        users
+        users,
+        totalUsers,
+        resultPerPage
     })
 })
 // admin get single user detail
