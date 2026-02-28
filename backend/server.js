@@ -2,7 +2,7 @@
 const app = require("./app")
 const cloudinary = require("cloudinary")
 const connectDatabase = require('./config/database')
-// handeling uncaught exception
+// handling uncaught exception
 process.on("uncaughtException", (err) => {
     console.log(`error: ${err.message}`);
     console.log("shutting down server due to uncaughtException");
@@ -26,10 +26,10 @@ cloudinary.config({
 const server = app.listen(process.env.PORT, () => {
     console.log(`server is working on http://localhost:${process.env.PORT}`);
 })
-// unhandeled promise rejection
+// unhandled promise rejection
 process.on("unhandledRejection", err => {
     console.log(`error: ${err.message}`);
-    console.log("shutting down server due to unhandeled promise rejection");
+    console.log("shutting down server due to unhandled promise rejection");
     server.close(() => {
         process.exit(1);
     })
