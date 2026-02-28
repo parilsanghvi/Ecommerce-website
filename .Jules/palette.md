@@ -52,4 +52,4 @@
 
 ## 2025-05-27 - Button Focus Styles
 **Learning:** Found that `.primary-btn` explicitly removes `outline` without providing a fallback focus style, making keyboard navigation difficult.
-**Action:** When removing `outline` for aesthetic reasons, always ensure `focus-visible` styles are provided (e.g., `outline: 2px solid var(--color-secondary)`) to maintain accessibility.
+**Action:** When removing `outline` for aesthetic reasons, always ensure `focus-visible` styles are provided (e.g., `outline: 3px solid var(--color-secondary); outline-offset: 4px;`) to maintain accessibility.

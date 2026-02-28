@@ -6,8 +6,21 @@ const app = express();
 app.set('trust proxy', 1);
 
 const cookieParser = require("cookie-parser");
-const errorMidddleware = require('./middleware/error');
+const errorMiddleware = require('./middleware/error');
 const path = require("path")
+const rateLimit = require('express-rate-limit');
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+  message: 'Too many requests from this IP, please try again after 15 minutes'
+});
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter);
 
 // Enable compression
 app.use(compression());
@@ -74,7 +87,7 @@ app.get(/^(.*)$/, (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 });
 // middleware for error
-app.use(errorMidddleware);
+app.use(errorMiddleware);
 
 
 // export app routes to server
