@@ -16,9 +16,23 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     // Process images using helper function
     const imagesLink = await processImages(req.files, req.body.images);
 
-    req.body.user = req.user._id;
-    req.body.images = imagesLink;
-    const product = await Product.create(req.body);
+    // Security: Prevent mass assignment using an allowlist
+    const { name, description, price, category, stock } = req.body;
+
+    const productData = {
+        name,
+        description,
+        price,
+        category,
+        stock,
+        user: req.user._id,
+        images: imagesLink
+    };
+
+    // Remove undefined fields to allow Mongoose defaults to kick in if not provided
+    Object.keys(productData).forEach(key => productData[key] === undefined && delete productData[key]);
+
+    const product = await Product.create(productData);
     // returns status with success and added object in json
     res.status(201).json({
         success: true,
@@ -109,6 +123,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
         }
         updateData.images = await processImagesUpdate(product.images, req.body.images);
     }
+
 
     product = await Product.findByIdAndUpdate(req.params.id, updateData, {
         new: true,
