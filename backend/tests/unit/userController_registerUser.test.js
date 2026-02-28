@@ -1,12 +1,12 @@
 const userController = require('../../controllers/userController');
 const User = require('../../models/userModel');
 const cloudinary = require('cloudinary');
-const ErrorHandler = require('../../utlis/errorhandler');
-const sendToken = require('../../utlis/jwtToken');
+const ErrorHandler = require('../../utils/errorhandler');
+const sendToken = require('../../utils/jwtToken');
 
 // Mock dependencies
 jest.mock('../../models/userModel');
-jest.mock('../../utlis/jwtToken');
+jest.mock('../../utils/jwtToken');
 jest.mock('cloudinary', () => ({
     v2: {
         uploader: {

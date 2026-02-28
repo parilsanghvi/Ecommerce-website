@@ -1,4 +1,4 @@
-const { processImagesUpdate } = require('../../utlis/imageHandler');
+const { processImagesUpdate } = require('../../utils/imageHandler');
 const cloudinary = require('cloudinary');
 
 jest.mock('cloudinary', () => ({
