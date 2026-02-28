@@ -95,24 +95,28 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const clientUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
     const resetPasswordUrl = `${clientUrl}/password/reset/${resetToken}`;
     const message = `your password reset token is :- \n\n ${resetPasswordUrl} \n\n if you have not requested this email then please ignore it`;
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: `Ecommerce Password recovery`,
-            message,
-        })
-        res.status(200).json({
-            success: true,
-            message: `If your email is registered, you will receive a password reset link shortly.`,
-        })
-    } catch (error) {
-        user.resetPasswordToken = undefined
-        user.resetPasswordExpire = undefined
-        await user.save({
-            validateBeforeSave: false
+    // ⚡ Bolt: [performance improvement] Send email asynchronously without awaiting
+    // This removes the external network call overhead from the response time.
+    Promise.resolve(sendEmail({
+        email: user.email,
+        subject: `Ecommerce Password recovery`,
+        message,
+    })).catch(async (error) => {
+        // Since we don't await, errors happen in the background.
+        // We log the error and invalidate the token so it can't be used,
+        // but the user will need to request another reset.
+        console.error("Failed to send password reset email asynchronously:", error);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save({ validateBeforeSave: false }).catch(saveErr => {
+            console.error("Failed to clear reset token after email failure:", saveErr);
         });
-        return next(new ErrorHandler(error.message, 500))
-    }
+    });
+
+    res.status(200).json({
+        success: true,
+        message: `If your email is registered, you will receive a password reset link shortly.`,
+    });
 })
 // reset password
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
