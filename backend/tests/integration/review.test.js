@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const app = require('../../app');
 const User = require('../../models/userModel');
 const Product = require('../../models/productModel');
+const Review = require('../../models/reviewModel');
 
 let mongoServer;
 let userCookie;
@@ -74,7 +75,6 @@ beforeEach(async () => {
         stock: 10,
         ratings: 0,
         numOfReviews: 0,
-        reviews: [],
         images: [{ public_id: 'pid', url: 'purl' }],
         user: new mongoose.Types.ObjectId()
     });
@@ -83,6 +83,7 @@ beforeEach(async () => {
 afterEach(async () => {
     await User.deleteMany({});
     await Product.deleteMany({});
+    await Review.deleteMany({});
     jest.clearAllMocks();
 });
 
@@ -106,7 +107,8 @@ describe('Review Integration Tests', () => {
             const updated = await Product.findById(testProduct._id);
             expect(updated.numOfReviews).toBe(1);
             expect(updated.ratings).toBe(5);
-            expect(updated.reviews[0].comment).toBe('Excellent product!');
+            const review = await Review.findOne({ product: testProduct._id });
+            expect(review.comment).toBe('Excellent product!');
         });
 
         it('should update existing review by same user', async () => {
@@ -135,7 +137,8 @@ describe('Review Integration Tests', () => {
             const updated = await Product.findById(testProduct._id);
             expect(updated.numOfReviews).toBe(1); // Still 1 review
             expect(updated.ratings).toBe(5);
-            expect(updated.reviews[0].comment).toBe('Actually, it is excellent!');
+            const review = await Review.findOne({ product: testProduct._id });
+            expect(review.comment).toBe('Actually, it is excellent!');
         });
 
         it('should fail without authentication', async () => {
@@ -155,7 +158,8 @@ describe('Review Integration Tests', () => {
     describe('GET /api/v1/reviews', () => {
         beforeEach(async () => {
             // Add a review
-            testProduct.reviews.push({
+            await Review.create({
+                product: testProduct._id,
                 user: testUser._id,
                 name: testUser.name,
                 rating: 4,
@@ -190,18 +194,20 @@ describe('Review Integration Tests', () => {
 
         beforeEach(async () => {
             // Add a review
-            testProduct.reviews.push({
+            await Review.create({
+                product: testProduct._id,
                 user: testUser._id,
                 name: testUser.name,
-                rating: 3,
-                comment: 'Okay product'
+                rating: 4,
+                comment: 'Good product'
             });
             testProduct.numOfReviews = 1;
             testProduct.ratings = 3;
             await testProduct.save();
 
             const updated = await Product.findById(testProduct._id);
-            reviewId = updated.reviews[0]._id;
+            const rev = await Review.findOne({ product: testProduct._id });
+            reviewId = rev._id;
         });
 
         it('should delete a review', async () => {
@@ -213,7 +219,8 @@ describe('Review Integration Tests', () => {
             expect(res.body.success).toBe(true);
 
             const updated = await Product.findById(testProduct._id);
-            expect(updated.reviews.length).toBe(0);
+            const revs = await Review.find({ product: testProduct._id });
+            expect(revs.length).toBe(0);
             expect(updated.numOfReviews).toBe(0);
         });
 
