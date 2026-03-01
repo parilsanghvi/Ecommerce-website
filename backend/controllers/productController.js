@@ -247,9 +247,23 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
 })
 // get all reviews of single product
 exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
+    const page = Number(req.query.page) || 1;
+    // Default to a large limit if not provided to avoid breaking legacy clients that expect all reviews
+    const limit = Number(req.query.limit) || 0;
+    const skip = (page - 1) * limit;
+
     // Optimized: Use lean() for faster read access to reviews
-    // Optimized: Select only reviews field to reduce payload size
-    const product = await Product.findById(req.query.id).select("reviews").lean()
+    // Optimized: Use $slice to paginate the embedded reviews array, reducing payload and memory usage
+    let query = Product.findById(req.query.id);
+
+    if (limit > 0) {
+        query = query.select({ reviews: { $slice: [skip, limit] }, numOfReviews: 1 });
+    } else {
+        query = query.select("reviews numOfReviews");
+    }
+
+    const product = await query.lean();
+
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
@@ -257,6 +271,9 @@ exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
         success: true,
         reviews,
+        totalReviews: product.numOfReviews || 0,
+        page,
+        limit
     })
 })
 // delete review

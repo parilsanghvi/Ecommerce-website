@@ -104,9 +104,31 @@ export const newReview = createAsyncThunk(
 
 export const getAllReviews = createAsyncThunk(
     "product/getAllReviews",
-    createThunkHandler(async (id) => {
-        const { data } = await axios.get(`${API_BASE_URL}/reviews?id=${id}`);
-        return data.reviews;
+    createThunkHandler(async (args) => {
+        // Support both backward-compatible simple ID string and new object { id, page, limit }
+        let id, page = 1, limit = 0;
+
+        if (typeof args === 'object' && args !== null) {
+            id = args.id;
+            page = args.page || 1;
+            limit = args.limit || 0;
+        } else {
+            id = args;
+        }
+
+        let link = `${API_BASE_URL}/reviews?id=${id}`;
+        if (limit > 0) {
+            link += `&page=${page}&limit=${limit}`;
+        }
+
+        const { data } = await axios.get(link);
+        return {
+            reviews: data.reviews,
+            totalReviews: data.totalReviews,
+            page: data.page,
+            limit: data.limit,
+            id // Pass id to allow reducer to handle appending correctly
+        };
     })
 );
 
@@ -135,6 +157,9 @@ const productSlice = createSlice({
         isDeleted: false,
         isUpdated: false,
         reviews: [],
+        totalReviews: 0,
+        reviewsPage: 1,
+        reviewsLimit: 0,
     },
     reducers: {
         clearErrors: (state) => {
@@ -262,7 +287,15 @@ const productSlice = createSlice({
             })
             .addCase(getAllReviews.fulfilled, (state, action) => {
                 state.loading = false;
-                state.reviews = action.payload;
+                // Append reviews if it's a paginated request (page > 1) and same product
+                if (action.payload.page > 1) {
+                    state.reviews = [...state.reviews, ...action.payload.reviews];
+                } else {
+                    state.reviews = action.payload.reviews;
+                }
+                state.totalReviews = action.payload.totalReviews;
+                state.reviewsPage = action.payload.page;
+                state.reviewsLimit = action.payload.limit;
             })
             .addCase(getAllReviews.rejected, (state, action) => {
                 state.loading = false;
