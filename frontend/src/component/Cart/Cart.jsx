@@ -7,13 +7,19 @@ import { Typography, Tooltip, CircularProgress } from "@mui/material";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
   const [updatingItems, setUpdatingItems] = useState({});
+
+  // ⚡ Bolt: Memoize expensive array calculation to prevent re-running on every render (e.g., when updating item quantity)
+  const grossTotal = useMemo(() => cartItems.reduce(
+    (acc, item) => acc + item.quantity * item.price,
+    0
+  ), [cartItems]);
 
   const increaseQuantity = async (id, quantity, stock) => {
     const newQty = quantity + 1;
@@ -138,10 +144,7 @@ const Cart = () => {
           <div className="cartFooter">
             <div className="cartGrossProfitBox">
               <p>GROSS TOTAL</p>
-              <p>{`₹${cartItems.reduce(
-                (acc, item) => acc + item.quantity * item.price,
-                0
-              )}`}</p>
+              <p>{`₹${grossTotal}`}</p>
             </div>
             <button className="primary-btn" onClick={checkoutHandler}>CHECK OUT NOW</button>
           </div>
