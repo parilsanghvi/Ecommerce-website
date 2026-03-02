@@ -20,6 +20,9 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
 
   let calculatedItemsPrice = 0;
   for (const item of items) {
+    if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+      return next(new ErrorHandler("Invalid product quantity", 400));
+    }
     const product = productsMap.get(item.product);
     if (!product) {
       return next(new ErrorHandler(`Product not found: ${item.product}`, 404));

@@ -52,3 +52,10 @@
 1. Sanitize user input on the server side before storage, especially for rich text or free-form fields.
 2. Use a dedicated sanitization library (like `dompurify` or `validator`) or, for simple cases, a strict allowlist/regex stripper.
 3. Always implement input validation and sanitization at the API boundary.
+
+## 2025-02-27 - Negative Quantity Business Logic Flaw
+**Vulnerability:** The `processPayment` and `newOrder` endpoints calculated the total order price by iterating through items and adding `product.price * item.quantity`. The `item.quantity` parameter from the client payload was not strictly validated as a positive integer. This allowed attackers to submit negative quantities (e.g., `-100`), which could offset the price of other expensive items, resulting in a total price manipulation or effectively a zero/negative total order amount.
+**Learning:** Any input from the client that directly affects financial math or stock adjustments must be strictly validated. Relying only on Mongoose schemas isn't enough if the field lacks explicit minimum constraints or is processed before saving.
+**Prevention:**
+1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
+2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
