@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../../config";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useMemo } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector } from "react-redux";
 import MetaData from "../layout/MetaData";
@@ -20,10 +20,13 @@ const ConfirmOrder = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.quantity * item.price,
-    0
-  );
+  // ⚡ Bolt: [performance improvement] Memoize the subtotal calculation to prevent unnecessary O(N) recalculations on every render
+  const subtotal = useMemo(() => {
+    return cartItems.reduce(
+      (acc, item) => acc + item.quantity * item.price,
+      0
+    );
+  }, [cartItems]);
 
   const { tax, shippingCharges, totalPrice } = pricing;
 
