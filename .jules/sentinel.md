@@ -52,3 +52,7 @@
 1. Sanitize user input on the server side before storage, especially for rich text or free-form fields.
 2. Use a dedicated sanitization library (like `dompurify` or `validator`) or, for simple cases, a strict allowlist/regex stripper.
 3. Always implement input validation and sanitization at the API boundary.
+## 2024-05-24 - Updated Multer Dependency for DoS Vulnerability
+**Vulnerability:** Denial of Service via incomplete cleanup/resource exhaustion in `multer` package.
+**Learning:** `multer` < 2.1.0 can be exploited to cause DoS by sending specifically crafted payloads that lead to uncleaned temporary files or infinite processing.
+**Prevention:** Keep multipart-parsing dependencies up-to-date and monitor security advisories for packages handling file uploads.

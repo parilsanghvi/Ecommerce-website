@@ -1,7 +1,16 @@
-import { API_BASE_URL } from "../config";
 import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createThunkHandler } from "../utils/thunkHandler";
+import { API_BASE_URL } from "../config";
+
+// Custom helper to standardize thunk error handling
+export const createThunkHandler = (asyncFunction) => async (arg, thunkAPI) => {
+    try {
+        return await asyncFunction(arg, thunkAPI);
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message || "An error occurred";
+        return thunkAPI.rejectWithValue(errorMessage);
+    }
+};
 
 // Async Thunks
 export const login = createAsyncThunk(
@@ -91,9 +100,9 @@ export const resetPassword = createAsyncThunk(
 
 export const getAllUsers = createAsyncThunk(
     "user/getAllUsers",
-    createThunkHandler(async () => {
-        const { data } = await axios.get(`${API_BASE_URL}/admin/users`);
-        return data.users;
+    createThunkHandler(async (page = 1) => {
+        const { data } = await axios.get(`${API_BASE_URL}/admin/users?page=${page}`);
+        return data;
     })
 );
 
@@ -158,6 +167,8 @@ const userSlice = createSlice({
         isDeleted: false,
         message: null,
         users: [],
+        totalUsers: 0,
+        resultPerPage: 0,
         userDetails: {},
     },
     reducers: {
@@ -267,7 +278,9 @@ const userSlice = createSlice({
 
             .addCase(getAllUsers.fulfilled, (state, action) => {
                 state.usersLoading = false;
-                state.users = action.payload;
+                state.users = action.payload.users;
+                state.totalUsers = action.payload.totalUsers;
+                state.resultPerPage = action.payload.resultPerPage;
             })
 
 
@@ -324,5 +337,7 @@ export const {
     updateUserReset,
     deleteUserReset,
 } = userSlice.actions;
+
+export const selectUser = (state) => state.user;
 
 export default userSlice.reducer;

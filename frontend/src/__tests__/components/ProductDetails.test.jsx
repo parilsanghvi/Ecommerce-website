@@ -24,6 +24,12 @@ vi.mock('react-redux', () => ({
                     { _id: 'r2', name: 'Bob', rating: 4, comment: 'Good value.' },
                 ],
             },
+            reviews: [
+                { _id: 'r1', name: 'Alice', rating: 5, comment: 'Excellent!' },
+                { _id: 'r2', name: 'Bob', rating: 4, comment: 'Good value.' },
+            ],
+            totalReviews: 2,
+            reviewsPage: 1
         },
     }),
     useDispatch: () => mockDispatch,

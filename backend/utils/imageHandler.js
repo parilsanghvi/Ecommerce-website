@@ -1,5 +1,4 @@
 const cloudinary = require("cloudinary");
-
 /**
  * Handles image updates: separates images to keep, uploads new ones, and deletes removed ones.
  * @param {Array} currentImages - Array of existing image objects from the database.
@@ -8,17 +7,14 @@ const cloudinary = require("cloudinary");
  */
 const processImagesUpdate = async (currentImages, newImagesInput) => {
     let images = [];
-
     // Normalize input to an array
     if (typeof newImagesInput === "string") {
         images.push(newImagesInput);
     } else {
         images = newImagesInput;
     }
-
     const imagesToKeep = [];
     const imagesToUpload = [];
-
     // Separate images into "To Keep" (URLs) and "To Upload" (Base64/New)
     images.forEach(img => {
         if (typeof img === 'string' && img.startsWith('http')) {
@@ -27,10 +23,8 @@ const processImagesUpdate = async (currentImages, newImagesInput) => {
             imagesToUpload.push(img);
         }
     });
-
     // Identify images to delete (present in DB but not in imagesToKeep)
     const imagesToDelete = currentImages.filter(img => !imagesToKeep.includes(img.url));
-
     // ⚡ Bolt: Execute delete and upload operations concurrently to reduce total wait time
     const [, newImagesLinks] = await Promise.all([
         // Delete removed images from Cloudinary
@@ -46,16 +40,12 @@ const processImagesUpdate = async (currentImages, newImagesInput) => {
             };
         }))
     ]);
-
     // Keep the old image objects that matched the URLs
     const keptImagesObjects = currentImages.filter(img => imagesToKeep.includes(img.url));
-
     return [...keptImagesObjects, ...newImagesLinks];
 };
-
 const processImages = async (files, bodyImages) => {
     let imagesLink = [];
-
     // Optimized: Use multipart upload (req.files) to reduce payload size and memory usage
     if (files && files.length > 0) {
         imagesLink = await Promise.all(files.map((file) => {
@@ -63,8 +53,6 @@ const processImages = async (files, bodyImages) => {
                 const uploadStream = cloudinary.v2.uploader.upload_stream(
                     {
                         folder: "products",
-                        width: 150,
-                        height: 200,
                         // crop: "scale",
                     },
                     (error, result) => {
@@ -86,13 +74,10 @@ const processImages = async (files, bodyImages) => {
         } else if (Array.isArray(bodyImages)) {
             images = bodyImages
         }
-
         if (images.length > 0) {
             imagesLink = await Promise.all(images.map(async (image) => {
                 const result = await cloudinary.v2.uploader.upload(image, {
                     folder: "products",
-                    width: 150,
-                    height: 200,
                     // crop: "scale",
                 });
                 return {
@@ -104,5 +89,4 @@ const processImages = async (files, bodyImages) => {
     }
     return imagesLink;
 };
-
 module.exports = { processImages, processImagesUpdate };
