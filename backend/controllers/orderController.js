@@ -227,6 +227,10 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("you have recieved order", 400))
     }
 
+    if (order.orderStatus === "Shipped" && req.body.status === "Shipped") {
+        return next(new ErrorHandler("Order has already been shipped", 400));
+    }
+
 
     if (req.body.status === "Shipped") {
         const operations = order.orderItems.map((item) => ({

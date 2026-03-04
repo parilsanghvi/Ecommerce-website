@@ -97,4 +97,25 @@ describe('updateOrder Stock Update Security', () => {
         // Verify response was NOT sent
         expect(res.status).not.toHaveBeenCalled();
     });
+
+    it('should throw error and NOT update stock if order is already Shipped', async () => {
+        const mockOrder = {
+            orderStatus: 'Shipped',
+            orderItems: [
+                { product: 'prod1', quantity: 2 }
+            ],
+            save: jest.fn()
+        };
+
+        Order.findById.mockResolvedValue(mockOrder);
+
+        await updateOrder(req, res, next);
+
+        expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(next.mock.calls[0][0].message).toBe('Order has already been shipped');
+        expect(next.mock.calls[0][0].statusCode).toBe(400);
+
+        expect(Product.bulkWrite).not.toHaveBeenCalled();
+        expect(mockOrder.save).not.toHaveBeenCalled();
+    });
 });
