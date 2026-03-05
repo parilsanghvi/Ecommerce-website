@@ -57,6 +57,7 @@ const Cart = () => {
     navigate("/login?redirect=/shipping");
   };
 
+  // ⚡ Bolt: [performance improvement] Memoize the gross total calculation to prevent unnecessary O(N) recalculations on every render
   const grossTotal = useMemo(() => {
     return cartItems.reduce(
       (acc, item) => acc + item.quantity * item.price,

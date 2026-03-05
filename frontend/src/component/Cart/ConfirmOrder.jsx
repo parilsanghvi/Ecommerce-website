@@ -20,6 +20,7 @@ const ConfirmOrder = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  // ⚡ Bolt: [performance improvement] Memoize the subtotal calculation to prevent unnecessary O(N) recalculations on every render
   const subtotal = useMemo(() => {
     return cartItems.reduce(
       (acc, item) => acc + item.quantity * item.price,

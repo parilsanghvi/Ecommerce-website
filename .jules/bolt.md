@@ -20,3 +20,7 @@
 ## 2024-05-20 - Unbounded Array Performance Optimization
 **Learning:** Storing unbounded lists (like product reviews) as embedded arrays in MongoDB leads to massive document sizes, increased memory consumption, and severe O(N) penalties during read/write operations (e.g., finding a single review took ~240ms in an array of 10,000, vs. ~4.5ms in a separate indexed collection).
 **Action:** When designing or refactoring schemas for data that can grow indefinitely, always move the data to a separate, indexed collection. Keep fast-aggregation statistics (like `numOfReviews` and `ratings`) embedded in the parent document. To maintain API backward compatibility, configure Mongoose virtuals on the parent schema to allow `.populate()` calls.
+
+## 2025-03-03 - Memoizing Array Reductions in React Components
+**Learning:** `Cart.jsx` and `ConfirmOrder.jsx` were recalculating derived state (like `grossTotal` or `subtotal`) by calling `cartItems.reduce()` directly inside the component's render body. This recalculation executes on every render, which becomes a bottleneck during frequent state updates like changing item quantities or showing loading spinners.
+**Action:** Always wrap expensive operations like `Array.prototype.reduce`, `map`, or `filter` inside a `useMemo` hook with strict dependencies when calculating derived state in React components to prevent unnecessary re-evaluations.
