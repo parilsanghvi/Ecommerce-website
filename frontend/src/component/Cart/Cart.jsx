@@ -7,7 +7,7 @@ import { Typography, Tooltip, CircularProgress } from "@mui/material";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -56,6 +56,13 @@ const Cart = () => {
   const checkoutHandler = () => {
     navigate("/login?redirect=/shipping");
   };
+
+  const grossTotal = useMemo(() => {
+    return cartItems.reduce(
+      (acc, item) => acc + item.quantity * item.price,
+      0
+    );
+  }, [cartItems]);
 
   return (
     <Fragment>
@@ -138,10 +145,7 @@ const Cart = () => {
           <div className="cartFooter">
             <div className="cartGrossProfitBox">
               <p>GROSS TOTAL</p>
-              <p>{`₹${cartItems.reduce(
-                (acc, item) => acc + item.quantity * item.price,
-                0
-              )}`}</p>
+              <p>{`₹${grossTotal}`}</p>
             </div>
             <button className="primary-btn" onClick={checkoutHandler}>CHECK OUT NOW</button>
           </div>
