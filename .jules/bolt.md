@@ -24,3 +24,7 @@
 ## 2025-03-03 - Memoizing Array Reductions in React Components
 **Learning:** `Cart.jsx` and `ConfirmOrder.jsx` were recalculating derived state (like `grossTotal` or `subtotal`) by calling `cartItems.reduce()` directly inside the component's render body. This recalculation executes on every render, which becomes a bottleneck during frequent state updates like changing item quantities or showing loading spinners.
 **Action:** Always wrap expensive operations like `Array.prototype.reduce`, `map`, or `filter` inside a `useMemo` hook with strict dependencies when calculating derived state in React components to prevent unnecessary re-evaluations.
+
+## 2025-03-04 - Memoizing DataGrid Columns and Rows
+**Learning:** When using `@mui/x-data-grid`, the `columns` prop acts as the definition for the entire grid. If the `columns` array is created inline during render, its reference changes on every component re-render. This forces the entire DataGrid component to needlessly unmount/remount internal components and causes the loss of all UI state (such as resized column widths). Similarly, reconstructing the `rows` array directly in the render body causes an O(N) operation to execute repetitively.
+**Action:** Always wrap the `columns` definition array in a `useMemo` hook (remembering to also `useCallback` any inline event handlers referenced by it, like `deleteProductHandler`) and wrap the `rows` construction in `useMemo` to ensure referential stability.
