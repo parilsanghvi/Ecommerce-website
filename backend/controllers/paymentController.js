@@ -20,6 +20,11 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
 
   let calculatedItemsPrice = 0;
   for (const item of items) {
+    // Security Fix: Validate quantity to prevent negative quantity exploits
+    if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+      return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
+    }
+
     const product = productsMap.get(item.product);
     if (!product) {
       return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
