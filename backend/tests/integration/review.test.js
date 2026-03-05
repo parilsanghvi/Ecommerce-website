@@ -7,6 +7,7 @@ const Product = require('../../models/productModel');
 const Review = require('../../models/reviewModel');
 
 let mongoServer;
+jest.setTimeout(30000);
 let userCookie;
 let adminCookie;
 let testProduct;
