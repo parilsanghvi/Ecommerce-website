@@ -232,6 +232,7 @@ const UpdateProduct = () => {
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
+                  aria-label="Remove image"
                   style={{
                     position: 'absolute',
                     top: '-10px',
