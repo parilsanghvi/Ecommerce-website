@@ -112,7 +112,7 @@ describe('updateOrder Stock Update Security', () => {
         await updateOrder(req, res, next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
-        expect(next.mock.calls[0][0].message).toBe('Order has already been shipped');
+        expect(next.mock.calls[0][0].message).toBe('Order has already been marked as Shipped');
         expect(next.mock.calls[0][0].statusCode).toBe(400);
 
         expect(Product.bulkWrite).not.toHaveBeenCalled();

@@ -232,8 +232,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("you have recieved order", 400))
     }
 
-    if (order.orderStatus === "Shipped" && req.body.status === "Shipped") {
-        return next(new ErrorHandler("Order has already been shipped", 400));
+    if (order.orderStatus === req.body.status) {
+        return next(new ErrorHandler(`Order has already been marked as ${req.body.status}`, 400));
     }
 
 
