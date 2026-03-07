@@ -47,10 +47,14 @@ describe('newOrder optimization', () => {
     });
 
     it('should correctly calculate price using the Map-based lookup', async () => {
-        Product.find.mockResolvedValue([
-            { _id: 'prod1', price: 100, toString: () => 'prod1' },
-            { _id: 'prod2', price: 100, toString: () => 'prod2' }
-        ]);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([
+                    { _id: 'prod1', price: 100, toString: () => 'prod1' },
+                    { _id: 'prod2', price: 100, toString: () => 'prod2' }
+                ])
+            })
+        });
 
         Order.create.mockResolvedValue({ _id: 'order1', ...req.body });
 
@@ -64,10 +68,14 @@ describe('newOrder optimization', () => {
     });
 
     it('should return 404 if a product in orderItems is not found in the products array', async () => {
-        Product.find.mockResolvedValue([
-            { _id: 'prod1', price: 100, toString: () => 'prod1' }
-            // prod2 is missing
-        ]);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([
+                    { _id: 'prod1', price: 100, toString: () => 'prod1' }
+                    // prod2 is missing
+                ])
+            })
+        });
 
         await newOrder(req, res, next);
 
@@ -78,10 +86,14 @@ describe('newOrder optimization', () => {
     });
 
     it('should handle ObjectId-like strings correctly', async () => {
-         Product.find.mockResolvedValue([
-            { _id: { toString: () => 'prod1' }, price: 100 },
-            { _id: { toString: () => 'prod2' }, price: 100 }
-        ]);
+         Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([
+                    { _id: { toString: () => 'prod1' }, price: 100 },
+                    { _id: { toString: () => 'prod2' }, price: 100 }
+                ])
+            })
+        });
 
         Order.create.mockResolvedValue({ _id: 'order1', ...req.body });
 
