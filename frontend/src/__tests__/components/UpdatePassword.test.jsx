@@ -33,7 +33,7 @@ describe('UpdatePassword', () => {
         expect(screen.getByPlaceholderText('Old Password')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('New Password')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Confirm Password')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Change')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /change/i })).toBeInTheDocument();
     });
 
     it('dispatches updatePassword on submit', () => {
@@ -41,7 +41,7 @@ describe('UpdatePassword', () => {
         fireEvent.change(screen.getByPlaceholderText('Old Password'), { target: { value: 'old123' } });
         fireEvent.change(screen.getByPlaceholderText('New Password'), { target: { value: 'new123' } });
         fireEvent.change(screen.getByPlaceholderText('Confirm Password'), { target: { value: 'new123' } });
-        fireEvent.submit(screen.getByDisplayValue('Change'));
+        fireEvent.submit(screen.getByRole('button', { name: /change/i }));
         expect(mockDispatch).toHaveBeenCalled();
     });
 
