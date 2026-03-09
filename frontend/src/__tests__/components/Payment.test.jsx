@@ -70,7 +70,7 @@ describe('Payment', () => {
 
     it('renders pay button with total price', () => {
         render(<Payment />);
-        expect(screen.getByDisplayValue('Pay - ₹118')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Pay - ₹118/i })).toBeInTheDocument();
     });
 
     it('renders checkout steps', () => {

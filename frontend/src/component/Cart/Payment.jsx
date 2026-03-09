@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
-import { Typography } from "@mui/material";
+import { Typography, CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 import {
   CardNumberElement,
@@ -34,6 +34,8 @@ const Payment = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
   const { error } = useSelector((state) => state.order);
+
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Detect theme for Stripe Elements styling
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -92,6 +94,7 @@ const Payment = () => {
     e.preventDefault();
 
     payBtn.current.disabled = true;
+    setIsProcessing(true);
 
     try {
       const config = {
@@ -128,6 +131,7 @@ const Payment = () => {
 
       if (result.error) {
         payBtn.current.disabled = false;
+        setIsProcessing(false);
 
         enqueueSnackbar(result.error.message, { variant: "error" });
       } else {
@@ -144,6 +148,7 @@ const Payment = () => {
           }
           navigate("/success");
         } else {
+          setIsProcessing(false);
           enqueueSnackbar("There's some issue while processing payment ", {
             variant: "error",
           });
@@ -151,6 +156,7 @@ const Payment = () => {
       }
     } catch (error) {
       payBtn.current.disabled = false;
+      setIsProcessing(false);
       enqueueSnackbar(error.response.data.message, { variant: "error" });
     }
   };
@@ -182,12 +188,15 @@ const Payment = () => {
             <CardCvcElement className="paymentInput" options={stripeElementStyle} />
           </div>
 
-          <input
+          <button
             type="submit"
-            value={`Pay - ₹${orderInfo && orderInfo.totalPrice}`}
             ref={payBtn}
             className="primary-btn paymentFormBtn"
-          />
+            disabled={isProcessing}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+          >
+            {isProcessing ? <CircularProgress size={20} color="inherit" /> : `Pay - ₹${orderInfo && orderInfo.totalPrice}`}
+          </button>
         </form>
       </div>
     </Fragment>
