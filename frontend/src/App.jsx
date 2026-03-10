@@ -47,12 +47,12 @@ const About = lazy(() => import("./component/layout/About/About"));
 
 function App() {
 
-  const [stripeApiKey, setStripeApiKey] = useState("");
+  const [stripePromise, setStripePromise] = useState(null);
 
   async function getStripeApiKey() {
     try {
       const { data } = await axios.get(`${API_BASE_URL}/stripeapikey`);
-      setStripeApiKey(data.stripeApiKey);
+      setStripePromise(loadStripe(data.stripeApiKey));
     } catch {
       console.log("Stripe API key not found or backend unreachable");
     }
@@ -94,8 +94,8 @@ function App() {
           <Route
             path="/process/payment"
             element={
-              stripeApiKey ? (
-                <Elements stripe={loadStripe(stripeApiKey)}>
+              stripePromise ? (
+                <Elements stripe={stripePromise}>
                   <ProtectedRoute>
                     <Payment />
                   </ProtectedRoute>
