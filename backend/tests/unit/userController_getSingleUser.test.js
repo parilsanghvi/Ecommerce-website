@@ -12,7 +12,7 @@ jest.mock('../../models/userModel', () => {
     return {
         findById: jest.fn(),
     };
-}, { virtual: true });
+});
 
 // Also need to mock other dependencies used in userController
 jest.mock('cloudinary', () => ({
