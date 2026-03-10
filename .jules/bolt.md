@@ -24,3 +24,7 @@
 ## 2025-03-03 - Memoizing Array Reductions in React Components
 **Learning:** `Cart.jsx` and `ConfirmOrder.jsx` were recalculating derived state (like `grossTotal` or `subtotal`) by calling `cartItems.reduce()` directly inside the component's render body. This recalculation executes on every render, which becomes a bottleneck during frequent state updates like changing item quantities or showing loading spinners.
 **Action:** Always wrap expensive operations like `Array.prototype.reduce`, `map`, or `filter` inside a `useMemo` hook with strict dependencies when calculating derived state in React components to prevent unnecessary re-evaluations.
+
+## 2025-03-03 - Stripe Elements Initialization Performance
+**Learning:** Calling `loadStripe(apiKey)` directly within the `<Elements stripe={...}>` prop causes the Stripe object to re-initialize and inject heavy external scripts/iframes on every render of the parent component.
+**Action:** Always call `loadStripe(apiKey)` once and store the resulting Promise in a React state variable (e.g., `stripePromise`), passing that state to the `<Elements>` provider to ensure referential stability.
