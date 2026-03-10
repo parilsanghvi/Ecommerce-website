@@ -69,9 +69,7 @@ const UpdateProfile = () => {
   }, [dispatch, error, enqueueSnackbar, navigate, user, isUpdated, avatar]);
   return (
     <Fragment>
-      {loading ? (
-        <Loader />
-      ) : (
+      <Fragment>
         <Fragment>
           <MetaData title="Update Profile" />
           <div className="updateProfileContainer">
@@ -125,8 +123,7 @@ const UpdateProfile = () => {
               </form>
             </div>
           </div>
-        </Fragment>
-      )}
+      </Fragment>
     </Fragment>
   );
 };
