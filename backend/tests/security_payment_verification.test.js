@@ -52,10 +52,14 @@ describe('Order Security: Payment Verification', () => {
         };
         next = jest.fn();
 
-        Product.find.mockResolvedValue([{
-            _id: 'productid',
-            price: 1000
-        }]);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([{
+                    _id: 'productid',
+                    price: 1000
+                }])
+            })
+        });
 
         Order.create.mockResolvedValue({ _id: 'orderid' });
         // Reset findOne to ensure no leakage between tests

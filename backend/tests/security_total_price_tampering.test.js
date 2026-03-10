@@ -41,10 +41,14 @@ describe('Order Security: Total Price Tampering', () => {
         };
         const next = jest.fn();
 
-        Product.find.mockResolvedValue([{
-            _id: 'productid',
-            price: itemsPrice,
-        }]);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([{
+                    _id: 'productid',
+                    price: 1000
+                }])
+            })
+        });
 
         await orderController.newOrder(req, res, next);
 
@@ -83,10 +87,14 @@ describe('Order Security: Total Price Tampering', () => {
         };
         const next = jest.fn();
 
-        Product.find.mockResolvedValue([{
-            _id: 'productid',
-            price: itemsPrice,
-        }]);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([{
+                    _id: 'productid',
+                    price: itemsPrice
+                }])
+            })
+        });
 
         await orderController.newOrder(req, res, next);
 
@@ -124,10 +132,14 @@ describe('Order Security: Total Price Tampering', () => {
         };
         const next = jest.fn();
 
-        Product.find.mockResolvedValue([{
-            _id: 'productid',
-            price: itemsPrice,
-        }]);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([{
+                    _id: 'productid',
+                    price: itemsPrice
+                }])
+            })
+        });
 
         await orderController.newOrder(req, res, next);
 

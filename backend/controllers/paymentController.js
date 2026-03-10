@@ -11,7 +11,9 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
   }
 
   const productIds = items.map((item) => item.product);
-  const products = await Product.find({ _id: { $in: productIds } });
+  // ⚡ Bolt: [performance improvement] Use select('price') and lean() to avoid Mongoose document hydration
+  // This significantly reduces memory usage and database payload size for read-only operations.
+  const products = await Product.find({ _id: { $in: productIds } }).select('price').lean();
 
   // ⚡ Bolt: [performance improvement] Convert products array to Map for O(1) lookups
   // This reduces the overall time complexity from O(N^2) to O(N) when iterating over items.
