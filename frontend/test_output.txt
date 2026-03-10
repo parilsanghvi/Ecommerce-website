@@ -5,55 +5,65 @@
 
 [1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/home/paril/Ecommerce-website/frontend[39m
 
- [31m❯[39m src/__tests__/components/Cart.test.jsx [2m([22m[2m0 test[22m[2m)[22m
- [31m❯[39m src/__tests__/components/Cart_UX.test.jsx [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/__tests__/components/ForgotPassword.test.jsx [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/__tests__/components/UpdatePassword.test.jsx [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/__tests__/components/UpdateProfile.test.jsx [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/__tests__/UpdatePassword_UX.test.jsx [2m([22m[2m0 test[22m[2m)[22m
 [90mstderr[2m | src/__tests__/Products_Performance.test.jsx[2m > [22m[2mProducts Component Performance[2m > [22m[2mshould NOT dispatch getProduct on slider drag (onChange), only on release (onChangeCommitted)
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/components/NewProduct.test.jsx [2m([22m[2m7 tests[22m[2m)[22m[33m 883[2mms[22m[39m
-     [33m[2m✓[22m[39m renders create button [33m 461[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ProductReviews.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[33m 895[2mms[22m[39m
-     [33m[2m✓[22m[39m renders search button [33m 604[2mms[22m[39m
- [32m✓[39m src/__tests__/components/UpdateProduct.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[33m 948[2mms[22m[39m
-     [33m[2m✓[22m[39m renders update button [33m 637[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/UpdateProduct.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[33m 931[2mms[22m[39m
+     [33m[2m✓[22m[39m renders update button [33m 558[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ProductDetails.test.jsx [2m([22m[2m15 tests[22m[2m)[22m[33m 978[2mms[22m[39m
+     [33m[2m✓[22m[39m renders product images [33m 521[2mms[22m[39m
 [90mstderr[2m | src/__tests__/LoginSignup.test.jsx[2m > [22m[2mLoginSignup Component[2m > [22m[2mrenders Login tab by default
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/components/ProductDetails.test.jsx [2m([22m[2m15 tests[22m[2m)[22m[33m 1071[2mms[22m[39m
-     [33m[2m✓[22m[39m renders product images [33m 635[2mms[22m[39m
- [32m✓[39m src/__tests__/LoginSignup.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[33m 1123[2mms[22m[39m
-     [33m[2m✓[22m[39m renders Login tab by default [33m 637[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/NewProduct.test.jsx [2m([22m[2m7 tests[22m[2m)[22m[33m 1348[2mms[22m[39m
+     [33m[2m✓[22m[39m renders create button [33m 695[2mms[22m[39m
+ [32m✓[39m src/__tests__/LoginSignup.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[33m 1414[2mms[22m[39m
+     [33m[2m✓[22m[39m renders Login tab by default [33m 835[2mms[22m[39m
+     [33m[2m✓[22m[39m dispatches login action [33m 355[2mms[22m[39m
 [90mstderr[2m | src/__tests__/ProductsEmpty.test.jsx[2m > [22m[2mProducts Component - Empty State[2m > [22m[2mrenders "No Products Found" and "Reset Filters" button when product list is empty
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/ProductsEmpty.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 1280[2mms[22m[39m
-     [33m[2m✓[22m[39m renders "No Products Found" and "Reset Filters" button when product list is empty [33m 1275[2mms[22m[39m
- [32m✓[39m src/__tests__/Products_Performance.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 1501[2mms[22m[39m
-     [33m[2m✓[22m[39m should NOT dispatch getProduct on slider drag (onChange), only on release (onChangeCommitted) [33m 1496[2mms[22m[39m
+ [32m✓[39m src/__tests__/ProductsEmpty.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 1707[2mms[22m[39m
+     [33m[2m✓[22m[39m renders "No Products Found" and "Reset Filters" button when product list is empty [33m 1703[2mms[22m[39m
+ [32m✓[39m src/__tests__/Products_Performance.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 1895[2mms[22m[39m
+     [33m[2m✓[22m[39m should NOT dispatch getProduct on slider drag (onChange), only on release (onChangeCommitted) [33m 1891[2mms[22m[39m
 [90mstderr[2m | src/__tests__/Products_UX.test.jsx[2m > [22m[2mProducts Component UX[2m > [22m[2mshows "Clear Filters" button when filters are active and hides it when clicked
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/Products_UX.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 1810[2mms[22m[39m
-     [33m[2m✓[22m[39m shows "Clear Filters" button when filters are active and hides it when clicked [33m 1807[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Dashboard.test.jsx [2m([22m[2m9 tests[22m[2m)[22m[33m 743[2mms[22m[39m
-     [33m[2m✓[22m[39m renders admin links [33m 536[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Sidebar.test.jsx [2m([22m[2m8 tests[22m[2m)[22m[33m 695[2mms[22m[39m
-     [33m[2m✓[22m[39m has correct navigation links [33m 532[2mms[22m[39m
+ [32m✓[39m src/__tests__/Products_UX.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 2426[2mms[22m[39m
+     [33m[2m✓[22m[39m shows "Clear Filters" button when filters are active and hides it when clicked [33m 2420[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ResetPassword.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[33m 873[2mms[22m[39m
+     [33m[2m✓[22m[39m renders reset password form with both fields [33m 601[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ProductReviews.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[33m 723[2mms[22m[39m
+     [33m[2m✓[22m[39m renders search button [33m 481[2mms[22m[39m
 [90mstderr[2m | src/__tests__/LoginSignup_Loading.test.jsx[2m > [22m[2mLoginSignup Loading State[2m > [22m[2mshows loading state and disables inputs
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/LoginSignup_Loading.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 586[2mms[22m[39m
-     [33m[2m✓[22m[39m shows loading state and disables inputs [33m 582[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ProcessOrder.test.jsx [2m([22m[2m7 tests[22m[2m)[22m[32m 287[2mms[22m[39m
+ [32m✓[39m src/__tests__/LoginSignup_Loading.test.jsx [2m([22m[2m1 test[22m[2m)[22m[33m 932[2mms[22m[39m
+     [33m[2m✓[22m[39m shows loading state and disables inputs [33m 929[2mms[22m[39m
 [90mstderr[2m | src/__tests__/components/ProductCard.test.jsx[2m > [22m[2mProductCard[2m > [22m[2mrenders product name
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
+ [32m✓[39m src/__tests__/components/Cart_UX.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[33m 711[2mms[22m[39m
+     [33m[2m✓[22m[39m shows loading spinner on "increase" button when clicked [33m 543[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Sidebar.test.jsx [2m([22m[2m8 tests[22m[2m)[22m[33m 595[2mms[22m[39m
+     [33m[2m✓[22m[39m has correct navigation links [33m 459[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/UpdateUser.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[33m 973[2mms[22m[39m
+     [33m[2m✓[22m[39m dispatches on form submit [33m 685[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ProductCard.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[33m 721[2mms[22m[39m
+     [33m[2m✓[22m[39m links to the product detail page [33m 500[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Dashboard.test.jsx [2m([22m[2m9 tests[22m[2m)[22m[33m 816[2mms[22m[39m
+     [33m[2m✓[22m[39m renders admin links [33m 608[2mms[22m[39m
 [90mstderr[2m | src/__tests__/components/ConfirmOrder.test.jsx[2m > [22m[2mConfirmOrder[2m > [22m[2mrenders shipping info
 [22m[39mTypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
     at fetchPricing [90m(/home/paril/Ecommerce-website/frontend/[39msrc/component/Cart/ConfirmOrder.jsx:37:17[90m)[39m
@@ -102,78 +112,78 @@ act(() => {
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
     at ConfirmOrder (/home/paril/Ecommerce-website/frontend/src/component/Cart/ConfirmOrder.jsx:26:67)
 
- [32m✓[39m src/__tests__/components/ProductCard.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[33m 503[2mms[22m[39m
-     [33m[2m✓[22m[39m links to the product detail page [33m 323[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ConfirmOrder.test.jsx [2m([22m[2m8 tests[22m[2m)[22m[33m 494[2mms[22m[39m
- [32m✓[39m src/__tests__/components/UpdateUser.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[33m 626[2mms[22m[39m
-     [33m[2m✓[22m[39m dispatches on form submit [33m 447[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Shipping.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 206[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ConfirmOrder.test.jsx [2m([22m[2m8 tests[22m[2m)[22m[33m 398[2mms[22m[39m
 [90mstderr[2m | src/__tests__/Products.test.jsx[2m > [22m[2mProducts Component[2m > [22m[2mrenders product list
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/Products.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[33m 373[2mms[22m[39m
-     [33m[2m✓[22m[39m renders product list [33m 318[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Header.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 255[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Footer.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 192[2mms[22m[39m
- [32m✓[39m src/__tests__/components/OrderDetails.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 223[2mms[22m[39m
- [32m✓[39m src/__tests__/components/HeaderCartBadge.test.jsx [2m([22m[2m1 test[22m[2m)[22m[32m 171[2mms[22m[39m
- [32m✓[39m src/__tests__/components/UpdatePassword.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 197[2mms[22m[39m
- [32m✓[39m src/__tests__/components/UserOptions.test.jsx [2m([22m[2m8 tests[22m[2m)[22m[32m 166[2mms[22m[39m
-[90mstderr[2m | src/__tests__/UpdatePassword_UX.test.jsx[2m > [22m[2mUpdatePassword Component UX[2m > [22m[2mtoggles password visibility for old password
-[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
-⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+ [32m✓[39m src/__tests__/components/ProcessOrder.test.jsx [2m([22m[2m7 tests[22m[2m)[22m[33m 377[2mms[22m[39m
+ [32m✓[39m src/__tests__/Products.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[33m 420[2mms[22m[39m
+     [33m[2m✓[22m[39m renders product list [33m 357[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Header.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 239[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/About.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 215[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Shipping.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 288[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Footer.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 280[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/OrderDetails.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[33m 321[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ProductDetails_Quantity.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 160[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/UserOptions.test.jsx [2m([22m[2m8 tests[22m[2m)[22m[32m 259[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Profile.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 123[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/HeaderCartBadge.test.jsx [2m([22m[2m1 test[22m[2m)[22m[32m 207[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Search.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 270[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Home.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 166[2mms[22m[39m
+[90mstderr[2m | src/__tests__/components/Cart.test.jsx[2m > [22m[2mCart[2m > [22m[2mdispatches addItemsToCart on quantity increase
+[22m[39mWarning: An update to Cart inside a test was not wrapped in act(...).
 
- [32m✓[39m src/__tests__/components/Home.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 156[2mms[22m[39m
- [32m✓[39m src/__tests__/UpdatePassword_UX.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 215[2mms[22m[39m
- [32m✓[39m src/__tests__/components/UpdateProfile.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 184[2mms[22m[39m
- [32m✓[39m src/__tests__/components/About.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 183[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ForgotPassword.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 159[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ProductDetails_Quantity.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 152[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Profile.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 116[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Payment.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 121[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ResetPassword.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 147[2mms[22m[39m
- [32m✓[39m src/__tests__/components/UsersList.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 117[2mms[22m[39m
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at Cart (/home/paril/Ecommerce-website/frontend/src/component/Cart/Cart.jsx:28:80)
+
+ [32m✓[39m src/__tests__/components/Cart.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 167[2mms[22m[39m
 [90mstderr[2m | src/__tests__/components/CartItemCard.test.jsx[2m > [22m[2mCartItemCard[2m > [22m[2mrenders item name as a link
 [22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
- [32m✓[39m src/__tests__/components/Search.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 150[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ProductList.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 120[2mms[22m[39m
- [32m✓[39m src/__tests__/components/CheckoutSteps.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 93[2mms[22m[39m
- [32m✓[39m src/__tests__/components/CartItemCard.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 122[2mms[22m[39m
- [32m✓[39m src/__tests__/components/OrderList.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 143[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ReviewCard.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 94[2mms[22m[39m
- [32m✓[39m src/__tests__/components/ProtectedRoute.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 88[2mms[22m[39m
- [32m✓[39m src/__tests__/components/MyOrders.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 98[2mms[22m[39m
- [32m✓[39m src/__tests__/components/NotFound.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 92[2mms[22m[39m
- [32m✓[39m src/__tests__/components/OrderSuccess.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 123[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Loader.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 44[2mms[22m[39m
- [32m✓[39m src/__tests__/components/MetaData.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 53[2mms[22m[39m
- [32m✓[39m src/__tests__/slices/userSlice.test.js [2m([22m[2m13 tests[22m[2m)[22m[32m 19[2mms[22m[39m
- [32m✓[39m src/__tests__/components/Contact.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 52[2mms[22m[39m
- [32m✓[39m src/__tests__/hooks/useErrorNotification.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 46[2mms[22m[39m
- [32m✓[39m src/__tests__/slices/orderSlice.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 10[2mms[22m[39m
- [32m✓[39m src/__tests__/utils/thunkHandler.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
- [32m✓[39m src/__tests__/slices/cartSlice.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 12[2mms[22m[39m
- [32m✓[39m src/__tests__/slices/productSlice.test.js [2m([22m[2m13 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/CheckoutSteps.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/CartItemCard.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 135[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Payment.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 117[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ProtectedRoute.test.jsx [2m([22m[2m6 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/UsersList.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 133[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/MyOrders.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 96[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/OrderList.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 111[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ProductList.test.jsx [2m([22m[2m5 tests[22m[2m)[22m[32m 146[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ReviewCard.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 98[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Contact.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/NotFound.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/OrderSuccess.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/Loader.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/MetaData.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+ [32m✓[39m src/__tests__/slices/cartSlice.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/__tests__/slices/orderSlice.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/__tests__/hooks/useErrorNotification.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m src/__tests__/utils/thunkHandler.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/__tests__/slices/productSlice.test.js [2m([22m[2m13 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/__tests__/slices/userSlice.test.js [2m([22m[2m13 tests[22m[2m)[22m[32m 11[2mms[22m[39m
 
-[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
 
-[41m[1m FAIL [22m[49m src/__tests__/components/Cart.test.jsx[2m [ src/__tests__/components/Cart.test.jsx ][22m
-[41m[1m FAIL [22m[49m src/__tests__/components/Cart_UX.test.jsx[2m [ src/__tests__/components/Cart_UX.test.jsx ][22m
+[41m[1m FAIL [22m[49m src/__tests__/UpdatePassword_UX.test.jsx[2m [ src/__tests__/UpdatePassword_UX.test.jsx ][22m
+[41m[1m FAIL [22m[49m src/__tests__/components/UpdatePassword.test.jsx[2m [ src/__tests__/components/UpdatePassword.test.jsx ][22m
 [31m[1mError[22m: Transform failed with 1 error:
-/home/paril/Ecommerce-website/frontend/src/component/Cart/Cart.jsx:67:8: ERROR: The symbol "grossTotal" has already been declared[39m
+/home/paril/Ecommerce-website/frontend/src/component/User/UpdatePassword.jsx:138:0: ERROR: Unexpected end of file before a closing "Fragment" tag[39m
   Plugin: [35mvite:esbuild[39m
-  File: [36m/home/paril/Ecommerce-website/frontend/src/component/Cart/Cart.jsx[39m:67:8
+  File: [36m/home/paril/Ecommerce-website/frontend/src/component/User/UpdatePassword.jsx[39m:138:0
 [33m  
-  The symbol "grossTotal" has already been declared
-  65 |  
-  66 |    // ⚡ Bolt: [performance improvement] Memoize the gross total calculation to prevent unnecessary O(N) recalculations...
-  67 |    const grossTotal = useMemo(() => {
-     |          ^
-  68 |      return cartItems.reduce(
-  69 |        (acc, item) => acc + item.quantity * item.price,
+  Unexpected end of file before a closing "Fragment" tag
+  136 |  
+  137 |  export default UpdatePassword
+  138 |  
+      |  ^
   [39m
 [90m [2m❯[22m failureErrorWithLog node_modules/esbuild/lib/main.js:[2m1467:15[22m[39m
 [90m [2m❯[22m node_modules/esbuild/lib/main.js:[2m736:50[22m[39m
@@ -181,11 +191,51 @@ This ensures that you're testing the behavior the user would see in the browser.
 [90m [2m❯[22m handleIncomingPacket node_modules/esbuild/lib/main.js:[2m658:12[22m[39m
 [90m [2m❯[22m Socket.readFromStdout node_modules/esbuild/lib/main.js:[2m581:7[22m[39m
 
-[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/components/ForgotPassword.test.jsx[2m [ src/__tests__/components/ForgotPassword.test.jsx ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+/home/paril/Ecommerce-website/frontend/src/component/User/ForgotPassword.jsx:73:0: ERROR: Unexpected end of file before a closing "Fragment" tag[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36m/home/paril/Ecommerce-website/frontend/src/component/User/ForgotPassword.jsx[39m:73:0
+[33m  
+  Unexpected end of file before a closing "Fragment" tag
+  71 |  
+  72 |  export default ForgotPassword
+  73 |  
+     |  ^
+  [39m
+[90m [2m❯[22m failureErrorWithLog node_modules/esbuild/lib/main.js:[2m1467:15[22m[39m
+[90m [2m❯[22m node_modules/esbuild/lib/main.js:[2m736:50[22m[39m
+[90m [2m❯[22m responseCallbacks.<computed> node_modules/esbuild/lib/main.js:[2m603:9[22m[39m
+[90m [2m❯[22m handleIncomingPacket node_modules/esbuild/lib/main.js:[2m658:12[22m[39m
+[90m [2m❯[22m Socket.readFromStdout node_modules/esbuild/lib/main.js:[2m581:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/__tests__/components/UpdateProfile.test.jsx[2m [ src/__tests__/components/UpdateProfile.test.jsx ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+/home/paril/Ecommerce-website/frontend/src/component/User/UpdateProfile.jsx:132:0: ERROR: Unexpected end of file before a closing "Fragment" tag[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36m/home/paril/Ecommerce-website/frontend/src/component/User/UpdateProfile.jsx[39m:132:0
+[33m  
+  Unexpected end of file before a closing "Fragment" tag
+  130 |  
+  131 |  export default UpdateProfile;
+  132 |  
+      |  ^
+  [39m
+[90m [2m❯[22m failureErrorWithLog node_modules/esbuild/lib/main.js:[2m1467:15[22m[39m
+[90m [2m❯[22m node_modules/esbuild/lib/main.js:[2m736:50[22m[39m
+[90m [2m❯[22m responseCallbacks.<computed> node_modules/esbuild/lib/main.js:[2m603:9[22m[39m
+[90m [2m❯[22m handleIncomingPacket node_modules/esbuild/lib/main.js:[2m658:12[22m[39m
+[90m [2m❯[22m Socket.readFromStdout node_modules/esbuild/lib/main.js:[2m581:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
 
 
-[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m52 passed[39m[22m[90m (54)[39m
-[2m      Tests [22m [1m[32m260 passed[39m[22m[90m (260)[39m
-[2m   Start at [22m 23:37:11
-[2m   Duration [22m 12.14s[2m (transform 3.87s, setup 6.44s, import 20.73s, tests 18.15s, environment 59.54s)[22m
+[2m Test Files [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m50 passed[39m[22m[90m (54)[39m
+[2m      Tests [22m [1m[32m255 passed[39m[22m[90m (255)[39m
+[2m   Start at [22m 23:41:41
+[2m   Duration [22m 14.12s[2m (transform 4.22s, setup 8.37s, import 22.62s, tests 22.39s, environment 68.12s)[22m
 

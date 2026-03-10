@@ -32,8 +32,7 @@ const ForgotPassword = () => {
   }, [dispatch, error, enqueueSnackbar, message]);
   return (
     <Fragment>
-      <Fragment>
-        <Fragment>
+
           <MetaData title="Forgot Password" />
           <div className="forgotPasswordContainer">
             <div className="forgotPasswordBox">
@@ -64,8 +63,7 @@ const ForgotPassword = () => {
               </form>
             </div>
           </div>
-      </Fragment>
-    </Fragment>
+        </Fragment>
   )
 }
 

@@ -53,8 +53,7 @@ const UpdatePassword = () => {
   }, [dispatch, error, enqueueSnackbar, navigate, isUpdated]);
   return (
     <Fragment>
-      <Fragment>
-        <Fragment>
+
           <MetaData title="Change Password" />
           <div className="updatePasswordContainer">
             <div className="updatePasswordBox">
@@ -129,8 +128,7 @@ const UpdatePassword = () => {
               </form>
             </div>
           </div>
-      </Fragment>
-    </Fragment>
+        </Fragment>
   );
 }
 
