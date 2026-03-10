@@ -115,11 +115,13 @@ const UpdateProfile = () => {
                     onChange={updateProfileDataChange}
                   />
                 </div>
-                <input
+                <button
                   type="submit"
-                  value="Update"
                   className="primary-btn"
-                />
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update"}
+                </button>
               </form>
             </div>
           </div>

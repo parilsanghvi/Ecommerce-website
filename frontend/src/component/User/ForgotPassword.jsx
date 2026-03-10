@@ -56,11 +56,13 @@ const ForgotPassword = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <input
+                <button
                   type="submit"
-                  value="Send"
                   className="forgotPasswordBtn"
-                />
+                  disabled={loading}
+                >
+                  {loading ? "Sending..." : "Send"}
+                </button>
               </form>
             </div>
           </div>
