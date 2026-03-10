@@ -269,11 +269,10 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 
 // delete order --admin
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
-    const order = await Order.findById(req.params.id)
+    const order = await Order.findByIdAndDelete(req.params.id)
     if (!order) {
         return next(new ErrorHandler("order not found with this id", 404))
     }
-    await order.deleteOne()
     res.status(200).json({
         success: true,
     });
