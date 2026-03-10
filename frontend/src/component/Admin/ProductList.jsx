@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useMemo, useCallback } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,9 +28,10 @@ const ProductList = () => {
     (state) => state.product
   );
 
-  const deleteProductHandler = (id) => {
+  // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
+  const deleteProductHandler = useCallback((id) => {
     dispatch(deleteProduct(id));
-  };
+  }, [dispatch]);
 
   useErrorNotification(error, clearErrors);
   useErrorNotification(deleteError, clearErrors);
@@ -47,7 +48,8 @@ const ProductList = () => {
     }
   }, [dispatch, enqueueSnackbar, navigate, isDeleted]);
 
-  const columns = [
+  // ⚡ Bolt: [performance improvement] Memoize DataGrid columns to prevent complete remounts and lost UI state (like column resize)
+  const columns = useMemo(() => [
     { field: "id", headerName: "Product ID", minWidth: 200, flex: 0.5 },
 
     {
@@ -98,19 +100,23 @@ const ProductList = () => {
         );
       },
     },
-  ];
+  ], [deleteProductHandler]);
 
-  const rows = [];
-
-  products &&
-    products.forEach((item) => {
-      rows.push({
-        id: item._id,
-        stock: item.stock,
-        price: item.price,
-        name: item.name,
+  // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
+  const rows = useMemo(() => {
+    const rowData = [];
+    if (products) {
+      products.forEach((item) => {
+        rowData.push({
+          id: item._id,
+          stock: item.stock,
+          price: item.price,
+          name: item.name,
+        });
       });
-    });
+    }
+    return rowData;
+  }, [products]);
 
   return (
     <AdminLayout title={`ALL PRODUCTS - Admin`}>
