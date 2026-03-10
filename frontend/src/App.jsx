@@ -53,7 +53,7 @@ function App() {
     try {
       const { data } = await axios.get(`${API_BASE_URL}/stripeapikey`);
       setStripeApiKey(data.stripeApiKey);
-    } catch (error) {
+    } catch {
       console.log("Stripe API key not found or backend unreachable");
     }
   }
