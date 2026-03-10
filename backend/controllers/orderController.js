@@ -44,7 +44,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     let calculatedItemsPrice = 0;
     for (const item of orderItems) {
         if (!Number.isInteger(item.quantity) || item.quantity < 1) {
-            return next(new ErrorHandler("Invalid product quantity", 400));
+            return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
         }
         const product = productMap.get(String(item.product));
         if (!product) {
@@ -228,6 +228,10 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     }
     if (order.orderStatus === "Delivered") {
         return next(new ErrorHandler("you have recieved order", 400))
+    }
+
+    if (order.orderStatus === "Shipped" && req.body.status === "Shipped") {
+        return next(new ErrorHandler("Order has already been shipped", 400));
     }
 
 
