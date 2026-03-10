@@ -143,12 +143,12 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
 // delete product --admin
 exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
     // takes product id finds that id and deletes the object
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id).lean()
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
     await Promise.all(product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
-    await product.deleteOne();
+    await Product.deleteOne({ _id: req.params.id });
     res.status(200).json({
         success: true,
         message: "product deleted"

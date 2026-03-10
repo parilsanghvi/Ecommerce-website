@@ -171,13 +171,14 @@ describe('Product Controller', () => {
         deleteOne: jest.fn().mockResolvedValue(true)
       };
 
-      Product.findById.mockResolvedValue(existingProduct);
+      Product.findById.mockReturnValue({ lean: jest.fn().mockResolvedValue(existingProduct) });
+      Product.deleteOne = jest.fn().mockResolvedValue({ deletedCount: 1 });
       cloudinary.v2.uploader.destroy.mockResolvedValue({ result: 'ok' });
 
       await productController.deleteProduct(req, res, mockNext);
 
       expect(cloudinary.v2.uploader.destroy).toHaveBeenCalledTimes(2);
-      expect(existingProduct.deleteOne).toHaveBeenCalled();
+      expect(Product.deleteOne).toHaveBeenCalledWith({ _id: req.params.id });
       expect(res.status).toHaveBeenCalledWith(200);
     });
   });
