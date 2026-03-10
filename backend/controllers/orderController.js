@@ -37,7 +37,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
     // Verify itemsPrice against database
     const productIds = orderItems.map(item => item.product);
-    const products = await Product.find({ _id: { $in: productIds } });
+    const products = await Product.find({ _id: { $in: productIds } }).select('price').lean();
 
     const productMap = new Map(products.map(p => [p._id.toString(), p]));
 
