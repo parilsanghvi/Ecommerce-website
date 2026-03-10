@@ -287,7 +287,7 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Find review in separate collection
-    const review = await Review.findById(req.query.id);
+    const review = await Review.findById(req.query.id).lean();
 
     if (!review) {
         return next(new ErrorHandler("Review not found", 404));

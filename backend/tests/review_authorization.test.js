@@ -44,7 +44,7 @@ describe('deleteReview Authorization Security Test', () => {
     };
 
     Product.findOne = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(mockProduct) });
-    Review.findById = jest.fn().mockResolvedValue(mockReview);
+    Review.findById = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(mockReview) });
 
     await productController.deleteReview(req, res, next);
 
@@ -67,7 +67,7 @@ describe('deleteReview Authorization Security Test', () => {
     };
 
     Product.findOne = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(mockProduct) });
-    Review.findById = jest.fn().mockResolvedValue(mockReview);
+    Review.findById = jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(mockReview) });
     Review.findByIdAndDelete = jest.fn();
     Product.findByIdAndUpdate = jest.fn();
 
