@@ -11,7 +11,8 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
   }
 
   const productIds = items.map((item) => item.product);
-  const products = await Product.find({ _id: { $in: productIds } });
+  // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
+  const products = await Product.find({ _id: { $in: productIds } }).select("price").lean();
 
   // ⚡ Bolt: [performance improvement] Convert products array to Map for O(1) lookups
   // This reduces the overall time complexity from O(N^2) to O(N) when iterating over items.
@@ -20,8 +21,9 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
 
   let calculatedItemsPrice = 0;
   for (const item of items) {
+    // Security Fix: Validate quantity to prevent negative quantity exploits
     if (!Number.isInteger(item.quantity) || item.quantity < 1) {
-      return next(new ErrorHandler("Invalid product quantity", 400));
+      return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
     }
     const product = productsMap.get(item.product);
     if (!product) {
