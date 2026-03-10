@@ -7,15 +7,10 @@ const mockDispatch = vi.fn();
 const mockNavigate = vi.fn();
 const mockEnqueueSnackbar = vi.fn();
 
+import * as reactRedux from 'react-redux';
+
 vi.mock('react-redux', () => ({
-    useSelector: (selector) => selector({
-        user: {
-            user: { name: 'John Doe', email: 'john@test.com', avatar: { url: 'https://example.com/avatar.jpg' } },
-            error: null,
-            isUpdated: false,
-            loading: false,
-        },
-    }),
+    useSelector: vi.fn(),
     useDispatch: () => mockDispatch,
 }));
 
@@ -31,7 +26,17 @@ vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/layout/Loader', () => ({ default: () => <div data-testid="loader">Loading...</div> }));
 
 describe('UpdateProfile', () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+        vi.clearAllMocks();
+        reactRedux.useSelector.mockImplementation((selector) => selector({
+            user: {
+                user: { name: 'John Doe', email: 'john@test.com', avatar: { url: 'https://example.com/avatar.jpg' } },
+                error: null,
+                isUpdated: false,
+                loading: false,
+            },
+        }));
+    });
 
     it('renders update profile form', () => {
         render(<UpdateProfile />);
@@ -53,8 +58,24 @@ describe('UpdateProfile', () => {
 
     it('dispatches updateProfile on submit', () => {
         render(<UpdateProfile />);
-        fireEvent.submit(screen.getByRole('button', { name: /update/i }));
+        const button = screen.getByRole('button', { name: /update/i });
+        fireEvent.submit(button);
         expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('shows loading state and disables button', () => {
+        reactRedux.useSelector.mockImplementation((selector) => selector({
+            user: {
+                user: { name: 'John Doe', email: 'john@test.com', avatar: { url: 'https://example.com/avatar.jpg' } },
+                error: null,
+                isUpdated: false,
+                loading: true,
+            },
+        }));
+        render(<UpdateProfile />);
+        const button = screen.getByRole('button', { name: /updating\.\.\./i });
+        expect(button).toBeDisabled();
+        expect(button).toBeInTheDocument();
     });
 
 });
