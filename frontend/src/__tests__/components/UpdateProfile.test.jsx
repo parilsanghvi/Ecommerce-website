@@ -53,7 +53,7 @@ describe('UpdateProfile', () => {
 
     it('dispatches updateProfile on submit', () => {
         render(<UpdateProfile />);
-        fireEvent.submit(screen.getByDisplayValue('Update'));
+        fireEvent.submit(screen.getByRole('button', { name: /update/i }));
         expect(mockDispatch).toHaveBeenCalled();
     });
 

@@ -27,13 +27,13 @@ describe('ForgotPassword', () => {
         render(<ForgotPassword />);
         expect(screen.getByText('Forgot Password')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Send')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
     });
 
     it('dispatches forgotPassword on submit', () => {
         render(<ForgotPassword />);
         fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'test@test.com' } });
-        fireEvent.submit(screen.getByDisplayValue('Send'));
+        fireEvent.submit(screen.getByRole('button', { name: /send/i }));
         expect(mockDispatch).toHaveBeenCalled();
     });
 

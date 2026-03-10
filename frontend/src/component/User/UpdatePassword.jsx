@@ -121,11 +121,9 @@ const UpdatePassword = () => {
                     {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
                 </div>
-                <input
-                  type="submit"
-                  value="Change"
-                  className="primary-btn"
-                />
+                <button type="submit" className="primary-btn" disabled={loading}>
+                  {loading ? "Changing..." : "Change"}
+                </button>
               </form>
             </div>
           </div>
