@@ -3,9 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Payment from '../../component/Cart/Payment';
 
+import axios from 'axios';
+
 const mockDispatch = vi.fn();
 const mockNavigate = vi.fn();
 const mockEnqueueSnackbar = vi.fn();
+
+vi.mock('axios');
 
 vi.mock('react-redux', () => ({
     useSelector: (selector) => selector({
@@ -31,6 +35,7 @@ vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/Cart/CheckoutSteps', () => ({ default: () => <div>Steps</div> }));
 vi.mock('@mui/material', () => ({
     Typography: ({ children, ...props }) => <span {...props}>{children}</span>,
+    CircularProgress: () => <span data-testid="circular-progress">Loading...</span>,
 }));
 vi.mock('@mui/icons-material/CreditCard', () => ({ default: () => <span>💳</span> }));
 vi.mock('@mui/icons-material/Event', () => ({ default: () => <span>📅</span> }));
@@ -70,7 +75,17 @@ describe('Payment', () => {
 
     it('renders pay button with total price', () => {
         render(<Payment />);
-        expect(screen.getByRole('button', { name: /Pay - ₹118/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /pay - ₹118/i })).toBeInTheDocument();
+    });
+
+    it('shows loading state on submit', async () => {
+        axios.post.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ data: { client_secret: '123' } }), 100)));
+        render(<Payment />);
+        const button = screen.getByRole('button', { name: /pay - ₹118/i });
+        fireEvent.click(button);
+        // The button should now be disabled and show the CircularProgress. We can't query by text if it's replaced by a spinner.
+        // But we can check if it relies on aria-disabled or disabled attribute.
+        expect(button).toBeDisabled();
     });
 
     it('renders checkout steps', () => {
