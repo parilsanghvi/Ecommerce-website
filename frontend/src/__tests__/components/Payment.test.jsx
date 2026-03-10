@@ -75,13 +75,14 @@ describe('Payment', () => {
 
     it('renders pay button with total price', () => {
         render(<Payment />);
-        expect(screen.getByRole('button', { name: /pay - ₹118/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /pay now/i })).toBeInTheDocument();
+        expect(screen.getByText('Pay - ₹118')).toBeInTheDocument();
     });
 
     it('shows loading state on submit', async () => {
         axios.post.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ data: { client_secret: '123' } }), 100)));
         render(<Payment />);
-        const button = screen.getByRole('button', { name: /pay - ₹118/i });
+        const button = screen.getByRole('button', { name: /pay now/i });
         fireEvent.click(button);
         // The button should now be disabled and show the CircularProgress. We can't query by text if it's replaced by a spinner.
         // But we can check if it relies on aria-disabled or disabled attribute.
