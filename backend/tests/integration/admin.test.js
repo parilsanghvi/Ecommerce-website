@@ -19,7 +19,7 @@ jest.mock('cloudinary', () => ({
                 public_id: 'test_id',
                 secure_url: 'test_url',
             }),
-            destroy: jest.fn(),
+            destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
         },
     },
 }));
