@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import axios from 'axios';
+import { configureStore } from '@reduxjs/toolkit';
 import userReducer, {
     clearErrors,
     updateProfileReset,
@@ -12,6 +14,7 @@ import userReducer, {
     updateProfile,
     updatePassword,
     forgotPassword,
+    resetPassword,
 } from '../../features/userSlice';
 
 const initialState = {
@@ -27,7 +30,13 @@ const initialState = {
     userDetails: {},
 };
 
+vi.mock('axios');
+
 describe('userSlice', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     describe('synchronous reducers', () => {
         it('clearErrors should reset error', () => {
             const state = { ...initialState, error: 'Auth error' };
@@ -119,6 +128,80 @@ describe('userSlice', () => {
             const action = { type: forgotPassword.fulfilled.type, payload: 'Email sent' };
             const result = userReducer(initialState, action);
             expect(result.message).toBe('Email sent');
+        });
+    });
+
+    describe('resetPassword async thunk', () => {
+        it('should set loading and clear error on pending', () => {
+            const action = { type: resetPassword.pending.type };
+            const state = { ...initialState, error: 'some error' };
+            const result = userReducer(state, action);
+            expect(result.loading).toBe(true);
+            expect(result.error).toBeNull();
+        });
+
+        it('should set success on fulfilled', () => {
+            const action = { type: resetPassword.fulfilled.type, payload: true };
+            const result = userReducer(initialState, action);
+            expect(result.loading).toBe(false);
+            expect(result.success).toBe(true);
+        });
+
+        it('should set error on rejected', () => {
+            const action = { type: resetPassword.rejected.type, payload: 'Invalid token' };
+            const result = userReducer(initialState, action);
+            expect(result.loading).toBe(false);
+            expect(result.error).toBe('Invalid token');
+        });
+    });
+
+    describe('resetPassword async thunk logic', () => {
+        it('should dispatch fulfilled when api call is successful', async () => {
+            const mockData = { success: true };
+            axios.put.mockResolvedValueOnce({ data: mockData });
+
+            const store = configureStore({
+                reducer: {
+                    user: userReducer
+                }
+            });
+
+            const result = await store.dispatch(resetPassword({ token: 'test-token', passwords: { password: 'new', confirmPassword: 'new' } }));
+
+            expect(axios.put).toHaveBeenCalledWith(
+                '/api/v1/password/reset/test-token',
+                { password: 'new', confirmPassword: 'new' },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+
+            expect(result.type).toBe('user/resetPassword/fulfilled');
+            expect(result.payload).toBe(true);
+
+            const state = store.getState().user;
+            expect(state.loading).toBe(false);
+            expect(state.success).toBe(true);
+        });
+
+        it('should dispatch rejected when api call fails', async () => {
+            const errorResponse = {
+                response: { data: { message: 'Invalid token' } }
+            };
+            axios.put.mockRejectedValueOnce(errorResponse);
+
+            const store = configureStore({
+                reducer: {
+                    user: userReducer
+                }
+            });
+
+            const result = await store.dispatch(resetPassword({ token: 'invalid-token', passwords: { password: 'new' } }));
+
+            expect(result.type).toBe('user/resetPassword/rejected');
+            expect(result.payload).toBe('Invalid token');
+
+            const state = store.getState().user;
+            expect(state.loading).toBe(false);
+            expect(state.error).toBe('Invalid token');
         });
     });
 });
