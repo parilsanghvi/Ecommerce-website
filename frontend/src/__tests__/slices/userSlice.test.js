@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import axios from 'axios';
+import { configureStore } from '@reduxjs/toolkit';
 import userReducer, {
     clearErrors,
     updateProfileReset,
@@ -12,7 +14,10 @@ import userReducer, {
     updateProfile,
     updatePassword,
     forgotPassword,
+    getUserDetails
 } from '../../features/userSlice';
+
+vi.mock('axios');
 
 const initialState = {
     user: {},
@@ -24,6 +29,8 @@ const initialState = {
     isDeleted: false,
     message: null,
     users: [],
+    totalUsers: 0,
+    resultPerPage: 0,
     userDetails: {},
 };
 
@@ -119,6 +126,75 @@ describe('userSlice', () => {
             const action = { type: forgotPassword.fulfilled.type, payload: 'Email sent' };
             const result = userReducer(initialState, action);
             expect(result.message).toBe('Email sent');
+        });
+    });
+
+    describe('getUserDetails async thunk', () => {
+        let store;
+
+        beforeEach(() => {
+            store = configureStore({
+                reducer: {
+                    user: userReducer
+                }
+            });
+            vi.clearAllMocks();
+        });
+
+        it('should fetch user details successfully and update state', async () => {
+            const mockUser = { _id: '123', name: 'Test User', email: 'test@example.com' };
+            axios.get.mockResolvedValueOnce({ data: { user: mockUser } });
+
+            const result = await store.dispatch(getUserDetails('123'));
+
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/admin/user/123');
+            expect(result.type).toBe('user/getUserDetails/fulfilled');
+            expect(result.payload).toEqual(mockUser);
+
+            const state = store.getState().user;
+            expect(state.usersLoading).toBe(false);
+            expect(state.userDetails).toEqual(mockUser);
+            expect(state.error).toBeNull();
+        });
+
+        it('should handle API errors correctly', async () => {
+            const errorMessage = 'User not found';
+            axios.get.mockRejectedValueOnce({
+                response: { data: { message: errorMessage } }
+            });
+
+            const result = await store.dispatch(getUserDetails('999'));
+
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/admin/user/999');
+            expect(result.type).toBe('user/getUserDetails/rejected');
+            expect(result.payload).toBe(errorMessage);
+
+            const state = store.getState().user;
+            expect(state.usersLoading).toBe(false);
+            expect(state.error).toBe(errorMessage);
+        });
+
+        describe('reducers', () => {
+            it('should set usersLoading on pending', () => {
+                const action = { type: getUserDetails.pending.type };
+                const result = userReducer(initialState, action);
+                expect(result.usersLoading).toBe(true);
+            });
+
+            it('should set userDetails on fulfilled', () => {
+                const user = { _id: '123', name: 'Test User' };
+                const action = { type: getUserDetails.fulfilled.type, payload: user };
+                const result = userReducer({ ...initialState, usersLoading: true }, action);
+                expect(result.usersLoading).toBe(false);
+                expect(result.userDetails).toEqual(user);
+            });
+
+            it('should set error on rejected', () => {
+                const action = { type: getUserDetails.rejected.type, payload: 'Error fetching user' };
+                const result = userReducer({ ...initialState, usersLoading: true }, action);
+                expect(result.usersLoading).toBe(false);
+                expect(result.error).toBe('Error fetching user');
+            });
         });
     });
 });
