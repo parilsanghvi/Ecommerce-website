@@ -20,13 +20,11 @@ const ConfirmOrder = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Optimize: Memoize subtotal calculation to avoid re-calculating on every render
-  const subtotal = useMemo(() => {
-    return cartItems.reduce(
-      (acc, item) => acc + item.quantity * item.price,
-      0
-    );
-  }, [cartItems]);
+  // ⚡ Bolt: Memoize expensive array calculation to prevent re-running on every render (e.g., when pricing state updates)
+  const subtotal = useMemo(() => cartItems.reduce(
+    (acc, item) => acc + item.quantity * item.price,
+    0
+  ), [cartItems]);
 
   const { tax, shippingCharges, totalPrice } = pricing;
 
