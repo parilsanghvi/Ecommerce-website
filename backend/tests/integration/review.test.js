@@ -105,10 +105,12 @@ describe('Review Integration Tests', () => {
             expect(res.status).toBe(200);
             expect(res.body.success).toBe(true);
 
-            const updated = await Product.findById(testProduct._id);
-            expect(updated.numOfReviews).toBe(1);
-            expect(updated.ratings).toBe(5);
-            const review = await Review.findOne({ product: testProduct._id });
+            const updatedProduct = await Product.findById(testProduct._id);
+            expect(updatedProduct.numOfReviews).toBe(1);
+            expect(updatedProduct.ratings).toBe(5);
+
+            const review = await Review.findOne({ product: testProduct._id, user: testUser._id });
+            expect(review).toBeDefined();
             expect(review.comment).toBe('Excellent product!');
         });
 
@@ -135,11 +137,13 @@ describe('Review Integration Tests', () => {
 
             expect(res.status).toBe(200);
 
-            const updated = await Product.findById(testProduct._id);
-            expect(updated.numOfReviews).toBe(1); // Still 1 review
-            expect(updated.ratings).toBe(5);
-            const review = await Review.findOne({ product: testProduct._id });
+            const updatedProduct = await Product.findById(testProduct._id);
+            expect(updatedProduct.numOfReviews).toBe(1); // Still 1 review
+            expect(updatedProduct.ratings).toBe(5);
+
+            const review = await Review.findOne({ product: testProduct._id, user: testUser._id });
             expect(review.comment).toBe('Actually, it is excellent!');
+            expect(review.rating).toBe(5);
         });
 
         it('should fail without authentication', async () => {
@@ -158,7 +162,7 @@ describe('Review Integration Tests', () => {
     // ==================== GET PRODUCT REVIEWS ====================
     describe('GET /api/v1/reviews', () => {
         beforeEach(async () => {
-            // Add a review
+            // Add a review directly to the collection
             await Review.create({
                 product: testProduct._id,
                 user: testUser._id,
@@ -194,21 +198,18 @@ describe('Review Integration Tests', () => {
         let reviewId;
 
         beforeEach(async () => {
-            // Add a review
-            await Review.create({
+            // Add a review directly to the collection
+            const review = await Review.create({
                 product: testProduct._id,
                 user: testUser._id,
                 name: testUser.name,
-                rating: 4,
-                comment: 'Good product'
+                rating: 3,
+                comment: 'Okay product'
             });
+            reviewId = review._id;
             testProduct.numOfReviews = 1;
             testProduct.ratings = 3;
             await testProduct.save();
-
-            const updated = await Product.findById(testProduct._id);
-            const rev = await Review.findOne({ product: testProduct._id });
-            reviewId = rev._id;
         });
 
         it('should delete a review', async () => {
@@ -219,10 +220,11 @@ describe('Review Integration Tests', () => {
             expect(res.status).toBe(200);
             expect(res.body.success).toBe(true);
 
-            const updated = await Product.findById(testProduct._id);
-            const revs = await Review.find({ product: testProduct._id });
-            expect(revs.length).toBe(0);
-            expect(updated.numOfReviews).toBe(0);
+            const review = await Review.findById(reviewId);
+            expect(review).toBeNull();
+
+            const updatedProduct = await Product.findById(testProduct._id);
+            expect(updatedProduct.numOfReviews).toBe(0);
         });
 
         it('should return 404 for non-existent product', async () => {
