@@ -1,96 +1,107 @@
-const validator = require('validator');
-
-// Mock models and services BEFORE requiring controllers
-jest.mock('../models/productModel', () => ({
-    findOne: jest.fn(),
-    updateOne: jest.fn()
-}));
-jest.mock('../middleware/catchAsyncErrors', () => (fn) => fn);
-jest.mock('cloudinary');
-
+const request = require('supertest');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const mongoose = require('mongoose');
+const app = require('../app');
+const User = require('../models/userModel');
 const Product = require('../models/productModel');
-const productController = require('../controllers/productController');
+const Review = require('../models/reviewModel');
+const jwt = require('jsonwebtoken');
 
-describe('Security: XSS in Product Reviews', () => {
-    let req, res, next;
+let mongoServer;
+let userCookie;
+let testUser;
 
-    beforeEach(() => {
-        req = {
-            user: { _id: 'user123', name: 'Test User' },
-            body: {
-                productId: 'product123',
-                rating: 5,
-                comment: '<script>alert("XSS")</script> Good product!'
-            }
-        };
-        res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-        next = jest.fn();
-        jest.clearAllMocks();
+beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await mongoose.connect(mongoServer.getUri());
+});
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+beforeEach(async () => {
+    testUser = await User.create({
+        name: 'XSS User',
+        email: 'xss@example.com',
+        password: 'password123',
+        avatar: { public_id: 'id', url: 'url' }
     });
 
+    const token = testUser.getJWTToken();
+    userCookie = `token=${token}`;
+});
+
+afterEach(async () => {
+    await User.deleteMany({});
+    await Product.deleteMany({});
+    await Review.deleteMany({});
+    jest.clearAllMocks();
+});
+
+describe('Security: XSS in Product Reviews', () => {
     it('should sanitize HTML tags when CREATING a new review', async () => {
-        // Product found, no reviews
-        Product.findOne.mockReturnValue({
-            lean: jest.fn().mockResolvedValue({
-                _id: 'product123',
-                ratings: 4,
-                numOfReviews: 10,
-                reviews: []
-            })
+        const testProduct = await Product.create({
+            name: 'XSS Test Product',
+            description: 'Test',
+            price: 100,
+            category: 'Laptop',
+            stock: 10,
+            ratings: 0,
+            numOfReviews: 0,
+            user: testUser._id
         });
 
-        Product.updateOne.mockResolvedValue({ modifiedCount: 1 });
+        const maliciousComment = '<script>alert("xss")</script> Bad review';
 
-        await productController.createProductReview(req, res, next);
+        await request(app)
+            .put('/api/v1/review')
+            .set('Cookie', userCookie)
+            .send({
+                rating: 1,
+                comment: maliciousComment,
+                productId: testProduct._id
+            });
 
-        expect(Product.updateOne).toHaveBeenCalled();
-
-        // Extract the arguments passed to Product.updateOne
-        const updateArgs = Product.updateOne.mock.calls[0][1];
-
-        // The update is a pipeline, so find the object that sets the review
-        // In the pipeline: [ { $set: { reviews: { $concatArrays: [ ... ] } } }, ... ]
-        const setReviewsObj = updateArgs.find(step => step.$set && step.$set.reviews && step.$set.reviews.$concatArrays);
-        const storedComment = setReviewsObj.$set.reviews.$concatArrays[1][0].comment;
-
-        expect(storedComment).not.toContain('<script>');
-        expect(storedComment).not.toContain('</script>');
-
-        // Check exact encoding (validator.escape behavior)
-        expect(storedComment).toContain('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt; Good product!');
+        const review = await Review.findOne({ product: testProduct._id });
+        expect(review.comment).not.toContain('<script>');
+        expect(review.comment).toContain('&lt;script&gt;');
     });
 
     it('should sanitize HTML tags when UPDATING an existing review', async () => {
-        // Product found, with existing review by this user
-        Product.findOne.mockReturnValue({
-            lean: jest.fn().mockResolvedValue({
-                _id: 'product123',
-                ratings: 4,
-                numOfReviews: 10,
-                reviews: [{ user: 'user123', rating: 4, comment: 'Old comment' }]
-            })
+        const testProduct = await Product.create({
+            name: 'XSS Test Product 2',
+            description: 'Test',
+            price: 100,
+            category: 'Laptop',
+            stock: 10,
+            ratings: 4,
+            numOfReviews: 1,
+            user: testUser._id
         });
 
-        Product.updateOne.mockResolvedValue({ modifiedCount: 1 });
+        await Review.create({
+            product: testProduct._id,
+            user: testUser._id,
+            name: testUser.name,
+            rating: 4,
+            comment: 'Good'
+        });
 
-        await productController.createProductReview(req, res, next);
+        const maliciousComment = '<script>alert("xss")</script> Bad review update';
 
-        expect(Product.updateOne).toHaveBeenCalled();
+        await request(app)
+            .put('/api/v1/review')
+            .set('Cookie', userCookie)
+            .send({
+                rating: 2,
+                comment: maliciousComment,
+                productId: testProduct._id
+            });
 
-        // Extract the arguments passed to Product.updateOne
-        const updateArgs = Product.updateOne.mock.calls[0][1];
-
-        // The update is a pipeline, find the map operation that sets the comment
-        const setReviewsObj = updateArgs.find(step => step.$set && step.$set.reviews && step.$set.reviews.$map);
-        const storedComment = setReviewsObj.$set.reviews.$map.in.$cond[1].$mergeObjects[1].comment;
-
-        expect(storedComment).not.toContain('<script>');
-        expect(storedComment).not.toContain('</script>');
-
-        // Check exact encoding (validator.escape behavior)
-        expect(storedComment).toContain('&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt; Good product!');
+        const review = await Review.findOne({ product: testProduct._id });
+        expect(review.comment).not.toContain('<script>');
+        expect(review.comment).toContain('&lt;script&gt;');
     });
 });

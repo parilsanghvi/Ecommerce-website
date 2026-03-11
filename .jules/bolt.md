@@ -9,3 +9,27 @@
 ## 2025-02-23 - Frontend Re-render Computations
 **Learning:** Derived state calculated from expensive array operations like `reduce` (e.g., calculating cart totals) runs synchronously on every render. If these components re-render often (e.g., due to loading states or form inputs), this becomes a bottleneck.
 **Action:** Always wrap `Array.prototype.reduce`, `map`, or `filter` operations that derive data from props/state in a `useMemo` hook with strict dependencies.
+
+## 2025-02-28 - Defer Stripe API Initialization
+**Learning:** Initializing third-party heavy dependencies like Stripe (`@stripe/react-stripe-js`) and eagerly fetching their API configuration in the root `App` component unnecessarily inflates initial load times and network bandwidth for users who might not reach the checkout flow.
+**Action:** Move API fetching and provider initialization logic into lazy-loaded route wrappers (e.g., `PaymentWrapper.jsx`) to code-split the logic. Store the initialized `loadStripe(apiKey)` instance in a React state hook to prevent continuous re-initialization.
+
+## 2025-02-28 - Offload forgotPassword email sending to background
+**Learning:** External network calls like `sendEmail` introduce significant latency. By wrapping the call in `Promise.resolve().catch()` and not awaiting it, we can offload the blocking operation to the background. We must catch unhandled rejections to prevent crashing the application while cleaning up any created resources (like the invalidated reset tokens) in the catch block.
+**Action:** Identify and isolate operations that require external network I/O but don't strictly gate the client response. Use background tasks (or asynchronous Promise executions without `await`) while properly handling their errors in the background to ensure responsive APIs without side effects.
+
+## 2025-02-17 - Pagination Optimization for Product Reviews
+**Learning:** Returning unpaginated embedded arrays like `reviews` from MongoDB causes significant memory bloat and slow network response times as data scales. Using Mongoose's `$slice` projection efficiently truncates arrays directly at the database level.
+**Action:** When implementing pagination, update frontend Redux thunks to separate global `loading` state from chunked `loadingMoreReviews` state, ensuring "Load More" actions don't trigger disruptive full-screen loaders. Also, ensure components use `useParams()` instead of deprecated `match.params` in React Router v6.
+
+## 2024-05-20 - Unbounded Array Performance Optimization
+**Learning:** Storing unbounded lists (like product reviews) as embedded arrays in MongoDB leads to massive document sizes, increased memory consumption, and severe O(N) penalties during read/write operations (e.g., finding a single review took ~240ms in an array of 10,000, vs. ~4.5ms in a separate indexed collection).
+**Action:** When designing or refactoring schemas for data that can grow indefinitely, always move the data to a separate, indexed collection. Keep fast-aggregation statistics (like `numOfReviews` and `ratings`) embedded in the parent document. To maintain API backward compatibility, configure Mongoose virtuals on the parent schema to allow `.populate()` calls.
+
+## 2025-03-03 - Memoizing Array Reductions in React Components
+**Learning:** `Cart.jsx` and `ConfirmOrder.jsx` were recalculating derived state (like `grossTotal` or `subtotal`) by calling `cartItems.reduce()` directly inside the component's render body. This recalculation executes on every render, which becomes a bottleneck during frequent state updates like changing item quantities or showing loading spinners.
+**Action:** Always wrap expensive operations like `Array.prototype.reduce`, `map`, or `filter` inside a `useMemo` hook with strict dependencies when calculating derived state in React components to prevent unnecessary re-evaluations.
+
+## 2025-03-03 - Stripe Elements Initialization Performance
+**Learning:** Calling `loadStripe(apiKey)` directly within the `<Elements stripe={...}>` prop causes the Stripe object to re-initialize and inject heavy external scripts/iframes on every render of the parent component.
+**Action:** Always call `loadStripe(apiKey)` once and store the resulting Promise in a React state variable (e.g., `stripePromise`), passing that state to the `<Elements>` provider to ensure referential stability.

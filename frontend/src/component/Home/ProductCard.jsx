@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Rating } from "@mui/material";
 import { motion } from "framer-motion";
+import { getTransformedImageUrl } from "../../utils/cloudinary";
 
 const ProductCard = ({ product }) => {
   const options = {
@@ -28,7 +29,7 @@ const ProductCard = ({ product }) => {
       >
         <div style={{ position: 'relative', width: '100%', paddingTop: '100%', overflow: 'hidden', marginBottom: '16px', background: 'transparent' }}>
           <img
-            src={product.images[0].url}
+            src={getTransformedImageUrl(product.images[0].url, { width: 400, crop: "fill" })}
             alt={product.name}
             // Optimization: Lazy load images to improve initial page load performance
             loading="lazy"
