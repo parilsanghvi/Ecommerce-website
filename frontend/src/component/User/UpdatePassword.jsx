@@ -53,10 +53,7 @@ const UpdatePassword = () => {
   }, [dispatch, error, enqueueSnackbar, navigate, isUpdated]);
   return (
     <Fragment>
-      {loading ? (
-        <Loader />
-      ) : (
-        <Fragment>
+
           <MetaData title="Change Password" />
           <div className="updatePasswordContainer">
             <div className="updatePasswordBox">
@@ -121,17 +118,17 @@ const UpdatePassword = () => {
                     {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
                 </div>
-                <input
+                <button
                   type="submit"
-                  value="Change"
                   className="primary-btn"
-                />
+                  disabled={loading}
+                >
+                  {loading ? "Changing..." : "Change"}
+                </button>
               </form>
             </div>
           </div>
         </Fragment>
-      )}
-    </Fragment>
   );
 }
 

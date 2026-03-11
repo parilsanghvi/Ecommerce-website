@@ -4,7 +4,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
-import { clearErrors, getProductDetails, newReview, newReviewReset } from "../../features/productSlice";
+import { clearErrors, getProductDetails, newReview, newReviewReset, getAllReviews } from "../../features/productSlice";
+import { getTransformedImageUrl } from "../../utils/cloudinary";
 import ReviewCard from "./ReviewCard";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
@@ -23,25 +24,14 @@ const ProductDetails = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { product, loading, error } = useSelector((state) => state.product);
-  const { success, error: reviewError } = useSelector((state) => state.product);
+  const { success, error: reviewError, reviews, totalReviews, reviewsPage } = useSelector((state) => state.product);
 
   const NextArrow = (props) => {
     const { className, style, onClick } = props;
     return (
       <NavigateNextIcon
-        className={className}
-        style={{
-          ...style,
-          display: "block",
-          color: "var(--color-primary)",
-          background: "var(--color-surface)",
-          borderRadius: "50%",
-          border: "1px solid var(--color-text)",
-          zIndex: 2,
-          width: "40px",
-          height: "40px",
-          right: "10px"
-        }}
+        className={`${className} slick-custom-arrow slick-custom-next`}
+        style={style}
         onClick={onClick}
         role="button"
         aria-label="Next Slide"
@@ -53,19 +43,8 @@ const ProductDetails = () => {
     const { className, style, onClick } = props;
     return (
       <NavigateBeforeIcon
-        className={className}
-        style={{
-          ...style,
-          display: "block",
-          color: "var(--color-primary)",
-          background: "var(--color-surface)",
-          borderRadius: "50%",
-          border: "1px solid var(--color-text)",
-          zIndex: 2,
-          width: "40px",
-          height: "40px",
-          left: "10px"
-        }}
+        className={`${className} slick-custom-arrow slick-custom-prev`}
+        style={style}
         onClick={onClick}
         role="button"
         aria-label="Previous Slide"
@@ -94,6 +73,7 @@ const ProductDetails = () => {
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [reviewsLimit] = useState(5);
   const [addingToCart, setAddingToCart] = useState(false);
 
   const increaseQuantity = () => {
@@ -146,6 +126,11 @@ const ProductDetails = () => {
     open ? setOpen(false) : setOpen(true);
   };
 
+
+  const loadMoreReviews = () => {
+    dispatch(getAllReviews({ id: match.params.id, page: reviewsPage + 1, limit: reviewsLimit }));
+  };
+
   const reviewSubmitHandler = () => {
     const myForm = { rating, comment, productId: id };
     dispatch(newReview(myForm));
@@ -157,7 +142,8 @@ const ProductDetails = () => {
 
   useEffect(() => {
     dispatch(getProductDetails(id));
-  }, [dispatch, id]);
+    dispatch(getAllReviews({ id, page: 1, limit: reviewsLimit }));
+  }, [dispatch, id, reviewsLimit]);
 
   useEffect(() => {
     if (success) {
@@ -187,7 +173,7 @@ const ProductDetails = () => {
                       <div key={i}>
                         <img
                           className="CarouselImage"
-                          src={item.url}
+                          src={getTransformedImageUrl(item.url, { width: 800, height: 800, crop: "fill" })}
                           alt={`${product.name} - View ${i + 1}`}
                           width={600}
                           height={600}
@@ -328,12 +314,20 @@ const ProductDetails = () => {
             </DialogActions>
           </Dialog>
 
-          {product.reviews && product.reviews[0] ? (
-            <div className="reviews">
-              {product.reviews &&
-                product.reviews.map((review) => (
+          {reviews && reviews.length > 0 ? (
+            <div className="reviews-container">
+              <div className="reviews">
+                {reviews.map((review) => (
                   <ReviewCard key={review._id} review={review} />
                 ))}
+              </div>
+              {totalReviews > reviews.length && (
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                  <button className="primary-btn" onClick={loadMoreReviews}>
+                    LOAD MORE
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <p className="noReviews">NO REVIEWS YET</p>

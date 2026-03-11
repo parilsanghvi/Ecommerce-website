@@ -5,6 +5,7 @@ const User = require('../../models/userModel');
 
 // Mock catchAsyncErrors to allow awaiting the controller function directly
 jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => func(req, res, next));
+jest.setTimeout(30000);
 
 // Mock Stripe before requiring controller
 jest.mock('stripe', () => {

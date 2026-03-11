@@ -56,7 +56,7 @@ const MyOrders = () => {
       sortable: false,
       renderCell: (params) => {
         return (
-          <Link to={`/order/${params.row.id}`}>
+          <Link to={`/order/${params.row.id}`} aria-label="View Order Details">
             <LaunchIcon />
           </Link>
         );

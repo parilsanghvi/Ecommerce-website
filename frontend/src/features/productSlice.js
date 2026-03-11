@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../config";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
 
@@ -104,9 +104,31 @@ export const newReview = createAsyncThunk(
 
 export const getAllReviews = createAsyncThunk(
     "product/getAllReviews",
-    createThunkHandler(async (id) => {
-        const { data } = await axios.get(`${API_BASE_URL}/reviews?id=${id}`);
-        return data.reviews;
+    createThunkHandler(async (args) => {
+        // Support both backward-compatible simple ID string and new object { id, page, limit }
+        let id, page = 1, limit = 0;
+
+        if (typeof args === 'object' && args !== null) {
+            id = args.id;
+            page = args.page || 1;
+            limit = args.limit || 0;
+        } else {
+            id = args;
+        }
+
+        let link = `${API_BASE_URL}/reviews?id=${id}`;
+        if (limit > 0) {
+            link += `&page=${page}&limit=${limit}`;
+        }
+
+        const { data } = await axios.get(link);
+        return {
+            reviews: data.reviews,
+            totalReviews: data.totalReviews,
+            page: data.page,
+            limit: data.limit,
+            id // Pass id to allow reducer to handle appending correctly
+        };
     })
 );
 
@@ -119,6 +141,19 @@ export const deleteReviews = createAsyncThunk(
         return data.success;
     })
 );
+
+
+const thunks = [
+    getProduct,
+    getAdminProduct,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    getProductDetails,
+    newReview,
+    getAllReviews,
+    deleteReviews
+];
 
 // Slice
 const productSlice = createSlice({
@@ -135,6 +170,9 @@ const productSlice = createSlice({
         isDeleted: false,
         isUpdated: false,
         reviews: [],
+        totalReviews: 0,
+        reviewsPage: 1,
+        reviewsLimit: 0,
     },
     reducers: {
         clearErrors: (state) => {
@@ -160,7 +198,6 @@ const productSlice = createSlice({
         builder
             // Get All Products
             .addCase(getProduct.pending, (state) => {
-                state.loading = true;
                 state.products = [];
             })
             .addCase(getProduct.fulfilled, (state, action) => {
@@ -170,114 +207,90 @@ const productSlice = createSlice({
                 state.resultPerPage = action.payload.resultPerPage;
                 state.filteredProductsCount = action.payload.filteredProductsCount;
             })
-            .addCase(getProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Get Admin Products
             .addCase(getAdminProduct.pending, (state) => {
-                state.loading = true;
                 state.products = [];
             })
             .addCase(getAdminProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.products = action.payload;
             })
-            .addCase(getAdminProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Create Product
-            .addCase(createProduct.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(createProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = action.payload.success;
                 state.product = action.payload.product;
             })
-            .addCase(createProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Update Product
-            .addCase(updateProduct.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(updateProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updateProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Delete Product
-            .addCase(deleteProduct.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(deleteProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isDeleted = action.payload;
             })
-            .addCase(deleteProduct.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Product Details
             .addCase(getProductDetails.pending, (state) => {
-                state.loading = true;
                 state.product = {};
             })
             .addCase(getProductDetails.fulfilled, (state, action) => {
                 state.loading = false;
                 state.product = action.payload;
             })
-            .addCase(getProductDetails.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // New Review
-            .addCase(newReview.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(newReview.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = action.payload;
             })
-            .addCase(newReview.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
 
             // Get All Reviews
-            .addCase(getAllReviews.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(getAllReviews.fulfilled, (state, action) => {
                 state.loading = false;
-                state.reviews = action.payload;
-            })
-            .addCase(getAllReviews.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
+                // Append reviews if it's a paginated request (page > 1) and same product
+                if (action.payload.page > 1) {
+                    state.reviews = [...state.reviews, ...action.payload.reviews];
+                } else {
+                    state.reviews = action.payload.reviews;
+                }
+                state.totalReviews = action.payload.totalReviews;
+                state.reviewsPage = action.payload.page;
+                state.reviewsLimit = action.payload.limit;
             })
 
+
             // Delete Review
-            .addCase(deleteReviews.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(deleteReviews.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isDeleted = action.payload;
             })
-            .addCase(deleteReviews.rejected, (state, action) => {
+
+
+            // Matchers for common loading and error states
+            .addMatcher(isPending(...thunks), (state) => {
+                state.loading = true;
+            })
+            .addMatcher(isRejected(...thunks), (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
