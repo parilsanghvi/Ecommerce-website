@@ -58,7 +58,12 @@ const orderInfo = { subtotal: 100, tax: 18, shippingCharges: 0, totalPrice: 118 
 describe('Payment', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        sessionStorage.getItem.mockReturnValue(JSON.stringify(orderInfo));
+        // Since we can't easily mock sessionStorage.getItem directly in some environments,
+        // we rely on the implementation using it.
+        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+            if (key === 'orderInfo') return JSON.stringify(orderInfo);
+            return null;
+        });
     });
 
     it('renders card info heading', () => {
@@ -84,9 +89,10 @@ describe('Payment', () => {
         render(<Payment />);
         const button = screen.getByRole('button', { name: /pay now/i });
         fireEvent.click(button);
-        // The button should now be disabled and show the CircularProgress. We can't query by text if it's replaced by a spinner.
-        // But we can check if it relies on aria-disabled or disabled attribute.
+        
+        // The button should now be disabled and show the CircularProgress.
         expect(button).toBeDisabled();
+        expect(screen.getByTestId('circular-progress')).toBeInTheDocument();
     });
 
     it('renders checkout steps', () => {
