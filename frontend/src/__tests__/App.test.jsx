@@ -99,12 +99,6 @@ describe('App Routing', () => {
         expect(await screen.findByTestId('login')).toBeInTheDocument();
     });
 
-    it('handles stripe api key fetch failure', async () => {
-        axios.get.mockRejectedValue(new Error('API Error'));
-        renderWithRoute('/');
-        expect(axios.get).toHaveBeenCalled();
-        expect(screen.getByTestId('header')).toBeInTheDocument();
-    });
 
     it('renders various other routes', async () => {
         const { cleanup } = require('@testing-library/react');

@@ -112,17 +112,21 @@ describe('UpdateProduct (Admin)', () => {
         
         const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
         
-        // Mock FileReader robustly and clean it up
+        // Mock FileReader robustly
         const originalFileReader = window.FileReader;
-        let mockOnload = null;
         
-        window.FileReader = vi.fn().mockImplementation(() => ({
-            readAsDataURL: vi.fn(),
-            result: 'data:image/png;base64,dummy',
-            get onload() { return mockOnload; },
-            set onload(val) { mockOnload = val; },
-            readyState: 2
-        }));
+        window.FileReader = class {
+            constructor() {
+                this.readAsDataURL = vi.fn(() => {
+                    if (this.onload) {
+                        this.onload({ target: { result: 'data:image/png;base64,dummy' } });
+                    }
+                });
+                this.readyState = 2;
+                this.result = 'data:image/png;base64,dummy';
+                this.onload = null;
+            }
+        };
         
         const fileInput = document.querySelector('input[type="file"]');
         
@@ -130,9 +134,6 @@ describe('UpdateProduct (Admin)', () => {
             if (fileInput) {
                 fireEvent.change(fileInput, { target: { files: [file] } });
             }
-            
-            // Trigger onload manually inside act
-            if (mockOnload) mockOnload({ target: { result: 'data:image/png;base64,dummy' } });
         });
         
         // Remove the existing image preview
