@@ -94,6 +94,7 @@ const Payment = () => {
 
     setIsProcessing(true);
     payBtn.current.disabled = true;
+    setIsProcessing(true);
 
     try {
       const config = {
@@ -135,6 +136,7 @@ const Payment = () => {
       if (result.error) {
         setIsProcessing(false);
         payBtn.current.disabled = false;
+        setIsProcessing(false);
 
         enqueueSnackbar(result.error.message, { variant: "error" });
       } else {
