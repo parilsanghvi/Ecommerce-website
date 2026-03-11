@@ -59,7 +59,10 @@ const Products = () => {
     useErrorNotification(error, clearErrors);
 
     useEffect(() => {
-        dispatch(getProduct({ keyword, currentPage, price, category, ratings }));
+        const timeoutId = setTimeout(() => {
+            dispatch(getProduct({ keyword, currentPage, price, category, ratings }));
+        }, 500);
+        return () => clearTimeout(timeoutId);
     }, [dispatch, keyword, currentPage, price, category, ratings]);
 
     const isFiltered = price[0] !== 0 || price[1] !== MAX_PRICE || category !== "" || ratings > 0;
