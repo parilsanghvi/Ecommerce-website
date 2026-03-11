@@ -55,27 +55,6 @@ const productSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-    reviews: [{
-        user: {
-            type: mongoose.Schema.ObjectId,
-            ref: "user",
-            required: true,
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        rating: {
-            type: Number,
-            required: true,
-            min: 0,
-            max: 5
-        },
-        comment: {
-            type: String,
-            required: true
-        }
-    }],
     user: {
         type: mongoose.Schema.ObjectId,
         ref: "user",
@@ -86,7 +65,15 @@ const productSchema = mongoose.Schema({
         // takes date from system
         default: Date.now
     }
-})
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } })
+
+// Create a virtual property for reviews to maintain backward compatibility
+productSchema.virtual('reviews', {
+    ref: 'review',
+    localField: '_id',
+    foreignField: 'product',
+    justOne: false
+});
 
 // Create a text index on the name field for faster search queries
 productSchema.index({ name: 'text' });

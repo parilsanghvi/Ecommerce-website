@@ -15,7 +15,7 @@ vi.mock('react-redux', () => ({
             ],
         },
         order: { totalAmount: 25000, totalOrders: 42 },
-        user: { users: [{ _id: 'u1' }, { _id: 'u2' }] },
+        user: { users: [{ _id: 'u1' }, { _id: 'u2' }], totalUsers: 2 }
     }),
     useDispatch: () => mockDispatch,
 }));
@@ -41,12 +41,14 @@ vi.mock('chart.js', () => ({
     Legend: vi.fn(),
     ArcElement: vi.fn(),
 }));
-vi.mock('@mui/material', () => ({
-    Typography: ({ children, ...props }) => <span {...props}>{children}</span>,
-}));
+vi.mock('../../features/productSlice', () => ({ getAdminProduct: vi.fn() }));
+vi.mock('../../features/orderSlice', () => ({ getAllOrders: vi.fn() }));
+vi.mock('../../features/userSlice', () => ({ getAllUsers: vi.fn() }));
 
 describe('Dashboard', () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('renders Dashboard heading', () => {
         render(<Dashboard />);
@@ -91,10 +93,8 @@ describe('Dashboard', () => {
 
     it('renders admin links', () => {
         render(<Dashboard />);
-        const links = screen.getAllByRole('link');
-        const hrefs = links.map(l => l.getAttribute('href'));
-        expect(hrefs).toContain('/admin/products');
-        expect(hrefs).toContain('/admin/orders');
-        expect(hrefs).toContain('/admin/users');
+        expect(screen.getByRole('link', { name: /Product 3/ })).toHaveAttribute('href', '/admin/products');
+        expect(screen.getByRole('link', { name: /Orders 42/ })).toHaveAttribute('href', '/admin/orders');
+        expect(screen.getByRole('link', { name: /Users 2/ })).toHaveAttribute('href', '/admin/users');
     });
 });

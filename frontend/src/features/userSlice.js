@@ -1,7 +1,16 @@
-import { API_BASE_URL } from "../config";
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import axios from "axios";
-import { createThunkHandler } from "../utils/thunkHandler";
+import { API_BASE_URL } from "../config";
+
+// Custom helper to standardize thunk error handling
+export const createThunkHandler = (asyncFunction) => async (arg, thunkAPI) => {
+    try {
+        return await asyncFunction(arg, thunkAPI);
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message || "An error occurred";
+        return thunkAPI.rejectWithValue(errorMessage);
+    }
+};
 
 // Async Thunks
 export const login = createAsyncThunk(
@@ -91,9 +100,9 @@ export const resetPassword = createAsyncThunk(
 
 export const getAllUsers = createAsyncThunk(
     "user/getAllUsers",
-    createThunkHandler(async () => {
-        const { data } = await axios.get(`${API_BASE_URL}/admin/users`);
-        return data.users;
+    createThunkHandler(async (page = 1) => {
+        const { data } = await axios.get(`${API_BASE_URL}/admin/users?page=${page}`);
+        return data;
     })
 );
 
@@ -126,19 +135,22 @@ export const deleteUser = createAsyncThunk(
     })
 );
 
+
 // Slice
 const userSlice = createSlice({
     name: "user",
     initialState: {
         user: {},
         loading: false,
-        usersLoading: false, // New state for admin users fetching
+        usersLoading: false,
         isAuthenticated: false,
         error: null,
         isUpdated: false,
         isDeleted: false,
         message: null,
         users: [],
+        totalUsers: 0,
+        resultPerPage: 0,
         userDetails: {},
     },
     reducers: {
@@ -164,11 +176,10 @@ const userSlice = createSlice({
             .addCase(loadUser.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(loadUser.rejected, (state, action) => {
+            .addCase(loadUser.rejected, (state) => {
                 state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
-                // state.error = action.payload; // Optional: suppress error on load failure
             })
             // Logout
             .addCase(logout.fulfilled, (state) => {
@@ -176,9 +187,22 @@ const userSlice = createSlice({
                 state.user = null;
                 state.isAuthenticated = false;
             })
-            .addCase(logout.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
+            // All Users (Admin) - keep pagination logic from main
+            .addCase(getAllUsers.fulfilled, (state, action) => {
+                state.usersLoading = false;
+                state.users = action.payload.users;
+                state.totalUsers = action.payload.totalUsers;
+                state.resultPerPage = action.payload.resultPerPage;
+            })
+            // User Details (Admin)
+            .addCase(getUserDetails.fulfilled, (state, action) => {
+                state.usersLoading = false;
+                state.userDetails = action.payload;
+            })
+            // Update User (Admin)
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.usersLoading = false;
+                state.isUpdated = action.payload;
             })
             // Delete User (Admin)
             .addCase(deleteUser.fulfilled, (state, action) => {
@@ -195,21 +219,6 @@ const userSlice = createSlice({
             .addCase(resetPassword.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = action.payload;
-            })
-            // All Users (Admin)
-            .addCase(getAllUsers.fulfilled, (state, action) => {
-                state.usersLoading = false;
-                state.users = action.payload;
-            })
-            // User Details (Admin)
-            .addCase(getUserDetails.fulfilled, (state, action) => {
-                state.usersLoading = false;
-                state.userDetails = action.payload;
-            })
-            // Update User (Admin)
-            .addCase(updateUser.fulfilled, (state, action) => {
-                state.usersLoading = false;
-                state.isUpdated = action.payload;
             })
 
             // Matchers for common cases
@@ -243,7 +252,6 @@ const userSlice = createSlice({
                     state.error = null;
                 }
             )
-
             .addMatcher(
                 isAnyOf(
                     updateProfile.fulfilled,
@@ -259,7 +267,8 @@ const userSlice = createSlice({
                     updateProfile.rejected,
                     updatePassword.rejected,
                     forgotPassword.rejected,
-                    resetPassword.rejected
+                    resetPassword.rejected,
+                    logout.rejected
                 ),
                 (state, action) => {
                     state.loading = false;
@@ -299,5 +308,7 @@ export const {
     updateUserReset,
     deleteUserReset,
 } = userSlice.actions;
+
+export const selectUser = (state) => state.user;
 
 export default userSlice.reducer;

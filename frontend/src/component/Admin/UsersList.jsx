@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/material";
+import { Button, Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AdminLayout from "./AdminLayout";
@@ -17,7 +17,11 @@ const UsersList = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, users } = useSelector((state) => state.user);
+  const { error, users, totalUsers, resultPerPage } = useSelector((state) => state.user);
+  const [currentPage, setCurrentPage] = useState(1);
+  const setCurrentPageNo = (e, value) => {
+    setCurrentPage(value);
+  };
 
   const {
     error: deleteError,
@@ -33,8 +37,8 @@ const UsersList = () => {
   useErrorNotification(deleteError, clearErrors);
 
   useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    dispatch(getAllUsers(currentPage));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     if (isDeleted) {
@@ -125,7 +129,19 @@ const UsersList = () => {
           disableSelectionOnClick
           className="productListTable"
           autoHeight
+          hideFooterPagination
         />
+
+        {resultPerPage < totalUsers && (
+          <div className="paginationBox">
+            <Pagination
+              count={Math.ceil(totalUsers / resultPerPage)}
+              page={currentPage}
+              onChange={setCurrentPageNo}
+              color="primary"
+            />
+          </div>
+        )}
       </div>
     </AdminLayout>
   );

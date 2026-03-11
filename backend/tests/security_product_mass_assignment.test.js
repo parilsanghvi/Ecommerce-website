@@ -78,6 +78,6 @@ describe('Security: Product Mass Assignment Vulnerability', () => {
         expect(updatedProduct.user.toString()).toBe(adminUser._id.toString());
         expect(updatedProduct.ratings).toBe(0);
         expect(updatedProduct.numOfReviews).toBe(0);
-        expect(updatedProduct.reviews.length).toBe(0);
+
     });
 });
