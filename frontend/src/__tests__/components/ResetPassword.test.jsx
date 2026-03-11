@@ -34,19 +34,19 @@ describe('ResetPassword', () => {
         expect(screen.getByText('Update Password')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('New Password')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Confirm Password')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Update')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /update/i })).toBeInTheDocument();
     });
 
     it('dispatches resetPassword on form submit', () => {
         render(<ResetPassword />);
         fireEvent.change(screen.getByPlaceholderText('New Password'), { target: { value: 'newpass123' } });
         fireEvent.change(screen.getByPlaceholderText('Confirm Password'), { target: { value: 'newpass123' } });
-        fireEvent.submit(screen.getByDisplayValue('Update'));
+        fireEvent.submit(screen.getByRole('button', { name: /update/i }));
         expect(mockDispatch).toHaveBeenCalled();
     });
 
     it('renders update button', () => {
         render(<ResetPassword />);
-        expect(screen.getByDisplayValue('Update')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /update/i })).toBeInTheDocument();
     });
 });

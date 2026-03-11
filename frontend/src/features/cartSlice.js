@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../config";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Initial State - loaded from localStorage
@@ -65,7 +65,6 @@ const cartSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(addItemsToCart.pending, (state) => {
-                state.loading = true;
                 state.success = false;
             })
             .addCase(addItemsToCart.fulfilled, (state, action) => {
@@ -85,7 +84,13 @@ const cartSlice = createSlice({
                 }
                 localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
             })
-            .addCase(addItemsToCart.rejected, (state, action) => {
+
+
+            // Matchers for common loading and error states
+            .addMatcher(isPending(addItemsToCart), (state) => {
+                state.loading = true;
+            })
+            .addMatcher(isRejected(addItemsToCart), (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

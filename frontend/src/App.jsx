@@ -1,7 +1,7 @@
 import './App.css';
 import "@fontsource/archivo-black";
 import "@fontsource/space-mono";
-import { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import Header from "./component/layout/Header/Header"
 import Footer from "./component/layout/Footer/Footer"
 import Loader from "./component/layout/Loader";
@@ -11,7 +11,6 @@ import store from "./store"
 import { loadUser } from "./features/userSlice"
 import ProtectedRoute from './component/Route/ProtectedRoute';
 import NotFound from "./component/layout/Not Found/NotFound";
-import { API_BASE_URL } from "./config";
 
 // Lazy Loaded Components
 const ProductDetails = lazy(() => import("./component/Product/ProductDetails"));
