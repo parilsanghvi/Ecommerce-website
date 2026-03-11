@@ -199,44 +199,15 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
     // This converts <script> to &lt;script&gt;
     const sanitizedComment = comment ? validator.escape(String(comment)) : comment;
 
-    // Optimized: Fetch only necessary fields and check for existing review by this user
-    // This avoids fetching the entire reviews array (O(1) payload vs O(N))
-    const product = await Product.findOne(
-        { _id: productId },
-        { ratings: 1, numOfReviews: 1 }
-    ).lean();
-
-    if (!product) {
-        return next(new ErrorHandler("Product not found", 404));
-    }
-
     // Upsert review in separate collection
-    const existingReview = await Review.findOne({ product: productId, user: req.user._id });
-
-    let newRatings;
-    let newNumOfReviews = product.numOfReviews || 0;
-    const currentRatings = product.ratings || 0;
+    // ⚡ Bolt: Use findOne and save/create for idempotency (one review per user per product)
+    let existingReview = await Review.findOne({ product: productId, user: req.user._id });
 
     if (existingReview) {
-        // Update existing review
-        const oldRating = existingReview.rating;
-        // Calculate new average
-        if (newNumOfReviews === 0) {
-            newRatings = Number(rating);
-        } else {
-            newRatings = ((currentRatings * newNumOfReviews) - oldRating + Number(rating)) / newNumOfReviews;
-        }
-
         existingReview.rating = Number(rating);
         existingReview.comment = sanitizedComment;
         await existingReview.save();
-
-        await Product.updateOne(
-            { _id: productId },
-            { $set: { ratings: newRatings } }
-        );
     } else {
-        // Add new review
         await Review.create({
             product: productId,
             user: req.user._id,
@@ -244,15 +215,30 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
             rating: Number(rating),
             comment: sanitizedComment
         });
+    }
 
-        // Calculate new average
-        newRatings = ((currentRatings * newNumOfReviews) + Number(rating)) / (newNumOfReviews + 1);
+    // ⚡ Bolt: [Performance/Stability] Fix Race Condition in Product Reviews Rating Calculation
+    // Instead of doing math in the application layer based on potentially stale data,
+    // we use an aggregation pipeline to recalculate true average from the source of truth.
+    const stats = await Review.aggregate([
+        { $match: { product: new mongoose.Types.ObjectId(productId) } },
+        {
+            $group: {
+                _id: '$product',
+                numOfReviews: { $sum: 1 },
+                avgRating: { $avg: '$rating' }
+            }
+        }
+    ]);
 
+    if (stats.length > 0) {
         await Product.updateOne(
             { _id: productId },
             {
-                $set: { ratings: newRatings },
-                $inc: { numOfReviews: 1 }
+                $set: {
+                    ratings: stats[0].avgRating,
+                    numOfReviews: stats[0].numOfReviews
+                }
             }
         );
     }
@@ -323,35 +309,34 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Not authorized to delete this review", 403));
     }
 
-    // Calculate new stats mathematically
-    const currentRatings = product.ratings || 0;
-    const currentNumOfReviews = product.numOfReviews || 0;
-    const oldRating = review.rating;
-
-    let newRatings;
-    let newNumOfReviews = currentNumOfReviews - 1;
-
-    if (newNumOfReviews <= 0) {
-        newRatings = 0;
-        newNumOfReviews = 0;
-    } else {
-        // (Avg * Count - Rating) / (Count - 1)
-        newRatings = ((currentRatings * currentNumOfReviews) - oldRating) / newNumOfReviews;
-    }
-
-    // Delete review document and update Product stats
+    // Delete review document
     await Review.findByIdAndDelete(queryParams.id);
 
-    await Product.findByIdAndUpdate(queryParams.productId, {
-        $set: {
-            ratings: newRatings,
-            numOfReviews: newNumOfReviews
+    // ⚡ Bolt: [Performance/Stability] Fix Race Condition in Product Reviews Rating Calculation
+    // Use aggregation to recalculate true average after deletion
+    const stats = await Review.aggregate([
+        { $match: { product: new mongoose.Types.ObjectId(queryParams.productId) } },
+        {
+            $group: {
+                _id: '$product',
+                numOfReviews: { $sum: 1 },
+                avgRating: { $avg: '$rating' }
+            }
         }
-    }, {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false
-    });
+    ]);
+
+    const newNumOfReviews = stats.length > 0 ? stats[0].numOfReviews : 0;
+    const newRatings = stats.length > 0 ? stats[0].avgRating : 0;
+
+    await Product.updateOne(
+        { _id: queryParams.productId },
+        {
+            $set: {
+                ratings: newRatings,
+                numOfReviews: newNumOfReviews
+            }
+        }
+    );
 
     res.status(200).json({
         success: true,
