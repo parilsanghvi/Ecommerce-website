@@ -13,7 +13,7 @@ const connectDB = async () => {
         const data = await mongoose.connect(process.env.DB_URI);
         console.log(`Mongodb connected with server: ${data.connection.host}`);
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -24,7 +24,7 @@ const updateStock = async () => {
         console.log("Stock updated successfully", result);
         process.exit();
     } catch (error) {
-        console.log(error);
+        console.error(error);
         process.exit(1);
     }
 };
