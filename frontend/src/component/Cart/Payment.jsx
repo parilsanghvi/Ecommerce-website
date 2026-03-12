@@ -22,7 +22,12 @@ import { createOrder, clearErrors } from "../../features/orderSlice";
 import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
-  const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
+  const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo")) || {
+    subtotal: 0,
+    tax: 0,
+    shippingCharges: 0,
+    totalPrice: 0,
+  };
 
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
