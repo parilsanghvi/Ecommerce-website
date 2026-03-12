@@ -61,6 +61,7 @@ const ResetPassword = () => {
                   <LockOpenIcon />
                   <input type="password"
                     placeholder="New Password"
+                    aria-label="New Password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -70,6 +71,7 @@ const ResetPassword = () => {
                   <LockIcon />
                   <input type="password"
                     placeholder="Confirm Password"
+                    aria-label="Confirm Password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
