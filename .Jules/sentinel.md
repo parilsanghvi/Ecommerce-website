@@ -5,3 +5,8 @@
 1. Always implement explicit input validation in the controller layer (fail fast), especially when using `validateBeforeSave: false`.
 2. Add schema-level validation (min/max) as defense-in-depth.
 3. When testing controllers wrapped in `catchAsyncErrors`, mock the middleware to return the execution promise to ensure the test waits for completion.
+
+## 2025-03-13 - Password Hash Leak in Auth Responses
+**Vulnerability:** The authentication controllers (`registerUser`, `loginUser`, `resetPassword`, `updatePassword`) returned the `user` document in the JSON response payload. Because Mongoose returns the `.password` field either upon creation or when explicitly requested via `.select("+password")`, the hashed password was leaked to the frontend/client.
+**Learning:** Always manually strip sensitive fields (e.g. `user.password = undefined;`) from Mongoose documents prior to serializing them in the response (`res.json()`), particularly when those fields were explicitly requested for internal use (like password comparison).
+**Prevention:** Sanitize the response payload directly before passing it to utility functions like `sendToken()`, or configure Mongoose schemas specifically using options like `toJSON: { transform: (doc, ret) => { delete ret.password; return ret; } }`.

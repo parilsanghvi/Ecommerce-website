@@ -37,6 +37,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             url: myCloud.secure_url,
         }
     });
+    user.password = undefined;
     sendToken(user, 201, res)
 })
 // login user
@@ -59,6 +60,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
+    user.password = undefined;
     sendToken(user, 200, res)
 })
 // logout user
@@ -139,6 +141,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     user.resetPasswordToken = undefined
     user.resetPasswordExpire = undefined
     await user.save();
+    user.password = undefined;
     sendToken(user, 200, res);
 })
 // get user detail
@@ -162,6 +165,7 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
     }
     user.password = req.body.newPassword
     await user.save()
+    user.password = undefined;
     sendToken(user, 200, res)
 })
 // update user profile
