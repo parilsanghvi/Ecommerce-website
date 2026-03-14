@@ -51,10 +51,10 @@ describe('Order Security: Price Tampering', () => {
         const next = jest.fn();
 
         // Mock Product.find to return the REAL product with price 1000
-        Product.find.mockResolvedValue([{
+        Product.find.mockReturnValue({ select: jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue([{
             _id: 'productid',
             price: 1000,
-        }]);
+        }]) }) });
 
         await orderController.newOrder(req, res, next);
 
@@ -92,10 +92,10 @@ describe('Order Security: Price Tampering', () => {
         const next = jest.fn();
 
         // Mock Product.find to return the REAL product with price 1000
-        Product.find.mockResolvedValue([{
+        Product.find.mockReturnValue({ select: jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue([{
             _id: 'productid',
             price: 1000,
-        }]);
+        }]) }) });
 
         // Mock Replay Attack check (Order not found)
         Order.findOne.mockResolvedValue(null);
