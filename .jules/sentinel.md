@@ -64,3 +64,7 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2025-03-14 - Password Hash Exposure in Authentication Responses
+**Vulnerability:** Password hash fields were leaked in the JSON response payload (`res.json()`) during authentication (login, register, reset, update) when a user object was returned.
+**Learning:** The Mongoose explicit selection (`.select('+password')`) required for authentication checks causes the password hash to remain in the in-memory document, meaning it is serialized and returned to the client even if excluded by default in the schema.
+**Prevention:** Sensitive fields (like `password` and `resetPasswordToken`) must be explicitly explicitly stripped (`user.password = undefined;`) before returning the document to the client, especially when the controller specifically queried for it using `+password` or when the document was just created (`User.create()`).
