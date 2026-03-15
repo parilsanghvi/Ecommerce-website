@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Payment from '../../component/Cart/Payment';
 
 import axios from 'axios';
@@ -58,12 +58,22 @@ const orderInfo = { subtotal: 100, tax: 18, shippingCharges: 0, totalPrice: 118 
 describe('Payment', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        // Since we can't easily mock sessionStorage.getItem directly in some environments,
-        // we rely on the implementation using it.
-        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
-            if (key === 'orderInfo') return JSON.stringify(orderInfo);
-            return null;
+        Object.defineProperty(window, 'sessionStorage', {
+            value: {
+                getItem: vi.fn().mockImplementation((key) => {
+                    if (key === 'orderInfo') return JSON.stringify(orderInfo);
+                    return null;
+                }),
+                setItem: vi.fn(),
+                removeItem: vi.fn(),
+                clear: vi.fn(),
+            },
+            writable: true,
         });
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it('renders card info heading', () => {
