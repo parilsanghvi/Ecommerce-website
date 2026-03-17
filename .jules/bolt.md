@@ -41,3 +41,7 @@
 ## 2025-03-04 - Memoizing DataGrid Columns and Rows
 **Learning:** When using `@mui/x-data-grid`, the `columns` prop acts as the definition for the entire grid. If the `columns` array is created inline during render, its reference changes on every component re-render. This forces the entire DataGrid component to needlessly unmount/remount internal components and causes the loss of all UI state (such as resized column widths). Similarly, reconstructing the `rows` array directly in the render body causes an O(N) operation to execute repetitively.
 **Action:** Always wrap the `columns` definition array in a `useMemo` hook (remembering to also `useCallback` any inline event handlers referenced by it, like `deleteProductHandler`) and wrap the `rows` construction in `useMemo` to ensure referential stability.
+
+## 2024-05-19 - [Performance Optimization: deleteOne to findByIdAndDelete]
+**Learning:** Calling `Model.findById(id)` followed by `doc.deleteOne()` performs two database queries and incurs unnecessary hydration overhead to instantiate a Mongoose document.
+**Action:** Use `Model.findByIdAndDelete(id).lean()` when merely deleting a document to perform the operation in a single roundtrip and avoid instantiating the Mongoose document.
