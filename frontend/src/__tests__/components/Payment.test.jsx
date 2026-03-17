@@ -58,11 +58,20 @@ const orderInfo = { subtotal: 100, tax: 18, shippingCharges: 0, totalPrice: 118 
 describe('Payment', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        // Since we can't easily mock sessionStorage.getItem directly in some environments,
-        // we rely on the implementation using it.
-        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
-            if (key === 'orderInfo') return JSON.stringify(orderInfo);
-            return null;
+        const mockStorage = { orderInfo: JSON.stringify(orderInfo) };
+        // We explicitly mock Storage.prototype methods using vi.spyOn to ensure correct behavior.
+        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => mockStorage[key] || null);
+        vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => { mockStorage[key] = value; });
+        vi.spyOn(Storage.prototype, 'clear').mockImplementation(() => { Object.keys(mockStorage).forEach(k => delete mockStorage[k]); });
+
+        // Also mock the global sessionStorage since jsdom tests can be flaky with prototypes
+        Object.defineProperty(window, 'sessionStorage', {
+            value: {
+                getItem: vi.fn((key) => mockStorage[key] || null),
+                setItem: vi.fn((key, value) => { mockStorage[key] = value; }),
+                clear: vi.fn(() => { Object.keys(mockStorage).forEach(k => delete mockStorage[k]); })
+            },
+            writable: true
         });
     });
 
