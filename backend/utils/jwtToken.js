@@ -10,6 +10,16 @@ const sendToken = (user, statusCode, res) => {
         secure: process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production',
         sameSite: 'strict',
     }
+
+    // Security Fix: Prevent sensitive data exposure in responses
+    // When mongoose queries use .select("+password"), the password field is included
+    // in the document and will be leaked if the whole object is sent in the response.
+    if (user) {
+        user.password = undefined;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+    }
+
     res.status(statusCode).cookie("token",token,options).json({
         success:true,
         user,
