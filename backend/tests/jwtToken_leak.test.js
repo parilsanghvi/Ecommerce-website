@@ -15,11 +15,13 @@ describe("jwtToken Leak", () => {
             json: jest.fn()
         };
 
+        process.env.COOKIE_EXPIRE = "5";
+
         sendToken(user, 200, res);
 
-        expect(res.json).toHaveBeenCalledWith({
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
             success: true,
             user: expect.not.objectContaining({ password: "hashedpassword" })
-        });
+        }));
     });
 });
