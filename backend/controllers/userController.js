@@ -37,6 +37,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             url: myCloud.secure_url,
         }
     });
+
+    // Security Fix: Prevent password hash from leaking in the API response
+    user.password = undefined;
     sendToken(user, 201, res)
 })
 // login user
@@ -59,6 +62,9 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
+
+    // Security Fix: Prevent password hash from leaking in the API response
+    user.password = undefined;
     sendToken(user, 200, res)
 })
 // logout user
@@ -162,6 +168,9 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
     }
     user.password = req.body.newPassword
     await user.save()
+
+    // Security Fix: Prevent password hash from leaking in the API response
+    user.password = undefined;
     sendToken(user, 200, res)
 })
 // update user profile
