@@ -41,3 +41,7 @@
 ## 2025-03-04 - Memoizing DataGrid Columns and Rows
 **Learning:** When using `@mui/x-data-grid`, the `columns` prop acts as the definition for the entire grid. If the `columns` array is created inline during render, its reference changes on every component re-render. This forces the entire DataGrid component to needlessly unmount/remount internal components and causes the loss of all UI state (such as resized column widths). Similarly, reconstructing the `rows` array directly in the render body causes an O(N) operation to execute repetitively.
 **Action:** Always wrap the `columns` definition array in a `useMemo` hook (remembering to also `useCallback` any inline event handlers referenced by it, like `deleteProductHandler`) and wrap the `rows` construction in `useMemo` to ensure referential stability.
+
+## 2025-03-12 - Optimize total document counting in unfiltered queries
+**Learning:** `Model.countDocuments()` is an O(N) operation performing a full collection scan, which is severely slow for counting all documents. Unfiltered queries (like finding total products for an admin dashboard) should utilize `Model.estimatedDocumentCount()`, which leverages internal collection metadata for O(1) performance.
+**Action:** Always prefer `Model.estimatedDocumentCount()` over `Model.countDocuments()` when retrieving the total number of documents in an entire collection without query filters.
