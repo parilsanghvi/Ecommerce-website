@@ -60,9 +60,16 @@ describe('Payment', () => {
         vi.clearAllMocks();
         // Since we can't easily mock sessionStorage.getItem directly in some environments,
         // we rely on the implementation using it.
-        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
-            if (key === 'orderInfo') return JSON.stringify(orderInfo);
-            return null;
+        Object.defineProperty(window, 'sessionStorage', {
+            value: {
+                getItem: vi.fn((key) => {
+                    if (key === 'orderInfo') return JSON.stringify(orderInfo);
+                    return null;
+                }),
+                setItem: vi.fn(),
+                clear: vi.fn()
+            },
+            writable: true
         });
     });
 
