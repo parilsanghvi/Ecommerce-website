@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useMemo, useCallback } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productReviews.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,9 +32,10 @@ const ProductReviews = () => {
 
   const [productId, setProductId] = useState("");
 
-  const deleteReviewHandler = (reviewId) => {
+  // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
+  const deleteReviewHandler = useCallback((reviewId) => {
     dispatch(deleteReviews(reviewId, productId));
-  };
+  }, [dispatch, productId]);
 
   const productReviewsSubmitHandler = (e) => {
     e.preventDefault();
@@ -58,7 +59,8 @@ const ProductReviews = () => {
     }
   }, [dispatch, enqueueSnackbar, navigate, isDeleted]);
 
-  const columns = [
+  // ⚡ Bolt: [performance improvement] Memoize DataGrid columns to prevent complete remounts and lost UI state (like column resize)
+  const columns = useMemo(() => [
     { field: "id", headerName: "Review ID", minWidth: 200, flex: 0.5 },
 
     {
@@ -111,19 +113,23 @@ const ProductReviews = () => {
         );
       },
     },
-  ];
+  ], [deleteReviewHandler]);
 
-  const rows = [];
-
-  reviews &&
-    reviews.forEach((item) => {
-      rows.push({
-        id: item._id,
-        rating: item.rating,
-        comment: item.comment,
-        user: item.name,
+  // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
+  const rows = useMemo(() => {
+    const rowData = [];
+    if (reviews) {
+      reviews.forEach((item) => {
+        rowData.push({
+          id: item._id,
+          rating: item.rating,
+          comment: item.comment,
+          user: item.name,
+        });
       });
-    });
+    }
+    return rowData;
+  }, [reviews]);
 
   return (
     <AdminLayout title={`ALL REVIEWS - Admin`}>

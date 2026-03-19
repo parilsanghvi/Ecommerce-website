@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useMemo, useCallback } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -29,9 +29,10 @@ const UsersList = () => {
     message,
   } = useSelector((state) => state.user);
 
-  const deleteUserHandler = (id) => {
+  // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
+  const deleteUserHandler = useCallback((id) => {
     dispatch(deleteUser(id));
-  };
+  }, [dispatch]);
 
   useErrorNotification(error, clearErrors);
   useErrorNotification(deleteError, clearErrors);
@@ -48,7 +49,8 @@ const UsersList = () => {
     }
   }, [dispatch, enqueueSnackbar, navigate, isDeleted, message]);
 
-  const columns = [
+  // ⚡ Bolt: [performance improvement] Memoize DataGrid columns to prevent complete remounts and lost UI state (like column resize)
+  const columns = useMemo(() => [
     { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },
 
     {
@@ -103,19 +105,23 @@ const UsersList = () => {
         );
       },
     },
-  ];
+  ], [deleteUserHandler]);
 
-  const rows = [];
-
-  users &&
-    users.forEach((item) => {
-      rows.push({
-        id: item._id,
-        role: item.role,
-        email: item.email,
-        name: item.name,
+  // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
+  const rows = useMemo(() => {
+    const rowData = [];
+    if (users) {
+      users.forEach((item) => {
+        rowData.push({
+          id: item._id,
+          role: item.role,
+          email: item.email,
+          name: item.name,
+        });
       });
-    });
+    }
+    return rowData;
+  }, [users]);
 
   return (
     <AdminLayout title={`ALL USERS - Admin`}>
