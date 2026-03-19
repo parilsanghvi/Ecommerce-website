@@ -58,11 +58,15 @@ const orderInfo = { subtotal: 100, tax: 18, shippingCharges: 0, totalPrice: 118 
 describe('Payment', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        // Since we can't easily mock sessionStorage.getItem directly in some environments,
-        // we rely on the implementation using it.
-        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
-            if (key === 'orderInfo') return JSON.stringify(orderInfo);
-            return null;
+        // Use Object.defineProperty to mock sessionStorage as recommended by testing insight
+        Object.defineProperty(window, 'sessionStorage', {
+            value: {
+                getItem: vi.fn((key) => {
+                    if (key === 'orderInfo') return JSON.stringify(orderInfo);
+                    return null;
+                })
+            },
+            writable: true
         });
     });
 
