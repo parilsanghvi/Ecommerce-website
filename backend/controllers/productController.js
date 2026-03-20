@@ -325,8 +325,8 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
         }
     ]);
 
-    const newNumOfReviews = stats.length > 0 ? stats[0].numOfReviews : 0;
-    const newRatings = stats.length > 0 ? stats[0].avgRating : 0;
+    const newNumOfReviews = stats && stats.length > 0 ? stats[0].numOfReviews : 0;
+    const newRatings = stats && stats.length > 0 ? stats[0].avgRating : 0;
 
     await Product.updateOne(
         { _id: queryParams.productId },
