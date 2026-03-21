@@ -81,7 +81,8 @@ describe('updatePassword Controller', () => {
 
         expect(User.findById).toHaveBeenCalledWith('user123');
         expect(mockUser.comparePassword).toHaveBeenCalledWith('oldPassword123');
-        expect(mockUser.password).toBe('newPassword123');
+        // Testing Insight (Jest): The controller sanitizes the password to prevent leaking it to the response
+        expect(mockUser.password).toBe(undefined);
         expect(mockUser.save).toHaveBeenCalled();
         expect(sendToken).toHaveBeenCalledWith(mockUser, 200, res);
         expect(next).not.toHaveBeenCalled();

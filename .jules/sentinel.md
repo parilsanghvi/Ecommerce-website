@@ -64,3 +64,8 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+
+## 2024-05-24 - Fix password hash leak in authentication responses
+**Vulnerability:** The hashed user password was explicitly selected using `.select('+password')` for authentication checks, and the resulting user document was sent directly in the `sendToken` response body via `res.json({ success: true, user })`.
+**Learning:** Selecting schema-excluded fields (like passwords) and directly serializing the modified Mongoose document into the JSON response leaks those sensitive fields to the client. This occurs because the document retains all selected fields in memory until explicitly removed.
+**Prevention:** Always explicitly set sensitive schema-excluded fields (e.g., `user.password = undefined;`) on the Mongoose document *before* passing it to response utilities or serializing it with `res.json()`.
