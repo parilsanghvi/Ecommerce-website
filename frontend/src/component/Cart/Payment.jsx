@@ -83,10 +83,10 @@ const Payment = () => {
   const order = {
     shippingInfo,
     orderItems: cartItems,
-    itemsPrice: orderInfo.subtotal,
-    taxPrice: orderInfo.tax,
-    shippingPrice: orderInfo.shippingCharges,
-    totalPrice: orderInfo.totalPrice,
+    itemsPrice: orderInfo?.subtotal || 0,
+    taxPrice: orderInfo?.tax || 0,
+    shippingPrice: orderInfo?.shippingCharges || 0,
+    totalPrice: orderInfo?.totalPrice || 0,
   };
 
   const submitHandler = async (e) => {
