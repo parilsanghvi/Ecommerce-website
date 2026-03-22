@@ -97,7 +97,7 @@ describe('Payment', () => {
         render(<Payment />);
         const button = screen.getByRole('button', { name: /pay now/i });
         fireEvent.click(button);
-        
+
         // The button should now be disabled and show the CircularProgress.
         expect(button).toBeDisabled();
         expect(screen.getByTestId('circular-progress')).toBeInTheDocument();
