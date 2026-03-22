@@ -81,7 +81,7 @@ describe('updatePassword Controller', () => {
 
         expect(User.findById).toHaveBeenCalledWith('user123');
         expect(mockUser.comparePassword).toHaveBeenCalledWith('oldPassword123');
-        expect(mockUser.password).toBe('newPassword123');
+        expect(mockUser.password).toBeUndefined();
         expect(mockUser.save).toHaveBeenCalled();
         expect(sendToken).toHaveBeenCalledWith(mockUser, 200, res);
         expect(next).not.toHaveBeenCalled();
