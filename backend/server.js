@@ -20,8 +20,9 @@ connectDatabase().then(() => {
     });
 
     // takes routes from app and listens on port
-    const server = app.listen(process.env.PORT, () => {
-        console.log(`server is working on http://localhost:${process.env.PORT}`);
+    const PORT = process.env.PORT || 4000;
+    const server = app.listen(PORT, () => {
+        console.log(`server is working on http://localhost:${PORT}`);
     });
 
     // unhandled promise rejection
@@ -32,4 +33,7 @@ connectDatabase().then(() => {
             process.exit(1);
         });
     });
+}).catch((err) => {
+    console.error(`Database connection failed: ${err.message}`);
+    process.exit(1);
 });
