@@ -1,0 +1,19 @@
+--- frontend/src/component/Cart/Payment.jsx
++++ frontend/src/component/Cart/Payment.jsx
+@@ -14,6 +14,7 @@
+ import { useSnackbar } from "notistack";
+ import { removeItemsFromCart } from "../../features/cartSlice";
+ import axios from "axios";
+ import "./payment.css";
+ import CreditCardIcon from "@mui/icons-material/CreditCard";
+ import EventIcon from "@mui/icons-material/Event";
+@@ -21,7 +22,7 @@
+ import { createOrder, clearErrors } from "../../features/orderSlice";
+ import { useNavigate } from "react-router-dom";
+
+ const Payment = () => {
+-  const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
++  const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo")) || {};
+
+   const dispatch = useDispatch();
+   const { enqueueSnackbar } = useSnackbar();
