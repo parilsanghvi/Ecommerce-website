@@ -1,22 +1,25 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import React, { Fragment } from 'react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { useSelector } from 'react-redux';
 import ProductList from '../../component/Admin/ProductList';
 
 const mockDispatch = vi.fn();
 const mockNavigate = vi.fn();
 const mockEnqueueSnackbar = vi.fn();
 
+const stableState = {
+    product: {
+        error: null, isDeleted: false, deleteError: null,
+        products: [
+            { _id: 'p1', name: 'Laptop Pro', stock: 5, price: 999 },
+            { _id: 'p2', name: 'Phone X', stock: 0, price: 499 },
+        ],
+    },
+};
+
 vi.mock('react-redux', () => ({
-    useSelector: (selector) => selector({
-        product: {
-            error: null, isDeleted: false,
-            products: [
-                { _id: 'p1', name: 'Laptop Pro', stock: 5, price: 999 },
-                { _id: 'p2', name: 'Phone X', stock: 0, price: 499 },
-            ],
-        },
-    }),
+    useSelector: vi.fn((selector) => selector(stableState)),
     useDispatch: () => mockDispatch,
 }));
 
@@ -36,6 +39,7 @@ vi.mock('@mui/material', () => ({
 }));
 vi.mock('@mui/icons-material/Edit', () => ({ default: () => <span>✏️</span> }));
 vi.mock('@mui/icons-material/Delete', () => ({ default: () => <span>🗑️</span> }));
+
 vi.mock('@mui/x-data-grid', () => ({
     DataGrid: ({ rows, columns }) => (
         <table data-testid="data-grid">
@@ -45,10 +49,12 @@ vi.mock('@mui/x-data-grid', () => ({
             <tbody>
                 {rows.map((row) => (
                     <tr key={row.id}>
-                        <td>{row.id}</td>
-                        <td>{row.name}</td>
-                        <td>{row.stock}</td>
-                        <td>{row.price}</td>
+                        {columns.map((col) => {
+                            if (col.renderCell) {
+                                return <td key={col.field}>{col.renderCell({ row })}</td>;
+                            }
+                            return <td key={col.field}>{row[col.field]}</td>;
+                        })}
                     </tr>
                 ))}
             </tbody>
@@ -57,7 +63,10 @@ vi.mock('@mui/x-data-grid', () => ({
 }));
 
 describe('ProductList', () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+        vi.clearAllMocks();
+        useSelector.mockImplementation((selector) => selector(stableState));
+    });
 
     it('renders ALL PRODUCTS heading', () => {
         render(<ProductList />);
@@ -84,5 +93,25 @@ describe('ProductList', () => {
     it('renders data grid', () => {
         render(<ProductList />);
         expect(screen.getByTestId('data-grid')).toBeInTheDocument();
+    });
+
+    it('handles delete product click', () => {
+        render(<ProductList />);
+        const deleteButtons = screen.getAllByRole('button', { name: /Delete product/i });
+        fireEvent.click(deleteButtons[0]);
+        // Dispatches deleteProduct
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('redirects when product is deleted', () => {
+        useSelector.mockImplementation((selector) => selector({
+            product: { error: null, isDeleted: true, deleteError: null, products: [] },
+        }));
+
+        render(<ProductList />);
+        
+        expect(mockNavigate).toHaveBeenCalledWith('/admin/dashboard');
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Product Deleted Successfully", { variant: "success" });
+        expect(mockDispatch).toHaveBeenCalled(); // deleteProductReset
     });
 });

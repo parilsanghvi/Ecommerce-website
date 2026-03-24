@@ -55,7 +55,7 @@ describe('Order Security: Price Tampering', () => {
             select: jest.fn().mockReturnValue({
                 lean: jest.fn().mockResolvedValue([{
                     _id: 'productid',
-                    price: 1000
+                    price: 1000,
                 }])
             })
         });
@@ -100,7 +100,7 @@ describe('Order Security: Price Tampering', () => {
             select: jest.fn().mockReturnValue({
                 lean: jest.fn().mockResolvedValue([{
                     _id: 'productid',
-                    price: 1000
+                    price: 1000,
                 }])
             })
         });

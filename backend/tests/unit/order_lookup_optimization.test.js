@@ -87,13 +87,13 @@ describe('newOrder optimization', () => {
 
     it('should handle ObjectId-like strings correctly', async () => {
          Product.find.mockReturnValue({
-             select: jest.fn().mockReturnValue({
-                 lean: jest.fn().mockResolvedValue([
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([
                     { _id: { toString: () => 'prod1' }, price: 100 },
                     { _id: { toString: () => 'prod2' }, price: 100 }
-                 ])
-             })
-         });
+                ])
+            })
+        });
 
         Order.create.mockResolvedValue({ _id: 'order1', ...req.body });
 
