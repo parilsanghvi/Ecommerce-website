@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 import Products from '../component/Product/Products';
@@ -61,13 +61,15 @@ describe('Products Component', () => {
         expect(screen.getByText('Test Product 1')).toBeInTheDocument();
     });
 
-    it('dispatches getProduct action on mount', () => {
+    it('dispatches getProduct action on mount', async () => {
         render(
             <BrowserRouter>
                 <Products />
             </BrowserRouter>
         );
 
-        expect(mockDispatch).toHaveBeenCalled();
+        await waitFor(() => {
+            expect(mockDispatch).toHaveBeenCalled();
+        }, { timeout: 1000 });
     });
 });

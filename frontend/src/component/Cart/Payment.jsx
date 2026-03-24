@@ -94,6 +94,7 @@ const Payment = () => {
 
     setIsProcessing(true);
     payBtn.current.disabled = true;
+    setIsProcessing(true);
 
     try {
       const config = {
@@ -109,7 +110,11 @@ const Payment = () => {
 
       const client_secret = data.client_secret;
 
-      if (!stripe || !elements) return;
+      if (!stripe || !elements) {
+        setIsProcessing(false);
+        payBtn.current.disabled = false;
+        return;
+      }
 
       const result = await stripe.confirmCardPayment(client_secret, {
         payment_method: {
@@ -131,6 +136,7 @@ const Payment = () => {
       if (result.error) {
         setIsProcessing(false);
         payBtn.current.disabled = false;
+        setIsProcessing(false);
 
         enqueueSnackbar(result.error.message, { variant: "error" });
       } else {
@@ -145,6 +151,7 @@ const Payment = () => {
             let id = order.orderItems[i].product;
             dispatch(removeItemsFromCart(id));
           }
+          setIsProcessing(false);
           navigate("/success");
         } else {
           setIsProcessing(false);
@@ -157,7 +164,7 @@ const Payment = () => {
     } catch (error) {
       setIsProcessing(false);
       payBtn.current.disabled = false;
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
 
@@ -193,8 +200,15 @@ const Payment = () => {
             ref={payBtn}
             className="primary-btn paymentFormBtn"
             disabled={isProcessing}
+            aria-busy={isProcessing}
+            aria-label={isProcessing ? "Processing payment" : "Pay now"}
+            style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
           >
-            {isProcessing ? <CircularProgress size={24} color="inherit" /> : `Pay - ₹${orderInfo && orderInfo.totalPrice}`}
+            {isProcessing ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              `Pay - ₹${orderInfo && orderInfo.totalPrice}`
+            )}
           </button>
         </form>
       </div>

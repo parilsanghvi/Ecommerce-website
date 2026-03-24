@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useMemo, useCallback } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,9 +28,10 @@ const OrderList = () => {
 
   const { error: deleteError, isDeleted } = useSelector((state) => state.order);
 
-  const deleteOrderHandler = (id) => {
+  // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
+  const deleteOrderHandler = useCallback((id) => {
     dispatch(deleteOrder(id));
-  };
+  }, [dispatch]);
 
   const setCurrentPageNo = (e, value) => {
     setCurrentPage(value);
@@ -51,7 +52,8 @@ const OrderList = () => {
     }
   }, [dispatch, enqueueSnackbar, navigate, isDeleted]);
 
-  const columns = [
+  // ⚡ Bolt: [performance improvement] Memoize DataGrid columns to prevent complete remounts and lost UI state (like column resize)
+  const columns = useMemo(() => [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
 
     {
@@ -100,19 +102,23 @@ const OrderList = () => {
         );
       },
     },
-  ];
+  ], [deleteOrderHandler]);
 
-  const rows = [];
-
-  orders &&
-    orders.forEach((item) => {
-      rows.push({
-        id: item._id,
-        itemsQty: item.orderItems.length,
-        amount: item.totalPrice,
-        status: item.orderStatus,
+  // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
+  const rows = useMemo(() => {
+    const rowData = [];
+    if (orders) {
+      orders.forEach((item) => {
+        rowData.push({
+          id: item._id,
+          itemsQty: item.orderItems.length,
+          amount: item.totalPrice,
+          status: item.orderStatus,
+        });
       });
-    });
+    }
+    return rowData;
+  }, [orders]);
 
   return (
     <AdminLayout title={`ALL ORDERS - Admin`}>

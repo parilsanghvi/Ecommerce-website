@@ -15,6 +15,12 @@ const Cart = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const [updatingItems, setUpdatingItems] = useState({});
 
+  // ⚡ Bolt: Memoize expensive array calculation to prevent re-running on every render (e.g., when updating item quantity)
+  const grossTotal = useMemo(() => cartItems.reduce(
+    (acc, item) => acc + item.quantity * item.price,
+    0
+  ), [cartItems]);
+
   const increaseQuantity = async (id, quantity, stock) => {
     const newQty = quantity + 1;
     if (stock <= quantity) {
@@ -57,13 +63,7 @@ const Cart = () => {
     navigate("/login?redirect=/shipping");
   };
 
-  // ⚡ Bolt: [performance improvement] Memoize the gross total calculation to prevent unnecessary O(N) recalculations on every render
-  const grossTotal = useMemo(() => {
-    return cartItems.reduce(
-      (acc, item) => acc + item.quantity * item.price,
-      0
-    );
-  }, [cartItems]);
+
 
   return (
     <Fragment>

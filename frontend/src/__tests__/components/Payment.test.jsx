@@ -3,9 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Payment from '../../component/Cart/Payment';
 
+import axios from 'axios';
+
 const mockDispatch = vi.fn();
 const mockNavigate = vi.fn();
 const mockEnqueueSnackbar = vi.fn();
+
+vi.mock('axios');
 
 vi.mock('react-redux', () => ({
     useSelector: (selector) => selector({
@@ -31,6 +35,7 @@ vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/Cart/CheckoutSteps', () => ({ default: () => <div>Steps</div> }));
 vi.mock('@mui/material', () => ({
     Typography: ({ children, ...props }) => <span {...props}>{children}</span>,
+    CircularProgress: () => <span data-testid="circular-progress">Loading...</span>,
 }));
 vi.mock('@mui/icons-material/CreditCard', () => ({ default: () => <span>💳</span> }));
 vi.mock('@mui/icons-material/Event', () => ({ default: () => <span>📅</span> }));
@@ -53,7 +58,12 @@ const orderInfo = { subtotal: 100, tax: 18, shippingCharges: 0, totalPrice: 118 
 describe('Payment', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        sessionStorage.getItem.mockReturnValue(JSON.stringify(orderInfo));
+        // Since we can't easily mock sessionStorage.getItem directly in some environments,
+        // we rely on the implementation using it.
+        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+            if (key === 'orderInfo') return JSON.stringify(orderInfo);
+            return null;
+        });
     });
 
     it('renders card info heading', () => {
@@ -70,7 +80,19 @@ describe('Payment', () => {
 
     it('renders pay button with total price', () => {
         render(<Payment />);
+        expect(screen.getByRole('button', { name: /pay now/i })).toBeInTheDocument();
         expect(screen.getByText('Pay - ₹118')).toBeInTheDocument();
+    });
+
+    it('shows loading state on submit', async () => {
+        axios.post.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ data: { client_secret: '123' } }), 100)));
+        render(<Payment />);
+        const button = screen.getByRole('button', { name: /pay now/i });
+        fireEvent.click(button);
+        
+        // The button should now be disabled and show the CircularProgress.
+        expect(button).toBeDisabled();
+        expect(screen.getByTestId('circular-progress')).toBeInTheDocument();
     });
 
     it('renders checkout steps', () => {
