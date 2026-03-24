@@ -4,9 +4,7 @@ jest.mock("../../middleware/catchAsyncErrors", () => (func) => (req, res, next) 
 });
 
 // Mock models and dependencies before importing the controller
-jest.mock("../../models/orderModel", () => ({
-    findById: jest.fn()
-}), { virtual: true });
+jest.mock("../../models/orderModel");
 jest.mock("../../models/userModel", () => ({}), { virtual: true });
 jest.mock("../../models/productModel", () => ({}), { virtual: true });
 jest.mock("stripe", () => () => ({
