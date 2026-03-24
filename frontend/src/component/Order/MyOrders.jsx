@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useMemo } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./myOrders.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,7 +18,8 @@ const MyOrders = () => {
 
   useErrorNotification(error, clearErrors);
 
-  const columns = [
+  // ⚡ Bolt: [performance improvement] Memoize DataGrid columns to prevent complete remounts and lost UI state (like column resize)
+  const columns = useMemo(() => [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
 
     {
@@ -62,18 +63,23 @@ const MyOrders = () => {
         );
       },
     },
-  ];
-  const rows = [];
+  ], []);
 
-  orders &&
-    orders.forEach((item, index) => {
-      rows.push({
-        itemsQty: item.orderItems.length,
-        id: item._id,
-        status: item.orderStatus,
-        amount: item.totalPrice,
+  // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
+  const rows = useMemo(() => {
+    const rowData = [];
+    if (orders) {
+      orders.forEach((item, index) => {
+        rowData.push({
+          itemsQty: item.orderItems.length,
+          id: item._id,
+          status: item.orderStatus,
+          amount: item.totalPrice,
+        });
       });
-    });
+    }
+    return rowData;
+  }, [orders]);
 
   useEffect(() => {
     dispatch(myOrders());

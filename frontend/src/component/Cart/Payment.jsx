@@ -22,7 +22,13 @@ import { createOrder, clearErrors } from "../../features/orderSlice";
 import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
-  const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
+  const orderInfoString = sessionStorage.getItem("orderInfo");
+  let orderInfo = {};
+  try {
+    orderInfo = orderInfoString ? JSON.parse(orderInfoString) : {};
+  } catch (e) {
+    orderInfo = {};
+  }
 
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -207,7 +213,7 @@ const Payment = () => {
             {isProcessing ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              `Pay - ₹${orderInfo && orderInfo.totalPrice}`
+              `Pay - ₹${orderInfo && orderInfo.totalPrice ? orderInfo.totalPrice : ""}`
             )}
           </button>
         </form>
