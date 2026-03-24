@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UpdateProduct from '../../component/Admin/UpdateProduct';
 
@@ -20,8 +20,10 @@ const stableState = {
     },
 };
 
+import { useSelector } from 'react-redux';
+
 vi.mock('react-redux', () => ({
-    useSelector: (selector) => selector(stableState),
+    useSelector: vi.fn((selector) => selector(stableState)),
     useDispatch: () => mockDispatch,
 }));
 
@@ -47,7 +49,11 @@ vi.mock('@mui/icons-material/Spellcheck', () => ({ default: () => <span>✓</spa
 vi.mock('@mui/icons-material/AttachMoney', () => ({ default: () => <span>💲</span> }));
 
 describe('UpdateProduct (Admin)', () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+        vi.clearAllMocks();
+        // Reset default mock state for useSelector
+        useSelector.mockImplementation((selector) => selector(stableState));
+    });
 
     it('renders Update Product heading', () => {
         render(<UpdateProduct />);
@@ -80,5 +86,86 @@ describe('UpdateProduct (Admin)', () => {
         render(<UpdateProduct />);
         const images = screen.getAllByAltText('Product Preview');
         expect(images.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('submits form with updated data', () => {
+        render(<UpdateProduct />);
+        fireEvent.change(screen.getByPlaceholderText('Product Name'), { target: { value: 'New Product' } });
+        fireEvent.change(screen.getByPlaceholderText('Price'), { target: { value: 1500 } });
+        fireEvent.change(screen.getByPlaceholderText('Product Description'), { target: { value: 'New desc' } });
+        fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Camera' } });
+        fireEvent.change(screen.getByPlaceholderText('Stock'), { target: { value: 10 } });
+        
+        fireEvent.submit(screen.getByRole('button', { name: /Update/i }));
+        
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('handles image uploads and removals', () => {
+        // Need to pass initial image data so we have something to remove
+        const productWithMultiImages = { ...productData, images: [{ url: 'img1.png' }, { url: 'img2.png' }] };
+        useSelector.mockImplementation((selector) => selector({
+            product: { loading: false, product: productWithMultiImages },
+        }));
+
+        render(<UpdateProduct />);
+        
+        const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
+        
+        // Mock FileReader robustly
+        const originalFileReader = window.FileReader;
+        
+        window.FileReader = class {
+            constructor() {
+                this.readAsDataURL = vi.fn(() => {
+                    if (this.onload) {
+                        this.onload({ target: { result: 'data:image/png;base64,dummy' } });
+                    }
+                });
+                this.readyState = 2;
+                this.result = 'data:image/png;base64,dummy';
+                this.onload = null;
+            }
+        };
+        
+        const fileInput = document.querySelector('input[type="file"]');
+        
+        act(() => {
+            if (fileInput) {
+                fireEvent.change(fileInput, { target: { files: [file] } });
+            }
+        });
+        
+        // Remove the existing image preview
+        const removeButtons = screen.getAllByRole('button', { name: /Remove image/i });
+        if(removeButtons.length > 0) {
+            act(() => {
+                fireEvent.click(removeButtons[0]);
+            });
+        }
+        
+        window.FileReader = originalFileReader; // Cleanup
+    });
+
+    it('redirects and shows snackbar on successful update', () => {
+        useSelector.mockImplementation((selector) => selector({
+            product: { loading: false, isUpdated: true, product: productData },
+        }));
+        
+        render(<UpdateProduct />);
+        
+        expect(mockEnqueueSnackbar).toHaveBeenCalledWith("Product Updated Successfully", { variant: "success" });
+        expect(mockNavigate).toHaveBeenCalledWith("/admin/products");
+        expect(mockDispatch).toHaveBeenCalled(); // Should dispatch updateProductReset
+    });
+
+    it('fetches product details if ID mismatch or missing', () => {
+        useSelector.mockImplementation((selector) => selector({
+            product: { loading: false, product: { _id: 'different' } },
+        }));
+        
+        render(<UpdateProduct />);
+        
+        expect(mockDispatch).toHaveBeenCalled(); // getProductDetails
     });
 });

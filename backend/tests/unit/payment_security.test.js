@@ -65,9 +65,8 @@ describe("Payment Security - processPayment", () => {
         ];
 
         Product.find.mockReturnValue({
-            select: jest.fn().mockReturnValue({
-                lean: jest.fn().mockResolvedValue(mockProducts)
-            })
+            select: jest.fn().mockReturnThis(),
+            lean: jest.fn().mockResolvedValue(mockProducts)
         });
         createMock.mockResolvedValue({
             client_secret: "secret_123",
@@ -115,10 +114,9 @@ describe("Payment Security - processPayment", () => {
         req.body.items = mockItems;
 
         Product.find.mockReturnValue({
-            select: jest.fn().mockReturnValue({
-                lean: jest.fn().mockResolvedValue([])
-            })
-        }); // No products found
+            select: jest.fn().mockReturnThis(),
+            lean: jest.fn().mockResolvedValue([])
+        });
 
         await processPayment(req, res, next);
         expect(next).toHaveBeenCalledWith(expect.any(Error));

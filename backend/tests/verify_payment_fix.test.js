@@ -45,11 +45,10 @@ describe("Payment Controller Security Fix", () => {
       { _id: "prod1", price: 500, toString: () => "prod1" },
       { _id: "prod2", price: 1000, toString: () => "prod2" },
     ];
-    // Find returns a promise that resolves to array
+    // Find returns a chainable object
     Product.find.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-            lean: jest.fn().mockResolvedValue(mockProducts)
-        })
+      select: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockResolvedValue(mockProducts)
     });
 
     await paymentController.processPayment(req, res, next);
@@ -77,9 +76,8 @@ describe("Payment Controller Security Fix", () => {
     req.body.items = [{ product: "prod1", quantity: 1 }];
     const mockProducts = [{ _id: "prod1", price: 500, toString: () => "prod1" }];
     Product.find.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-            lean: jest.fn().mockResolvedValue(mockProducts)
-        })
+      select: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockResolvedValue(mockProducts)
     });
 
     await paymentController.processPayment(req, res, next);
@@ -107,10 +105,9 @@ describe("Payment Controller Security Fix", () => {
   it("should return error if product not found", async () => {
     const mockProducts = [{ _id: "prod1", price: 500, toString: () => "prod1" }];
     Product.find.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-            lean: jest.fn().mockResolvedValue(mockProducts)
-        })
-    }); // Only prod1 found
+      select: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockResolvedValue(mockProducts)
+    });
 
     // req has prod1 and prod2
     await paymentController.processPayment(req, res, next);

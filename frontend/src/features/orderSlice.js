@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "../config";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
 import axios from "axios";
 import { createThunkHandler } from "../utils/thunkHandler";
 
@@ -91,6 +91,16 @@ export const getOrderDetails = createAsyncThunk(
     })
 );
 
+
+const thunks = [
+    createOrder,
+    myOrders,
+    getAllOrders,
+    updateOrder,
+    deleteOrder,
+    getOrderDetails
+];
+
 // ===== SLICE =====
 const orderSlice = createSlice({
     name: "order",
@@ -113,34 +123,22 @@ const orderSlice = createSlice({
     extraReducers: (builder) => {
         builder
             // Create Order
-            .addCase(createOrder.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(createOrder.fulfilled, (state, action) => {
                 state.loading = false;
                 state.order = action.payload;
                 state.success = true;
             })
-            .addCase(createOrder.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
             // My Orders
-            .addCase(myOrders.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(myOrders.fulfilled, (state, action) => {
                 state.loading = false;
                 state.orders = action.payload;
             })
-            .addCase(myOrders.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
             // All Orders (Admin)
-            .addCase(getAllOrders.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(getAllOrders.fulfilled, (state, action) => {
                 state.loading = false;
                 state.orders = action.payload.orders;
@@ -151,43 +149,34 @@ const orderSlice = createSlice({
                 state.totalOrders = action.payload.totalOrders;
                 state.resultPerPage = action.payload.resultPerPage;
             })
-            .addCase(getAllOrders.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
             // Update Order
-            .addCase(updateOrder.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(updateOrder.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updateOrder.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
             // Delete Order
-            .addCase(deleteOrder.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(deleteOrder.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isDeleted = action.payload;
             })
-            .addCase(deleteOrder.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+
             // Order Details
-            .addCase(getOrderDetails.pending, (state) => {
-                state.loading = true;
-            })
+
             .addCase(getOrderDetails.fulfilled, (state, action) => {
                 state.loading = false;
                 state.orderDetails = action.payload;
             })
-            .addCase(getOrderDetails.rejected, (state, action) => {
+
+
+            // Matchers for common loading and error states
+            .addMatcher(isPending(...thunks), (state) => {
+                state.loading = true;
+            })
+            .addMatcher(isRejected(...thunks), (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
