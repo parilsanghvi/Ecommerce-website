@@ -99,7 +99,9 @@ describe('Products Component Performance', () => {
         );
 
         // Initial render should dispatch once
-        expect(mockDispatch).toHaveBeenCalledTimes(1);
+        await waitFor(() => {
+            expect(mockDispatch).toHaveBeenCalledTimes(1);
+        }, { timeout: 1000 });
         vi.mocked(productSlice.getProduct).mockClear();
         mockDispatch.mockClear();
 
