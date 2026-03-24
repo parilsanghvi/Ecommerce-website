@@ -75,11 +75,13 @@ const ResetPassword = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
-                <input
+                <button
                   type="submit"
-                  value="Update"
                   className="resetPasswordBtn"
-                />
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update"}
+                </button>
               </form>
             </div>
           </div>

@@ -4,8 +4,8 @@ const cloudinary = require("cloudinary")
 const connectDatabase = require('./config/database')
 // handling uncaught exception
 process.on("uncaughtException", (err) => {
-    console.log(`error: ${err.message}`);
-    console.log("shutting down server due to uncaughtException");
+    console.error(`error: ${err.message}`);
+    console.error("shutting down server due to uncaughtException");
     process.exit(1);
 })
 // config
@@ -26,8 +26,8 @@ connectDatabase().then(() => {
 
     // unhandled promise rejection
     process.on("unhandledRejection", err => {
-        console.log(`error: ${err.message}`);
-        console.log("shutting down server due to unhandled promise rejection");
+        console.error(`error: ${err.message}`);
+        console.error("shutting down server due to unhandled promise rejection");
         server.close(() => {
             process.exit(1);
         });

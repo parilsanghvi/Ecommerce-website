@@ -1,8 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import axios from "axios";
-
-// Helper to construct URLs
-const API_BASE_URL = "/api/v1";
+import { API_BASE_URL } from "../config";
 
 // Custom helper to standardize thunk error handling
 export const createThunkHandler = (asyncFunction) => async (arg, thunkAPI) => {
@@ -137,13 +135,14 @@ export const deleteUser = createAsyncThunk(
     })
 );
 
+
 // Slice
 const userSlice = createSlice({
     name: "user",
     initialState: {
         user: {},
         loading: false,
-        usersLoading: false, // New state for admin users fetching
+        usersLoading: false,
         isAuthenticated: false,
         error: null,
         isUpdated: false,
@@ -173,175 +172,132 @@ const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // Login
-            .addCase(login.pending, (state) => {
-                state.loading = true;
-                state.isAuthenticated = false;
-            })
-            .addCase(login.fulfilled, (state, action) => {
-                state.loading = false;
-                state.isAuthenticated = true;
-                state.user = action.payload;
-            })
-            .addCase(login.rejected, (state, action) => {
-                state.loading = false;
-                state.isAuthenticated = false;
-                state.user = null;
-                state.error = action.payload;
-            })
-
-            // Register
-            .addCase(register.pending, (state) => {
-                state.loading = true;
-                state.isAuthenticated = false;
-            })
-            .addCase(register.fulfilled, (state, action) => {
-                state.loading = false;
-                state.isAuthenticated = true;
-                state.user = action.payload;
-            })
-            .addCase(register.rejected, (state, action) => {
-                state.loading = false;
-                state.isAuthenticated = false;
-                state.user = null;
-                state.error = action.payload;
-            })
-
-            // Load User
+            // Login & Register
             .addCase(loadUser.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(loadUser.fulfilled, (state, action) => {
-                state.loading = false;
-                state.isAuthenticated = true;
-                state.user = action.payload;
-            })
-            .addCase(loadUser.rejected, (state, action) => {
+            .addCase(loadUser.rejected, (state) => {
                 state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
-                // state.error = action.payload; // Optional: suppress error on load failure
             })
-
             // Logout
             .addCase(logout.fulfilled, (state) => {
                 state.loading = false;
                 state.user = null;
                 state.isAuthenticated = false;
             })
-            .addCase(logout.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            // Update Profile
-            .addCase(updateProfile.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(updateProfile.fulfilled, (state, action) => {
-                state.loading = false;
-                state.isUpdated = action.payload;
-            })
-            .addCase(updateProfile.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            // Update Password
-            .addCase(updatePassword.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(updatePassword.fulfilled, (state, action) => {
-                state.loading = false;
-                state.isUpdated = action.payload;
-            })
-            .addCase(updatePassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            // Forgot Password
-            .addCase(forgotPassword.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(forgotPassword.fulfilled, (state, action) => {
-                state.loading = false;
-                state.message = action.payload;
-            })
-            .addCase(forgotPassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            // Reset Password
-            .addCase(resetPassword.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(resetPassword.fulfilled, (state, action) => {
-                state.loading = false;
-                state.success = action.payload;
-            })
-            .addCase(resetPassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-
-            // All Users (Admin)
-            .addCase(getAllUsers.pending, (state) => {
-                state.usersLoading = true;
-            })
+            // All Users (Admin) - keep pagination logic from main
             .addCase(getAllUsers.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.users = action.payload.users;
                 state.totalUsers = action.payload.totalUsers;
                 state.resultPerPage = action.payload.resultPerPage;
             })
-            .addCase(getAllUsers.rejected, (state, action) => {
-                state.usersLoading = false;
-                state.error = action.payload;
-            })
-
             // User Details (Admin)
-            .addCase(getUserDetails.pending, (state) => {
-                state.usersLoading = true;
-            })
             .addCase(getUserDetails.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.userDetails = action.payload;
             })
-            .addCase(getUserDetails.rejected, (state, action) => {
-                state.usersLoading = false;
-                state.error = action.payload;
-            })
-
             // Update User (Admin)
-            .addCase(updateUser.pending, (state) => {
-                state.usersLoading = true;
-            })
             .addCase(updateUser.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.isUpdated = action.payload;
             })
-            .addCase(updateUser.rejected, (state, action) => {
-                state.usersLoading = false;
-                state.error = action.payload;
-            })
-
             // Delete User (Admin)
-            .addCase(deleteUser.pending, (state) => {
-                state.usersLoading = true;
-            })
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.usersLoading = false;
                 state.isDeleted = action.payload.success;
                 state.message = action.payload.message;
             })
-            .addCase(deleteUser.rejected, (state, action) => {
-                state.usersLoading = false;
+            // Forgot Password
+            .addCase(forgotPassword.fulfilled, (state, action) => {
+                state.loading = false;
+                state.message = action.payload;
+            })
+            // Reset Password
+            .addCase(resetPassword.fulfilled, (state, action) => {
+                state.loading = false;
+                state.success = action.payload;
+            })
+
+            // Matchers for common cases
+            .addMatcher(isAnyOf(login.pending, register.pending), (state) => {
+                state.loading = true;
+                state.isAuthenticated = false;
+            })
+            .addMatcher(
+                isAnyOf(login.fulfilled, register.fulfilled, loadUser.fulfilled),
+                (state, action) => {
+                    state.loading = false;
+                    state.isAuthenticated = true;
+                    state.user = action.payload;
+                }
+            )
+            .addMatcher(isAnyOf(login.rejected, register.rejected), (state, action) => {
+                state.loading = false;
+                state.isAuthenticated = false;
+                state.user = null;
                 state.error = action.payload;
-            });
+            })
+            .addMatcher(
+                isAnyOf(
+                    updateProfile.pending,
+                    updatePassword.pending,
+                    forgotPassword.pending,
+                    resetPassword.pending
+                ),
+                (state) => {
+                    state.loading = true;
+                    state.error = null;
+                }
+            )
+            .addMatcher(
+                isAnyOf(
+                    updateProfile.fulfilled,
+                    updatePassword.fulfilled
+                ),
+                (state, action) => {
+                    state.loading = false;
+                    state.isUpdated = action.payload;
+                }
+            )
+            .addMatcher(
+                isAnyOf(
+                    updateProfile.rejected,
+                    updatePassword.rejected,
+                    forgotPassword.rejected,
+                    resetPassword.rejected,
+                    logout.rejected
+                ),
+                (state, action) => {
+                    state.loading = false;
+                    state.error = action.payload;
+                }
+            )
+            .addMatcher(
+                isAnyOf(
+                    getAllUsers.pending,
+                    getUserDetails.pending,
+                    updateUser.pending,
+                    deleteUser.pending
+                ),
+                (state) => {
+                    state.usersLoading = true;
+                }
+            )
+            .addMatcher(
+                isAnyOf(
+                    getAllUsers.rejected,
+                    getUserDetails.rejected,
+                    updateUser.rejected,
+                    deleteUser.rejected
+                ),
+                (state, action) => {
+                    state.usersLoading = false;
+                    state.error = action.payload;
+                }
+            );
     },
 });
 
@@ -352,5 +308,7 @@ export const {
     updateUserReset,
     deleteUserReset,
 } = userSlice.actions;
+
+export const selectUser = (state) => state.user;
 
 export default userSlice.reducer;
