@@ -69,10 +69,7 @@ const UpdateProfile = () => {
   }, [dispatch, error, enqueueSnackbar, navigate, user, isUpdated, avatar]);
   return (
     <Fragment>
-      {loading ? (
-        <Loader />
-      ) : (
-        <Fragment>
+
           <MetaData title="Update Profile" />
           <div className="updateProfileContainer">
             <div className="updateProfileBox">
@@ -115,15 +112,17 @@ const UpdateProfile = () => {
                     onChange={updateProfileDataChange}
                   />
                 </div>
-                <button type="submit" className="primary-btn" disabled={loading}>
+                <button
+                  type="submit"
+                  className="primary-btn"
+                  disabled={loading}
+                >
                   {loading ? "Updating..." : "Update"}
                 </button>
               </form>
             </div>
           </div>
         </Fragment>
-      )}
-    </Fragment>
   );
 };
 

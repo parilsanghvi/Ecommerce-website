@@ -32,10 +32,7 @@ const ForgotPassword = () => {
   }, [dispatch, error, enqueueSnackbar, message]);
   return (
     <Fragment>
-      {loading ? (
-        <Loader />
-      ) : (
-        <Fragment>
+
           <MetaData title="Forgot Password" />
           <div className="forgotPasswordContainer">
             <div className="forgotPasswordBox">
@@ -56,15 +53,17 @@ const ForgotPassword = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <button type="submit" className="forgotPasswordBtn" disabled={loading}>
+                <button
+                  type="submit"
+                  className="forgotPasswordBtn"
+                  disabled={loading}
+                >
                   {loading ? "Sending..." : "Send"}
                 </button>
               </form>
             </div>
           </div>
         </Fragment>
-      )}
-    </Fragment>
   )
 }
 

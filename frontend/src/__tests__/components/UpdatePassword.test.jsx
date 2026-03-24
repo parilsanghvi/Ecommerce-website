@@ -7,10 +7,10 @@ const mockDispatch = vi.fn();
 const mockNavigate = vi.fn();
 const mockEnqueueSnackbar = vi.fn();
 
+import * as reactRedux from 'react-redux';
+
 vi.mock('react-redux', () => ({
-    useSelector: (selector) => selector({
-        user: { error: null, isUpdated: false, loading: false },
-    }),
+    useSelector: vi.fn(),
     useDispatch: () => mockDispatch,
 }));
 
@@ -26,7 +26,12 @@ vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/layout/Loader', () => ({ default: () => <div data-testid="loader">Loading...</div> }));
 
 describe('UpdatePassword', () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+        vi.clearAllMocks();
+        reactRedux.useSelector.mockImplementation((selector) => selector({
+            user: { error: null, isUpdated: false, loading: false },
+        }));
+    });
 
     it('renders update password form with three fields', () => {
         render(<UpdatePassword />);
@@ -43,6 +48,16 @@ describe('UpdatePassword', () => {
         fireEvent.change(screen.getByPlaceholderText('Confirm Password'), { target: { value: 'new123' } });
         fireEvent.submit(screen.getByRole('button', { name: /change/i }));
         expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('shows loading state and disables button', () => {
+        reactRedux.useSelector.mockImplementation((selector) => selector({
+            user: { error: null, isUpdated: false, loading: true },
+        }));
+        render(<UpdatePassword />);
+        const button = screen.getByRole('button', { name: /changing\.\.\./i });
+        expect(button).toBeDisabled();
+        expect(button).toBeInTheDocument();
     });
 
     it('renders heading', () => {

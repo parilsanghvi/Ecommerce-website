@@ -37,7 +37,8 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
     // Verify itemsPrice against database
     const productIds = orderItems.map(item => item.product);
-    const products = await Product.find({ _id: { $in: productIds } });
+    // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
+    const products = await Product.find({ _id: { $in: productIds } }).select("price").lean();
 
     const productMap = new Map(products.map(p => [p._id.toString(), p]));
 
@@ -47,7 +48,6 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         if (!Number.isInteger(item.quantity) || item.quantity < 1) {
             return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
         }
-
         const product = productMap.get(String(item.product));
         if (!product) {
             return next(new ErrorHandler(`Product not found: ${item.product}`, 404));
@@ -232,12 +232,29 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("you have recieved order", 400))
     }
 
-    if (order.orderStatus === "Shipped" && req.body.status === "Shipped") {
-        return next(new ErrorHandler("Order has already been shipped", 400));
+    if (order.orderStatus === req.body.status) {
+        return next(new ErrorHandler(`Order has already been marked as ${req.body.status}`, 400));
     }
 
 
     if (req.body.status === "Shipped") {
+        // Pre-verify stock to prevent partial updates and data inconsistency
+        const productIds = order.orderItems.map(item => item.product);
+        const products = await Product.find({ _id: { $in: productIds } });
+
+        let hasInsufficientStock = false;
+        for (const item of order.orderItems) {
+            const product = products.find(p => p._id.toString() === item.product.toString());
+            if (!product || product.stock < item.quantity) {
+                hasInsufficientStock = true;
+                break;
+            }
+        }
+
+        if (hasInsufficientStock) {
+            return next(new ErrorHandler("Insufficient stock for one or more products", 400));
+        }
+
         const operations = order.orderItems.map((item) => ({
             updateOne: {
                 filter: { _id: item.product, stock: { $gte: item.quantity } },
@@ -248,7 +265,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         if (operations.length > 0) {
             const result = await Product.bulkWrite(operations);
             if (result.modifiedCount !== operations.length) {
-                throw new ErrorHandler("Insufficient stock for one or more products", 400);
+                return next(new ErrorHandler("Insufficient stock for one or more products", 400));
             }
         }
     }

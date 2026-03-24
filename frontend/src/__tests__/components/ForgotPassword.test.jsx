@@ -6,10 +6,10 @@ import ForgotPassword from '../../component/User/ForgotPassword';
 const mockDispatch = vi.fn();
 const mockEnqueueSnackbar = vi.fn();
 
+import * as reactRedux from 'react-redux';
+
 vi.mock('react-redux', () => ({
-    useSelector: (selector) => selector({
-        user: { error: null, message: null, loading: false },
-    }),
+    useSelector: vi.fn(),
     useDispatch: () => mockDispatch,
 }));
 
@@ -21,7 +21,12 @@ vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/layout/Loader', () => ({ default: () => <div data-testid="loader">Loading...</div> }));
 
 describe('ForgotPassword', () => {
-    beforeEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+        vi.clearAllMocks();
+        reactRedux.useSelector.mockImplementation((selector) => selector({
+            user: { error: null, message: null, loading: false },
+        }));
+    });
 
     it('renders forgot password form', () => {
         render(<ForgotPassword />);
@@ -35,6 +40,16 @@ describe('ForgotPassword', () => {
         fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'test@test.com' } });
         fireEvent.submit(screen.getByRole('button', { name: /send/i }));
         expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it('shows loading state and disables button', () => {
+        reactRedux.useSelector.mockImplementation((selector) => selector({
+            user: { error: null, message: null, loading: true },
+        }));
+        render(<ForgotPassword />);
+        const button = screen.getByRole('button', { name: /sending\.\.\./i });
+        expect(button).toBeDisabled();
+        expect(button).toBeInTheDocument();
     });
 
     it('updates email state on input change', () => {
