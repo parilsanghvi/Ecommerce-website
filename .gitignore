@@ -1,3 +1,14 @@
 node_modules
 config.env
 RECOMMENDATIONS.md
+
+# Generated Artifacts and Tools
+coverage/
+benchmarks/
+verification/
+*.log
+.Jules/
+.jules/
+.setu/
+.agent/
+.agents/
