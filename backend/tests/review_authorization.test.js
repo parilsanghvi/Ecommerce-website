@@ -39,6 +39,7 @@ describe('deleteReview Authorization Security Test', () => {
 
     Review.findById = jest.fn().mockResolvedValue(mockReview);
     Review.findByIdAndDelete = jest.fn().mockResolvedValue(true);
+    Review.aggregate = jest.fn().mockResolvedValue([{ _id: mockProductId, numOfReviews: 0, avgRating: 0 }]);
     Product.findByIdAndUpdate = jest.fn().mockResolvedValue(true);
 
     // 2. Mock Request as Attacker (UserB)
@@ -92,6 +93,7 @@ describe('deleteReview Authorization Security Test', () => {
 
     Review.findById = jest.fn().mockResolvedValue(mockReview);
     Review.findByIdAndDelete = jest.fn().mockResolvedValue(true);
+    Review.aggregate = jest.fn().mockResolvedValue([{ _id: mockProductId, numOfReviews: 0, avgRating: 0 }]);
     Product.findByIdAndUpdate = jest.fn().mockResolvedValue(true);
 
     // 2. Mock Request as Owner (UserA)
