@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 import Products from '../component/Product/Products';
@@ -47,7 +47,7 @@ vi.mock('../component/layout/MetaData', () => ({
 
 describe('Products Component - Empty State', () => {
 
-    it('renders "No Products Found" and "Reset Filters" button when product list is empty', () => {
+    it('renders "No Products Found" and "Reset Filters" button when product list is empty', async () => {
         render(
             <BrowserRouter>
                 <Products />
@@ -64,6 +64,8 @@ describe('Products Component - Empty State', () => {
         // Since resetFilters updates state, it triggers useEffect which dispatches getProduct
         // The getProduct action is dispatched with default values.
         // We can check if dispatch was called.
-        expect(mockDispatch).toHaveBeenCalled();
+        await waitFor(() => {
+            expect(mockDispatch).toHaveBeenCalled();
+        }, { timeout: 1000 });
     });
 });

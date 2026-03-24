@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
-import { Typography } from "@mui/material";
+import { Typography, CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 import {
   CardNumberElement,
@@ -34,6 +34,7 @@ const Payment = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
   const { error } = useSelector((state) => state.order);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Detect theme for Stripe Elements styling
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -91,7 +92,9 @@ const Payment = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    setIsProcessing(true);
     payBtn.current.disabled = true;
+    setIsProcessing(true);
 
     try {
       const config = {
@@ -107,7 +110,11 @@ const Payment = () => {
 
       const client_secret = data.client_secret;
 
-      if (!stripe || !elements) return;
+      if (!stripe || !elements) {
+        setIsProcessing(false);
+        payBtn.current.disabled = false;
+        return;
+      }
 
       const result = await stripe.confirmCardPayment(client_secret, {
         payment_method: {
@@ -127,7 +134,9 @@ const Payment = () => {
       });
 
       if (result.error) {
+        setIsProcessing(false);
         payBtn.current.disabled = false;
+        setIsProcessing(false);
 
         enqueueSnackbar(result.error.message, { variant: "error" });
       } else {
@@ -142,16 +151,20 @@ const Payment = () => {
             let id = order.orderItems[i].product;
             dispatch(removeItemsFromCart(id));
           }
+          setIsProcessing(false);
           navigate("/success");
         } else {
+          setIsProcessing(false);
+          payBtn.current.disabled = false;
           enqueueSnackbar("There's some issue while processing payment ", {
             variant: "error",
           });
         }
       }
     } catch (error) {
+      setIsProcessing(false);
       payBtn.current.disabled = false;
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
 
@@ -182,12 +195,21 @@ const Payment = () => {
             <CardCvcElement className="paymentInput" options={stripeElementStyle} />
           </div>
 
-          <input
+          <button
             type="submit"
-            value={`Pay - ₹${orderInfo && orderInfo.totalPrice}`}
             ref={payBtn}
             className="primary-btn paymentFormBtn"
-          />
+            disabled={isProcessing}
+            aria-busy={isProcessing}
+            aria-label={isProcessing ? "Processing payment" : "Pay now"}
+            style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
+          >
+            {isProcessing ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              `Pay - ₹${orderInfo && orderInfo.totalPrice}`
+            )}
+          </button>
         </form>
       </div>
     </Fragment>
