@@ -10,6 +10,13 @@ const sendToken = (user, statusCode, res) => {
         secure: process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production',
         sameSite: 'strict',
     }
+
+    // Security Fix: Prevent leaking hashed password when user object is passed
+    // explicitly via .select("+password") in the controller (e.g. login, updatePassword)
+    if (user && user.password) {
+        user.password = undefined;
+    }
+
     res.status(statusCode).cookie("token",token,options).json({
         success:true,
         user,
