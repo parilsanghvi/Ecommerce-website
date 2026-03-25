@@ -46,3 +46,6 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+## 2024-05-24 - [Optimize updateOrder stock verification]
+**Learning:** Found a O(N*M) nested loop used to verify stock in `updateOrder`. This can be optimized by fetching the products and converting the array into a map, and mapping the original lookup to `.get()`. Also used `.select('stock').lean()` to fetch only required fields and skip mongoose hydration.
+**Action:** Replaced O(N*M) lookups inside loops with O(N+M) Map lookups, and ensure we only fetch required fields using `.select().lean()`.
