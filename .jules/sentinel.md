@@ -64,3 +64,7 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2024-05-24 - Rate Limit Authentication Endpoints
+**Vulnerability:** Missing rate limiting on `/password/reset/:token` and `/password/update` endpoints allowed for potential brute force and Denial of Service (DoS) attacks on user authentication tokens and passwords.
+**Learning:** Even with global rate limits, sensitive authentication endpoints require strict, localized rate limits to prevent targeted attacks.
+**Prevention:** Always apply specific `rateLimiter` middlewares to all routes handling authentication, password resets, and profile updates.
