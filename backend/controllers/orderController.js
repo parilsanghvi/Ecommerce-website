@@ -240,11 +240,15 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     if (req.body.status === "Shipped") {
         // Pre-verify stock to prevent partial updates and data inconsistency
         const productIds = order.orderItems.map(item => item.product);
-        const products = await Product.find({ _id: { $in: productIds } });
+        // ⚡ Bolt: Use .select("stock").lean() to skip Mongoose hydration for read-only validation
+        const products = await Product.find({ _id: { $in: productIds } }).select("stock").lean();
+
+        // ⚡ Bolt: Replace O(N*M) array lookup with O(N+M) Map lookup
+        const productMap = new Map(products.map(p => [p._id.toString(), p]));
 
         let hasInsufficientStock = false;
         for (const item of order.orderItems) {
-            const product = products.find(p => p._id.toString() === item.product.toString());
+            const product = productMap.get(item.product.toString());
             if (!product || product.stock < item.quantity) {
                 hasInsufficientStock = true;
                 break;
