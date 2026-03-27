@@ -32,12 +32,14 @@ router.route("/login").post(rateLimiter(15 * 60 * 1000, 10, "Too many login atte
 
 router.route("/password/forgot").post(rateLimiter(15 * 60 * 1000, 5, "Too many password reset attempts, please try again later"), validate(forgotPasswordSchema), forgotPassword);
 
+// 🛡️ Sentinel: Added rate limiting to prevent brute-force attacks on password reset tokens
 router.route("/password/reset/:token").put(rateLimiter(15 * 60 * 1000, 5, "Too many password reset attempts, please try again later"), validate(resetPasswordSchema), resetPassword);
 
 router.route("/logout").get(logout)
 
 router.route("/me").get(isAuthenticatedUser, getUserDetails)
 
+// 🛡️ Sentinel: Added rate limiting to mitigate rapid, automated password update attempts
 router.route("/password/update").put(rateLimiter(15 * 60 * 1000, 5, "Too many password update attempts, please try again later"), isAuthenticatedUser, updatePassword)
 
 router.route("/me/update").put(isAuthenticatedUser, upload.none(), validate(updateProfileSchema), updateProfile)
