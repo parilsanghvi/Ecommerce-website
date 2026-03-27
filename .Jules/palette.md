@@ -57,3 +57,11 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+
+## 2025-05-27 - Button ARIA labels vs visible text
+**Learning:** Found an `aria-label` like "Pay now" overriding a button's visible text ("Pay - ₹110"). This makes it impossible for screen reader users to know the dynamic text (like the total price) displayed on the button.
+**Action:** Do not use `aria-label` on text buttons unless absolutely necessary. Let the native text content act as the accessible name to preserve dynamic contextual information.
+
+## 2025-05-27 - Declarative vs imperative DOM manipulation
+**Learning:** Legacy imperative DOM manipulations using `ref.current.disabled = true` can crash (`TypeError: Cannot set properties of null`) if elements conditionally render, unmount, or interact unexpectedly with tests.
+**Action:** Use declarative React state like `disabled={isProcessing}` for button interactions to ensure synchronous accessibility changes without fighting the component lifecycle.
