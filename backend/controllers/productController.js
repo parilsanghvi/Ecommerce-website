@@ -100,15 +100,18 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
     const limit = Number(queryParams.limit) || 0; // 0 means no limit (legacy behavior if not provided)
     const skip = (page - 1) * limit;
 
-    const totalCount = await Product.countDocuments();
-
     let query = Product.find().select("name price stock").lean();
 
     if (limit > 0) {
         query = query.skip(skip).limit(limit);
     }
 
-    const products = await query;
+    // ⚡ Bolt: Use Promise.all to fetch totalCount and products concurrently
+    // ⚡ Bolt: Use estimatedDocumentCount() for O(1) counting instead of countDocuments()
+    const [totalCount, products] = await Promise.all([
+        Product.estimatedDocumentCount(),
+        query
+    ]);
 
     res.status(200).json({
         success: true,
