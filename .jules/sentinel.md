@@ -64,3 +64,7 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2024-05-24 - [Add rate limiting to sensitive password routes]
+**Vulnerability:** Missing rate limiting on sensitive password reset and update endpoints (`/password/reset/:token` and `/password/update`).
+**Learning:** While login and forgot password endpoints were protected, the actual password modification endpoints were left exposed, creating a brute-force or DoS risk on password changes.
+**Prevention:** Always apply rate limiting across the entire lifecycle of sensitive operations, not just the initial request endpoints.
