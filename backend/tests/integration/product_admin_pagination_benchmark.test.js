@@ -19,11 +19,11 @@ beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
     await mongoose.connect(uri);
-});
+}, 30000); // Increased timeout to 30s
 
 afterAll(async () => {
     await mongoose.disconnect();
-    await mongoServer.stop();
+    if(mongoServer) await mongoServer.stop();
 });
 
 beforeEach(async () => {
