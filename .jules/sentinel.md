@@ -64,3 +64,7 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2024-05-20 - Add Rate Limiting to Password Reset and Update Routes
+**Vulnerability:** Missing rate limiting on sensitive `/password/reset/:token` and `/password/update` endpoints allows potential brute-force or Denial of Service (DoS) attacks.
+**Learning:** All sensitive user authentication routes (e.g., login, registration, password reset, and password update) must utilize the `rateLimiter` middleware to prevent brute-force and DoS attacks.
+**Prevention:** Consistently apply a `rateLimiter` with an appropriate window and maximum request limit to all authentication-related and password-altering routes.
