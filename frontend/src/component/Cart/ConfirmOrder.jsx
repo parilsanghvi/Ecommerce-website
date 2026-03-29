@@ -34,11 +34,12 @@ const ConfirmOrder = () => {
     const fetchPricing = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`${API_BASE_URL}/pricing?itemsPrice=${subtotal}`);
+        const response = await axios.get(`${API_BASE_URL}/pricing?itemsPrice=${subtotal}`);
+        const data = response?.data || {};
         setPricing({
-          tax: data.taxPrice,
-          shippingCharges: data.shippingPrice,
-          totalPrice: data.totalPrice,
+          tax: data.taxPrice || 0,
+          shippingCharges: data.shippingPrice || 0,
+          totalPrice: data.totalPrice || 0,
         });
         setLoading(false);
       } catch (error) {
