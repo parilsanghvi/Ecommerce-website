@@ -240,7 +240,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     if (req.body.status === "Shipped") {
         // Pre-verify stock to prevent partial updates and data inconsistency
         const productIds = order.orderItems.map(item => item.product);
-        const products = await Product.find({ _id: { $in: productIds } });
+        // ⚡ Bolt: Fetch only required `stock` field and use lean() for faster read-only access
+        const products = await Product.find({ _id: { $in: productIds } }).select("stock").lean();
 
         let hasInsufficientStock = false;
         for (const item of order.orderItems) {
