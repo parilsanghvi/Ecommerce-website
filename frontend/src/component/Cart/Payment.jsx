@@ -207,11 +207,10 @@ const Payment = () => {
             className="primary-btn paymentFormBtn"
             disabled={isProcessing}
             aria-busy={isProcessing}
-            aria-label={isProcessing ? "Processing payment" : "Pay now"}
             style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
           >
             {isProcessing ? (
-              <CircularProgress size={24} color="inherit" />
+              <CircularProgress size={24} color="inherit" aria-label="Processing payment" />
             ) : (
               `Pay - ₹${orderInfo && orderInfo.totalPrice ? orderInfo.totalPrice : ""}`
             )}
