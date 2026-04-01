@@ -169,7 +169,7 @@ const Payment = () => {
       }
     } catch (error) {
       setIsProcessing(false);
-      payBtn.current.disabled = false;
+      if (payBtn.current) payBtn.current.disabled = false;
       enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
@@ -207,7 +207,7 @@ const Payment = () => {
             className="primary-btn paymentFormBtn"
             disabled={isProcessing}
             aria-busy={isProcessing}
-            aria-label={isProcessing ? "Processing payment" : "Pay now"}
+            aria-label={isProcessing ? "Processing payment" : undefined}
             style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
           >
             {isProcessing ? (
