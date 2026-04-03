@@ -40,13 +40,19 @@ const Dashboard = () => {
   // error
   const { totalUsers } = useSelector((state) => state.user);
   // console.log(orders.length);
-  let outOfStock = 0;
-  products &&
-    products.forEach((item) => {
-      if (item.stock === 0) {
-        outOfStock += 1;
-      }
-    });
+
+  // ⚡ Bolt: [performance improvement] Memoize the outOfStock calculation to prevent O(N) recalculations on every render
+  const outOfStock = React.useMemo(() => {
+    let count = 0;
+    if (products) {
+      products.forEach((item) => {
+        if (item.stock === 0) {
+          count += 1;
+        }
+      });
+    }
+    return count;
+  }, [products]);
 
   useEffect(() => {
     dispatch(getAdminProduct());
