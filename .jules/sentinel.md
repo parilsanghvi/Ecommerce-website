@@ -64,3 +64,7 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2024-05-14 - Prevent Password Hash Leak in resetPassword Controller
+**Vulnerability:** The password hash was being leaked in the API response when a user successfully reset their password.
+**Learning:** The `resetPassword` controller modified the user object (`user.password = req.body.password`), triggering the pre-save hook to hash it. Then, `user.save()` returned the updated document *including* the hashed password. Because `sendToken(user, 200, res)` serialized the entire `user` object to JSON, the hash was exposed to the client. This differed from other controllers where `user.password = undefined` was explicitly set.
+**Prevention:** Always ensure `user.password = undefined` is explicitly set before passing user documents to `sendToken` or any serialization function, particularly after mutating the object or querying with `select('+password')`.

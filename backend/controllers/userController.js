@@ -143,6 +143,8 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     user.resetPasswordToken = undefined
     user.resetPasswordExpire = undefined
     await user.save();
+    // Security Fix: Do not leak password hash in API response
+    user.password = undefined;
     sendToken(user, 200, res);
 })
 // get user detail
