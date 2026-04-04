@@ -64,3 +64,8 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+
+## 2025-03-01 - Missing Rate Limiting on Password Reset and Update
+**Vulnerability:** The `/password/reset/:token` and `/password/update` endpoints lacked rate limiting middleware. This could allow attackers to brute-force reset tokens or overwhelm the server with password update requests (Denial of Service).
+**Learning:** Rate limiting must be consistently applied to *all* sensitive authentication and account recovery endpoints, not just login and registration.
+**Prevention:** Always verify that newly added or modified authentication-related endpoints include the `rateLimiter` middleware.
