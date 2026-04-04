@@ -169,7 +169,9 @@ const Payment = () => {
       }
     } catch (error) {
       setIsProcessing(false);
-      payBtn.current.disabled = false;
+      if (payBtn.current) {
+        payBtn.current.disabled = false;
+      }
       enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
