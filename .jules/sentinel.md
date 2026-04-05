@@ -64,3 +64,9 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2025-02-27 - Missing Rate Limiting on Password Endpoints
+**Vulnerability:** The `/password/reset/:token` and `/password/update` endpoints lacked brute-force protection (rate limiting), despite being sensitive authentication routes.
+**Learning:** While login and forgot password routes often get rate limiters first, all authentication-related endpoints that verify or change credentials must be equally protected against brute-force attacks.
+**Prevention:**
+1. Systematically audit all authentication-related routes (login, register, forgot password, reset password, update password, 2FA) to ensure rate limiting is applied universally.
+2. Reuse existing custom `rateLimiter` middleware to maintain consistent limits and expiration windows across the application.
