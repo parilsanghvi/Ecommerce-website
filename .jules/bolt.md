@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+
+## 2025-03-05 - Avoid Static Method Recalculation on Re-render
+**Learning:** Calling static library functions (like `Country.getAllCountries()` from `country-state-city`) inside a React component's render body causes an O(N) recalculation to run unnecessarily on every state update (e.g., when a user types in an input field).
+**Action:** Always wrap static library function calls or expensive derived state logic within a `useMemo` hook to ensure the result is only computed once, rather than re-evaluating it during every keystroke or component re-render.
