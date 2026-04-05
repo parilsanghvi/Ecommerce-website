@@ -99,7 +99,7 @@ const Payment = () => {
     e.preventDefault();
 
     setIsProcessing(true);
-    payBtn.current.disabled = true;
+    if (payBtn.current) payBtn.current.disabled = true;
     setIsProcessing(true);
 
     try {
@@ -118,7 +118,7 @@ const Payment = () => {
 
       if (!stripe || !elements) {
         setIsProcessing(false);
-        payBtn.current.disabled = false;
+        if (payBtn.current) payBtn.current.disabled = false;
         return;
       }
 
@@ -141,7 +141,7 @@ const Payment = () => {
 
       if (result.error) {
         setIsProcessing(false);
-        payBtn.current.disabled = false;
+        if (payBtn.current) payBtn.current.disabled = false;
         setIsProcessing(false);
 
         enqueueSnackbar(result.error.message, { variant: "error" });
@@ -161,7 +161,7 @@ const Payment = () => {
           navigate("/success");
         } else {
           setIsProcessing(false);
-          payBtn.current.disabled = false;
+          if (payBtn.current) payBtn.current.disabled = false;
           enqueueSnackbar("There's some issue while processing payment ", {
             variant: "error",
           });
@@ -169,7 +169,7 @@ const Payment = () => {
       }
     } catch (error) {
       setIsProcessing(false);
-      payBtn.current.disabled = false;
+      if (payBtn.current) payBtn.current.disabled = false;
       enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
@@ -207,7 +207,7 @@ const Payment = () => {
             className="primary-btn paymentFormBtn"
             disabled={isProcessing}
             aria-busy={isProcessing}
-            aria-label={isProcessing ? "Processing payment" : "Pay now"}
+            aria-label={isProcessing ? "Processing payment" : undefined}
             style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
           >
             {isProcessing ? (
