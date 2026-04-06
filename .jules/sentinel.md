@@ -64,3 +64,7 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+## 2024-04-06 - Missing Rate Limiting on Sensitive Authentication Routes
+**Vulnerability:** Found missing rate limiting on `/password/reset/:token` and `/password/update` routes, allowing for potential brute-force and Denial of Service (DoS) attacks on sensitive authentication operations.
+**Learning:** While login and registration had rate limiting, other sensitive routes modifying passwords did not. This inconsistency leaves critical functions vulnerable and bypasses partial security protections.
+**Prevention:** All sensitive user authentication and account modification routes must implement rate limiting middleware systematically to prevent automated attacks.
