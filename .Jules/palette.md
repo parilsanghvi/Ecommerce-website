@@ -57,3 +57,7 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+
+## 2024-04-06 - Accessible Input Fields
+**Learning:** Found an accessibility issue pattern where many form inputs (like Name, Email, Password fields in user profile and authentication forms) were missing associated `<label>` elements and relied entirely on `placeholder` text. This makes them inaccessible to screen readers because placeholders are not reliable accessible names.
+**Action:** Always ensure that every `<input>` either has a linked `<label>` or an `aria-label` attribute describing its purpose, especially when visual design constraints prevent using a visible label.
