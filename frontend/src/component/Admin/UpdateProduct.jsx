@@ -231,7 +231,6 @@ const UpdateProduct = () => {
                 <img src={image} alt="Product Preview" style={{ border: '2px solid var(--color-border)', width: '5vmax', height: '5vmax', objectFit: 'cover' }} />
                 <button
                   type="button"
-                  aria-label="Remove image"
                   onClick={() => removeImage(index)}
                   aria-label="Remove image"
                   style={{
