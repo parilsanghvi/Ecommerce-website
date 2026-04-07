@@ -27,6 +27,8 @@ const Shipping = () => {
   const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo);
 
+  // ⚡ Bolt Optimization: Memoize the heavy country and state array generations
+  // to prevent O(N) recalculations on every keystroke when typing in the form.
   const countries = useMemo(() => (Country ? Country.getAllCountries() : []), []);
   const states = useMemo(() => (State && country ? State.getStatesOfCountry(country) : []), [country]);
 
