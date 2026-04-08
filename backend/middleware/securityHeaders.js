@@ -9,6 +9,15 @@ const securityHeaders = (req, res, next) => {
     // Control referrer information sent to other sites
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
+    // Enable browser's built-in XSS filter
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+
+    // Content Security Policy (CSP) to restrict sources of executable scripts
+    res.setHeader(
+        'Content-Security-Policy',
+        "default-src 'self'; img-src 'self' data: https://res.cloudinary.com; script-src 'self' https://js.stripe.com; frame-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://api.stripe.com"
+    );
+
     // HTTP Strict Transport Security (HSTS)
     // Enforces HTTPS connections. Only set in production to avoid issues with local development (http)
     if (process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production') {

@@ -16,6 +16,8 @@ describe('Security Headers', () => {
         expect(res.headers['x-content-type-options']).toBe('nosniff');
         expect(res.headers['x-frame-options']).toBe('DENY');
         expect(res.headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+        expect(res.headers['x-xss-protection']).toBe('1; mode=block');
+        expect(res.headers['content-security-policy']).toBe("default-src 'self'; img-src 'self' data: https://res.cloudinary.com; script-src 'self' https://js.stripe.com; frame-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://api.stripe.com");
         expect(res.headers['x-powered-by']).toBeUndefined();
     });
 
