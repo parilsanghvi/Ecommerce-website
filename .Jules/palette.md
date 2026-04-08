@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2024-05-19 - Fix Payment Button Accessibility
+**Learning:** A static `aria-label` completely overrides the element's visible text content for screen readers. Using `aria-label="Pay now"` on a button containing dynamic text like `Pay - ₹118` prevents users from hearing the payment amount.
+**Action:** Use `aria-label` conditionally (e.g. `isProcessing ? "Processing payment" : undefined`) to allow native text content to be announced when it contains contextually important, dynamic information. Ensure tests assert against the dynamically exposed visible text.
