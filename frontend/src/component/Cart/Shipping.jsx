@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useMemo } from "react";
 import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 import { saveShippingInfo } from "../../features/cartSlice";
@@ -26,6 +26,14 @@ const Shipping = () => {
   const [country, setCountry] = useState(shippingInfo.country);
   const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo);
+
+  // ⚡ Bolt: [performance improvement] Memoize expensive country/state arrays
+  // 💡 What: Wrapped `Country.getAllCountries()` and `State.getStatesOfCountry()` in useMemo.
+  // 🎯 Why: These synchronous library functions perform expensive O(N) operations. Running them directly in the render body causes bottlenecks on every keystroke when user types in the form inputs.
+  // 📊 Impact: Prevents unnecessary O(N) array generation and React reconciliations on every component re-render (which happens frequently as user updates shipping info state).
+  // 🔬 Measurement: Observe lower total component render times in React DevTools Profiler when typing in the Address or Phone Number fields.
+  const countries = useMemo(() => Country ? Country.getAllCountries() : [], []);
+  const states = useMemo(() => State && country ? State.getStatesOfCountry(country) : [], [country]);
 
   const shippingSubmit = (e) => {
     e.preventDefault();
@@ -114,12 +122,11 @@ const Shipping = () => {
                 onChange={(e) => setCountry(e.target.value)}
               >
                 <option value="">Country</option>
-                {Country &&
-                  Country.getAllCountries().map((item) => (
-                    <option key={item.isoCode} value={item.isoCode}>
-                      {item.name}
-                    </option>
-                  ))}
+                {countries.map((item) => (
+                  <option key={item.isoCode} value={item.isoCode}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -134,12 +141,11 @@ const Shipping = () => {
                   onChange={(e) => setState(e.target.value)}
                 >
                   <option value="">State</option>
-                  {State &&
-                    State.getStatesOfCountry(country).map((item) => (
-                      <option key={item.isoCode} value={item.isoCode}>
-                        {item.name}
-                      </option>
-                    ))}
+                  {states.map((item) => (
+                    <option key={item.isoCode} value={item.isoCode}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}
