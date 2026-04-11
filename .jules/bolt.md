@@ -46,3 +46,6 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+## 2024-04-11 - [Mongoose Optimization Map Lookups]
+**Learning:** Nested array `.find()` calls against Mongoose results are an easy O(M*N) trap in node apps when iterating.
+**Action:** When pre-verifying nested data models (like comparing order items to stock), convert the `find` result array to a `Map` keyed by ID for O(1) lookups, dropping the complexity to O(M+N). Always append `.select().lean()` when only checking specific properties.
