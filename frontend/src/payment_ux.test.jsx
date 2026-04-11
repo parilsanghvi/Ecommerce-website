@@ -66,7 +66,7 @@ describe('Payment Component UX', () => {
       </Provider>
     );
 
-    const payButton = screen.getByRole('button', { name: /pay - ₹110/i });
+    const payButton = screen.getByRole('button', { name: /pay now/i });
     expect(payButton).toBeInTheDocument();
 
     // Check initial state
