@@ -47,6 +47,7 @@ const ForgotPassword = () => {
                   <input
                     type="email"
                     placeholder="Email"
+                    aria-label="Email"
                     required
                     name="email"
                     value={email}

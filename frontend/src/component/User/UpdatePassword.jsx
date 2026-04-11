@@ -69,6 +69,7 @@ const UpdatePassword = () => {
                   <input
                     type={showOldPassword ? "text" : "password"}
                     placeholder="Old Password"
+                    aria-label="Old Password"
                     required
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
@@ -87,6 +88,7 @@ const UpdatePassword = () => {
                   <input
                     type={showNewPassword ? "text" : "password"}
                     placeholder="New Password"
+                    aria-label="New Password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
@@ -105,6 +107,7 @@ const UpdatePassword = () => {
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"
+                    aria-label="Confirm Password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}

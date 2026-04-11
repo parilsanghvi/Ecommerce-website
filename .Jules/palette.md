@@ -57,3 +57,7 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+
+## 2025-05-27 - Password Inputs Lacking ARIA Labels
+**Learning:** Found multiple password-related form inputs (UpdatePassword, ResetPassword) relying entirely on visual placeholders without any associated `<label>` or `aria-label`, making them inaccessible to screen reader users trying to update their credentials.
+**Action:** Always verify that password reset, update, and confirmation forms explicitly use descriptive `aria-label`s on their inputs if a visible `<label>` is not present in the design.
