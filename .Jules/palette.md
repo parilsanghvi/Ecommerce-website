@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2024-04-12 - Dynamic Text vs Static ARIA Labels
+**Learning:** Applying a static `aria-label` to a button containing dynamic, contextually important text (e.g., 'Pay - ₹118') completely overrides the element's visible text for screen readers, masking essential contextual information.
+**Action:** Avoid static `aria-label` overrides on elements with dynamic content; set `aria-label` conditionally (e.g., to undefined) to expose the native text content.
