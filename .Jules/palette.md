@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2026-04-13 - Enhance User Forms with ARIA Labels and Disabled States
+**Learning:** Adding `aria-label` attributes to form inputs that rely solely on placeholders, combined with disabling fields during async operations, significantly improves screen reader accessibility and prevents duplicate submissions without disrupting the visual design.
+**Action:** Always ensure inputs without visible labels have descriptive `aria-label` attributes and use `disabled={loading}` states on both inputs and buttons during API calls.
