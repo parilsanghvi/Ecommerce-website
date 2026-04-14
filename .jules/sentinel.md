@@ -64,3 +64,8 @@
 **Prevention:**
 1. Explicitly check that numerical inputs affecting business logic (like quantities) are strictly valid integers using `Number.isInteger(val) && val >= 1`.
 2. Fail fast with an appropriate `400 Bad Request` explicitly stating the invalid input.
+
+## 2024-05-24 - Missing CSP Header Exposes React Frontend to Data Injection
+**Vulnerability:** The application was serving the frontend static files without a Content-Security-Policy (CSP) and X-XSS-Protection header, leaving the application vulnerable to certain types of XSS and unauthorized data injection despite using React.
+**Learning:** Even when the frontend uses modern frameworks like React that automatically escape HTML content, defense-in-depth via HTTP headers like CSP is crucial to restrict where scripts, styles, and data can be loaded from. Custom security middleware must manually implement headers that libraries like `helmet` provide by default.
+**Prevention:** Always implement a strict Content-Security-Policy (CSP) in custom security middleware to act as a fallback layer of defense against XSS and data exfiltration.
