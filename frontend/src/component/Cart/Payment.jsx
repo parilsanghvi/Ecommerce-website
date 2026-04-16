@@ -207,7 +207,6 @@ const Payment = () => {
             className="primary-btn paymentFormBtn"
             disabled={isProcessing}
             aria-busy={isProcessing}
-            aria-label={isProcessing ? "Processing payment" : "Pay now"}
             style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
           >
             {isProcessing ? (
