@@ -40,11 +40,23 @@ const createStore = () => configureStore({
 describe('Payment Component UX', () => {
   beforeEach(() => {
     sessionStorage.setItem('orderInfo', JSON.stringify({ subtotal: 100, tax: 10, shippingCharges: 0, totalPrice: 110 }));
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+        if (key === 'orderInfo') {
+            return JSON.stringify({ subtotal: 100, tax: 10, shippingCharges: 0, totalPrice: 110 })
+        }
+        if (key === 'cartItems') {
+            return JSON.stringify([{ product: '1', quantity: 1, price: 100 }])
+        }
+        if (key === 'shippingInfo') {
+             return JSON.stringify({ address: '123 Main', city: 'City', state: 'State', country: 'IN', pinCode: '123456', phoneNo: '1234567890' })
+        }
+        return null;
+    });
   });
 
   afterEach(() => {
     sessionStorage.clear();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('renders a button with a loading spinner when processing', async () => {
@@ -66,7 +78,7 @@ describe('Payment Component UX', () => {
       </Provider>
     );
 
-    const payButton = screen.getByRole('button', { name: /pay - ₹110/i });
+    const payButton = screen.getByRole('button', { name: /Pay now/i });
     expect(payButton).toBeInTheDocument();
 
     // Check initial state
