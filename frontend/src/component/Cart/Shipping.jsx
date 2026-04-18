@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useMemo } from "react";
 import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 import { saveShippingInfo } from "../../features/cartSlice";
@@ -26,6 +26,13 @@ const Shipping = () => {
   const [country, setCountry] = useState(shippingInfo.country);
   const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo);
+
+  // ⚡ Bolt Optimization:
+  // 💡 What: Memoize heavy library calls to get countries and states.
+  // 🎯 Why: Calling Country.getAllCountries() synchronously on every re-render (triggered by any keystroke in the form inputs) causes expensive O(N) recalculations and lag.
+  // 📊 Impact: Prevents unnecessary bottlenecks and lag on every local state change during form input.
+  const countriesList = useMemo(() => Country ? Country.getAllCountries() : [], []);
+  const statesList = useMemo(() => (State && country) ? State.getStatesOfCountry(country) : [], [country]);
 
   const shippingSubmit = (e) => {
     e.preventDefault();
@@ -114,12 +121,11 @@ const Shipping = () => {
                 onChange={(e) => setCountry(e.target.value)}
               >
                 <option value="">Country</option>
-                {Country &&
-                  Country.getAllCountries().map((item) => (
-                    <option key={item.isoCode} value={item.isoCode}>
-                      {item.name}
-                    </option>
-                  ))}
+                {countriesList.map((item) => (
+                  <option key={item.isoCode} value={item.isoCode}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -134,12 +140,11 @@ const Shipping = () => {
                   onChange={(e) => setState(e.target.value)}
                 >
                   <option value="">State</option>
-                  {State &&
-                    State.getStatesOfCountry(country).map((item) => (
-                      <option key={item.isoCode} value={item.isoCode}>
-                        {item.name}
-                      </option>
-                    ))}
+                  {statesList.map((item) => (
+                    <option key={item.isoCode} value={item.isoCode}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}
