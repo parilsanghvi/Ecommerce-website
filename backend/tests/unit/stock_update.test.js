@@ -25,6 +25,12 @@ describe('updateOrder Stock Update Security', () => {
         };
         next = jest.fn();
         jest.clearAllMocks();
+
+        // Setup mock chain for Product.find().select().lean()
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnThis(),
+            lean: jest.fn().mockResolvedValue([])
+        });
     });
 
     it('should use bulkWrite for atomic update to improve performance after pre-verifying stock', async () => {
@@ -43,8 +49,12 @@ describe('updateOrder Stock Update Security', () => {
         ];
 
         Order.findById.mockResolvedValue(mockOrder);
-        // Mock Product.find to return sufficient stock for pre-verification
-        Product.find.mockResolvedValue(mockProducts);
+        // Mock Product.find chain to return sufficient stock for pre-verification
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnThis(),
+            lean: jest.fn().mockResolvedValue(mockProducts)
+        });
+
         // Mock bulkWrite success (modifiedCount matches items length)
         Product.bulkWrite.mockResolvedValue({ modifiedCount: 2 });
 
@@ -91,7 +101,10 @@ describe('updateOrder Stock Update Security', () => {
         ];
 
         Order.findById.mockResolvedValue(mockOrder);
-        Product.find.mockResolvedValue(mockProducts);
+        Product.find.mockReturnValue({
+            select: jest.fn().mockReturnThis(),
+            lean: jest.fn().mockResolvedValue(mockProducts)
+        });
 
         await updateOrder(req, res, next);
 
