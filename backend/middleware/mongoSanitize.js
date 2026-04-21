@@ -1,6 +1,6 @@
 // Middleware to sanitize user input to prevent NoSQL injection
 const sanitize = (obj) => {
-    if (obj instanceof Object) {
+    if (typeof obj === 'object' && obj !== null) {
         for (const key in obj) {
             if (/^\$/.test(key)) {
                 delete obj[key];
