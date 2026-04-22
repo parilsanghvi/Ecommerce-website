@@ -53,15 +53,8 @@ describe('NoSQL Injection Vulnerability & Fix', () => {
         // Expect keys starting with $ to be removed
         expect(req.body.email).toEqual({});
 
-        // When Mongoose tries to cast {} to string for email, it throws CastError.
-        // This CastError effectively blocks the request from proceeding with a valid query that matches something.
-        // In a real controller, this would be caught by catchAsyncErrors (or crash the request),
-        // effectively protecting against the auth bypass.
-
-        // We verify that it throws CastError or returns null, but definitely NOT the user.
         try {
             const user = await User.findOne({ email: req.body.email });
-             // If it doesn't throw, it should be null because no user has email "{}"
             expect(user).toBeNull();
         } catch (error) {
             expect(error.name).toBe('CastError');
@@ -81,5 +74,22 @@ describe('NoSQL Injection Vulnerability & Fix', () => {
         const next = jest.fn();
         mongoSanitize(req, {}, next);
         expect(req.body.filters.price).toEqual({});
+    });
+
+    it('should sanitize objects with null prototypes', () => {
+        const maliciousEmail = Object.create(null);
+        maliciousEmail["$ne"] = null;
+
+        const req = {
+            body: {
+                email: maliciousEmail
+            },
+            query: {},
+            params: {}
+        };
+        const next = jest.fn();
+        mongoSanitize(req, {}, next);
+
+        expect(req.body.email).toEqual({});
     });
 });
