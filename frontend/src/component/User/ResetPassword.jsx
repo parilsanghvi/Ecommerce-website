@@ -63,6 +63,8 @@ const ResetPassword = () => {
                     placeholder="New Password"
                     required
                     value={password}
+                    aria-label="New Password"
+                    disabled={loading}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
@@ -72,6 +74,8 @@ const ResetPassword = () => {
                     placeholder="Confirm Password"
                     required
                     value={confirmPassword}
+                    aria-label="Confirm Password"
+                    disabled={loading}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>

@@ -88,6 +88,8 @@ const UpdateProfile = () => {
                     required
                     name="name"
                     value={name}
+                    aria-label="Name"
+                    disabled={loading}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -99,6 +101,8 @@ const UpdateProfile = () => {
                     required
                     name="email"
                     value={email}
+                    aria-label="Email"
+                    disabled={loading}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -109,6 +113,8 @@ const UpdateProfile = () => {
                     type="file"
                     name="avatar"
                     accept="image/*"
+                    aria-label="Avatar Upload"
+                    disabled={loading}
                     onChange={updateProfileDataChange}
                   />
                 </div>

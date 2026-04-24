@@ -71,6 +71,8 @@ const UpdatePassword = () => {
                     placeholder="Old Password"
                     required
                     value={oldPassword}
+                    aria-label="Old Password"
+                    disabled={loading}
                     onChange={(e) => setOldPassword(e.target.value)}
                   />
                   <button
@@ -78,6 +80,7 @@ const UpdatePassword = () => {
                     onClick={() => setShowOldPassword(!showOldPassword)}
                     className="password-toggle-btn"
                     aria-label={showOldPassword ? "Hide old password" : "Show old password"}
+                    disabled={loading}
                   >
                     {showOldPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
@@ -89,6 +92,8 @@ const UpdatePassword = () => {
                     placeholder="New Password"
                     required
                     value={newPassword}
+                    aria-label="New Password"
+                    disabled={loading}
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
                   <button
@@ -96,6 +101,7 @@ const UpdatePassword = () => {
                     onClick={() => setShowNewPassword(!showNewPassword)}
                     className="password-toggle-btn"
                     aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+                    disabled={loading}
                   >
                     {showNewPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
@@ -107,6 +113,8 @@ const UpdatePassword = () => {
                     placeholder="Confirm Password"
                     required
                     value={confirmPassword}
+                    aria-label="Confirm Password"
+                    disabled={loading}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <button
@@ -114,6 +122,7 @@ const UpdatePassword = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="password-toggle-btn"
                     aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    disabled={loading}
                   >
                     {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </button>

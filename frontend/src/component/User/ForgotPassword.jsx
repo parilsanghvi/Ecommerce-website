@@ -50,6 +50,8 @@ const ForgotPassword = () => {
                     required
                     name="email"
                     value={email}
+                    aria-label="Email"
+                    disabled={loading}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>

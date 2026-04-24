@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2024-04-24 - [Accessibility and Loading States in Forms]
+**Learning:** [Many forms in the project were lacking accessibility labels, disabling inputs, and loading indicators when requests are running. Screen readers need `aria-label` when `placeholder` is used as a fallback label. Prevent dual-submission by disabling inputs and buttons with `loading` state.]
+**Action:** [Consistently use `disabled={loading}` on interactive fields and buttons and ensure placeholders are complemented with `aria-label` in forms.]
