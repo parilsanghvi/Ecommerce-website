@@ -1,3 +1,7 @@
+
+## 2024-05-20 - Password visibility toggle for consistent UX
+**Learning:** Users expect to be able to see their password while typing it, especially during a password reset where a typo means they are locked out. The pattern was missing in the ResetPassword component while present in Login/Signup.
+**Action:** Always provide a visibility toggle for password inputs, ensuring consistent UX and preventing usability issues across all authentication forms.
 ## 2024-05-14 - Replace input buttons with `<button>` tags for Async operations
 **Learning:** Using `<input type="submit">` for important asynchronous actions (like payment processing) prevents the inclusion of visual feedback elements like inline spinners (`CircularProgress`). This leads to a poor user experience as the user is unsure if their action registered, and can cause anxiety during sensitive operations like payments.
 **Action:** When creating forms that trigger long-running asynchronous tasks, always use a `<button type="submit">` with an internal state (like `isProcessing`) to conditionally render an inline loading indicator and disable the button, providing immediate and clear feedback to the user.
