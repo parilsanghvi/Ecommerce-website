@@ -161,7 +161,7 @@ const Payment = () => {
           navigate("/success");
         } else {
           setIsProcessing(false);
-          payBtn.current.disabled = false;
+          if (payBtn.current) payBtn.current.disabled = false;
           enqueueSnackbar("There's some issue while processing payment ", {
             variant: "error",
           });
@@ -169,7 +169,7 @@ const Payment = () => {
       }
     } catch (error) {
       setIsProcessing(false);
-      payBtn.current.disabled = false;
+      if (payBtn.current) payBtn.current.disabled = false;
       enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
