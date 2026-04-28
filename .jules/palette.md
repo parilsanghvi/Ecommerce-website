@@ -5,3 +5,6 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+## 2026-04-28 - Add password visibility toggle to ResetPassword form
+**Learning:** Adding interactive elements (like visibility toggles) into standard form fields requires explicitly wrapping them in a semantic `<button type="button">` element and managing their absolute positioning securely within a `position: relative` wrapper, ensuring padding on the input avoids overlap.
+**Action:** Always include a show/hide password feature for password inputs across all authentication forms (e.g., login, signup, reset password) to prevent users from getting locked out due to unseen typos, and consistently style them using shared classes like `.password-toggle-btn`.
