@@ -1,0 +1,75 @@
+<<<<<<< SEARCH
+              <select
+                required
+                value={country}
+                aria-label="Country"
+                onChange={(e) => setCountry(e.target.value)}
+              >
+                <option value="">Country</option>
+                {Country &&
+                  Country.getAllCountries().map((item) => (
+                    <option key={item.isoCode} value={item.isoCode}>
+                      {item.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {country && (
+              <div>
+                <TransferWithinAStationIcon aria-hidden="true" />
+
+                <select
+                  required
+                  value={state}
+                  aria-label="State"
+                  onChange={(e) => setState(e.target.value)}
+                >
+                  <option value="">State</option>
+                  {State &&
+                    State.getStatesOfCountry(country).map((item) => (
+                      <option key={item.isoCode} value={item.isoCode}>
+                        {item.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
+=======
+              <select
+                required
+                value={country}
+                aria-label="Country"
+                onChange={(e) => setCountry(e.target.value)}
+              >
+                <option value="">Country</option>
+                {Country &&
+                  Country.getAllCountries().map((item) => (
+                    <option key={item.isoCode} value={item.isoCode}>
+                      {item.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {country && (
+              <div>
+                <TransferWithinAStationIcon aria-hidden="true" />
+
+                <select
+                  required
+                  value={state}
+                  aria-label="State"
+                  onChange={(e) => setState(e.target.value)}
+                >
+                  <option value="">State</option>
+                  {State &&
+                    State.getStatesOfCountry(country).map((item) => (
+                      <option key={item.isoCode} value={item.isoCode}>
+                        {item.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
+>>>>>>> REPLACE
