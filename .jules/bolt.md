@@ -46,3 +46,8 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+## 2024-05-18 - Memoize Expensive Derived State
+
+**Learning:** When using heavy external libraries (like `country-state-city`) to render lists in form components, calling their generation functions directly inside the component body can cause O(N) recalculations on every single render (e.g., when local state updates during user typing).
+
+**Action:** Always wrap heavy synchronous calculations with `useMemo` when they generate stable data that doesn't need to recalculate frequently, especially inside forms with fast-updating state.

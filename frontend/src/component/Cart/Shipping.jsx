@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useMemo } from "react";
 import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 import { saveShippingInfo } from "../../features/cartSlice";
@@ -26,6 +26,16 @@ const Shipping = () => {
   const [country, setCountry] = useState(shippingInfo.country);
   const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo);
+
+  // ⚡ Bolt: [performance improvement] Memoize expensive country generation array
+  // Country.getAllCountries() does an O(N) recalculation. We only need to calculate this once.
+  const countries = useMemo(() => Country.getAllCountries(), []);
+
+  // ⚡ Bolt: [performance improvement] Memoize state generation array
+  // State.getStatesOfCountry() does an O(N) recalculation. Re-calculate only when the country changes.
+  const states = useMemo(() => {
+    return country ? State.getStatesOfCountry(country) : [];
+  }, [country]);
 
   const shippingSubmit = (e) => {
     e.preventDefault();
@@ -114,8 +124,8 @@ const Shipping = () => {
                 onChange={(e) => setCountry(e.target.value)}
               >
                 <option value="">Country</option>
-                {Country &&
-                  Country.getAllCountries().map((item) => (
+                {countries &&
+                  countries.map((item) => (
                     <option key={item.isoCode} value={item.isoCode}>
                       {item.name}
                     </option>
@@ -134,8 +144,8 @@ const Shipping = () => {
                   onChange={(e) => setState(e.target.value)}
                 >
                   <option value="">State</option>
-                  {State &&
-                    State.getStatesOfCountry(country).map((item) => (
+                  {states &&
+                    states.map((item) => (
                       <option key={item.isoCode} value={item.isoCode}>
                         {item.name}
                       </option>
