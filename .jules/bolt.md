@@ -51,3 +51,8 @@
 **Learning:** When using heavy external libraries (like `country-state-city`) to render lists in form components, calling their generation functions directly inside the component body can cause O(N) recalculations on every single render (e.g., when local state updates during user typing).
 
 **Action:** Always wrap heavy synchronous calculations with `useMemo` when they generate stable data that doesn't need to recalculate frequently, especially inside forms with fast-updating state.
+## 2024-05-18 - Fix Unhandled Rejection in Payment.jsx
+
+**Learning:** When using `useRef` to store DOM elements like buttons (e.g. `payBtn`), and subsequently accessing properties on them (e.g. `payBtn.current.disabled`), ensure that `payBtn.current` is not `null`. This is especially important in `catch` blocks or after asynchronous operations (like `stripe.confirmCardPayment`), as the component might have unmounted, causing `payBtn.current` to be `null` and throwing a `TypeError`.
+
+**Action:** Always wrap `.current` accesses on `useRef` references with an `if (ref.current)` check when dealing with asynchronous code or potential unmounts.
