@@ -5,3 +5,4 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+## 2026-04-30 - Added Show/Hide Password Toggle to ResetPassword Form\n**Learning:** The ResetPassword component was missing the visibility toggles that were already implemented in other authentication forms (like LoginSignup and UpdatePassword), creating an inconsistent and less accessible experience for users attempting to recover their accounts.\n**Action:** Always ensure critical authentication components share consistent UX patterns, specifically providing show/hide password toggles on all password input fields to prevent typos and lockouts.
