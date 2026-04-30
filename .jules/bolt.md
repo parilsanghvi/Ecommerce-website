@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+
+## 2025-03-06 - Unfiltered Document Counting Optimization
+**Learning:** Using `Model.countDocuments()` without filters executes an O(N) full collection scan in MongoDB, which creates a significant bottleneck on large collections (e.g., fetching all admin products).
+**Action:** When counting all documents in a collection without any filter criteria, always prefer `Model.estimatedDocumentCount()`. It retrieves the count from collection metadata, guaranteeing O(1) performance and drastically reducing database latency and CPU overhead.
