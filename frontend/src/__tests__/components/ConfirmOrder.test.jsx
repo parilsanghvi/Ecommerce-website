@@ -59,23 +59,41 @@ describe('ConfirmOrder', () => {
         setItemSpy.mockRestore();
     });
 
-    it('renders shipping info', () => {
+    it('renders shipping info', async () => {
+        axios.get.mockResolvedValue({
+            data: { taxPrice: 450, shippingPrice: 0, totalPrice: 2950 }
+        });
         render(<ConfirmOrder />);
         expect(screen.getByText('Test User')).toBeInTheDocument();
         expect(screen.getByText('9876543210')).toBeInTheDocument();
         expect(screen.getByText(/123 Main St/)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(axios.get).toHaveBeenCalled();
+        });
     });
 
-    it('renders cart items', () => {
+    it('renders cart items', async () => {
+        axios.get.mockResolvedValue({
+            data: { taxPrice: 450, shippingPrice: 0, totalPrice: 2950 }
+        });
         render(<ConfirmOrder />);
         expect(screen.getByText('Item A')).toBeInTheDocument();
         expect(screen.getByText('Item B')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(axios.get).toHaveBeenCalled();
+        });
     });
 
-    it('calculates subtotal correctly', () => {
+    it('calculates subtotal correctly', async () => {
+        axios.get.mockResolvedValue({
+            data: { taxPrice: 450, shippingPrice: 0, totalPrice: 2950 }
+        });
         render(<ConfirmOrder />);
         // 1000*2 + 500*1 = 2500
         expect(screen.getByText('₹2500')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(axios.get).toHaveBeenCalled();
+        });
     });
 
     it('calculates free shipping for orders over 1000', async () => {

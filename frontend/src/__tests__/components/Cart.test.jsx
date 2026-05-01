@@ -74,7 +74,7 @@ describe('Cart', () => {
         expect(mockNavigate).toHaveBeenCalledWith('/login?redirect=/shipping');
     });
 
-    it('dispatches addItemsToCart on quantity increase', () => {
+    it('dispatches addItemsToCart on quantity increase', async () => {
         mockCartItems = [
             { product: 'p1', name: 'A', price: 100, quantity: 1, stock: 5, image: 'img.jpg' },
         ];
@@ -83,7 +83,7 @@ describe('Cart', () => {
         expect(mockDispatch).toHaveBeenCalled();
     });
 
-    it('does not dispatch when decreasing at minimum quantity', () => {
+    it('does not dispatch when decreasing at minimum quantity', async () => {
         mockCartItems = [
             { product: 'p1', name: 'A', price: 100, quantity: 1, stock: 5, image: 'img.jpg' },
         ];
