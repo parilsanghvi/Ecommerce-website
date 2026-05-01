@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+## 2025-03-05 - Avoid O(N) Array Iteration on Render
+
+**Learning:** Computations involving O(N) array iterations (like `forEach`, `reduce`, or `filter`) that compute derived state from props directly within a component's render body execute synchronously on every render. If these components re-render often (e.g., due to unrelated state updates), this becomes a bottleneck. In `Dashboard.jsx`, iterating over the entire `products` array to count `outOfStock` items on every render was an unnecessary performance drain.
+**Action:** Always wrap derived state calculations that require array iteration in a `useMemo` hook with strict dependencies (e.g., `[products]`). This ensures the iteration only runs when the source data actually changes.
