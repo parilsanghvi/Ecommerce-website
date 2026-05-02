@@ -100,7 +100,11 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
     const limit = Number(queryParams.limit) || 0; // 0 means no limit (legacy behavior if not provided)
     const skip = (page - 1) * limit;
 
-    const totalCount = await Product.countDocuments();
+    // ⚡ Bolt: Performance Optimization
+    // What: Replaced countDocuments() with estimatedDocumentCount()
+    // Why: countDocuments() without filters causes an O(N) full collection scan.
+    // Impact: estimatedDocumentCount() resolves in O(1) time using collection metadata, making it significantly faster for large collections.
+    const totalCount = await Product.estimatedDocumentCount();
 
     let query = Product.find().select("name price stock").lean();
 
