@@ -5,3 +5,9 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+## $(date +%Y-%m-%d) - Password Visibility Toggles & Unmounted Components
+**Learning:**
+1. When fixing UX on forms, it's critical to ensure absolute-positioned decorative elements don't block interaction by using `pointer-events: none`.
+2. Adding interactive UX like toggles inside form fields requires adjusting input padding so text doesn't flow underneath the new icons.
+3. When using refs in async callbacks (like `.disabled` toggling on errors), checking component mounted state avoids test crashes.
+**Action:** Always check `pointer-events` on adjacent absolute SVGs when adding interactive inline buttons, ensure right padding matches new icon size, and defensively wrap ref manipulations in `if (ref.current)` inside catch blocks.
