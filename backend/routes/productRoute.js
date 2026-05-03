@@ -22,9 +22,10 @@ const {
 // requests crud operation with the link 
 router.route("/products").get(getAllProducts);
 router.route("/admin/products").get(isAuthenticatedUser, authorizedRoles("admin"), getAdminProducts)
-router.route("/admin/product/new").post(isAuthenticatedUser, authorizedRoles("admin"), upload.any(), createProduct);
+// Security Fix: Use upload.array("images") instead of upload.any() to prevent arbitrary file uploads
+router.route("/admin/product/new").post(isAuthenticatedUser, authorizedRoles("admin"), upload.array("images"), createProduct);
 
-router.route("/admin/product/:id").put(isAuthenticatedUser, authorizedRoles("admin"), upload.any(), updateProduct).delete(isAuthenticatedUser, authorizedRoles("admin"), deleteProduct);
+router.route("/admin/product/:id").put(isAuthenticatedUser, authorizedRoles("admin"), upload.array("images"), updateProduct).delete(isAuthenticatedUser, authorizedRoles("admin"), deleteProduct);
 
 router.route("/product/:id").get(getProductDetails)
 
