@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+
+## 2025-03-05 - Avoid Expensive Synchronous Operations in Render Body
+**Learning:** Calling heavy synchronous library functions (like `Country.getAllCountries()` or `State.getStatesOfCountry()`) directly inside a React component's render body causes expensive O(N) recalculations on every local state change (such as form input keystrokes), dramatically impacting performance and causing input lag.
+**Action:** Always wrap static or derived data generation from expensive synchronous functions in `useMemo` hooks with appropriate dependencies to ensure referential stability and skip re-evaluations during unrelated state updates.
