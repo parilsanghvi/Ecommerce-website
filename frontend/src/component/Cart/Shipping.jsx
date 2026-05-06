@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useMemo } from "react";
 import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 import { saveShippingInfo } from "../../features/cartSlice";
@@ -26,6 +26,18 @@ const Shipping = () => {
   const [country, setCountry] = useState(shippingInfo.country);
   const [pinCode, setPinCode] = useState(shippingInfo.pinCode);
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo);
+
+  // Performance Optimization: Memoize the generation of the country list.
+  // This prevents the expensive recalculation of the large country array on every re-render (e.g., during input keystrokes).
+  const countriesList = useMemo(() => {
+    return Country ? Country.getAllCountries() : [];
+  }, []);
+
+  // Performance Optimization: Memoize the generation of the state list.
+  // This prevents O(N) array creation during re-renders, only recalculating when the selected country changes.
+  const statesList = useMemo(() => {
+    return State && country ? State.getStatesOfCountry(country) : [];
+  }, [country]);
 
   const shippingSubmit = (e) => {
     e.preventDefault();
@@ -114,12 +126,11 @@ const Shipping = () => {
                 onChange={(e) => setCountry(e.target.value)}
               >
                 <option value="">Country</option>
-                {Country &&
-                  Country.getAllCountries().map((item) => (
-                    <option key={item.isoCode} value={item.isoCode}>
-                      {item.name}
-                    </option>
-                  ))}
+                {countriesList.map((item) => (
+                  <option key={item.isoCode} value={item.isoCode}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -134,12 +145,11 @@ const Shipping = () => {
                   onChange={(e) => setState(e.target.value)}
                 >
                   <option value="">State</option>
-                  {State &&
-                    State.getStatesOfCountry(country).map((item) => (
-                      <option key={item.isoCode} value={item.isoCode}>
-                        {item.name}
-                      </option>
-                    ))}
+                  {statesList.map((item) => (
+                    <option key={item.isoCode} value={item.isoCode}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}
