@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+
+## 2025-03-05 - Avoid Full Collection Scans for Global Counts
+**Learning:** Using `Model.countDocuments()` without filters executes an O(N) full collection scan, which scales poorly as the database grows. In `backend/controllers/productController.js` and similar global listings, this created an unnecessary bottleneck for paginated admin responses.
+**Action:** Replace `Model.countDocuments()` with `Model.estimatedDocumentCount()` whenever counting all documents in a collection. This performs an O(1) metadata read, significantly speeding up paginated requests over large datasets.
