@@ -5,3 +5,7 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+
+## 2024-05-18 - Add password visibility toggles to authentication forms
+**Learning:** Authentication forms with multiple password fields (like Reset Password or Update Password) frequently omit visibility toggles for the secondary fields (e.g., "Confirm Password"), forcing users to guess if they made a typo. This is particularly problematic for users relying on screen readers or those with cognitive disabilities.
+**Action:** Always provide functional password visibility toggles (with clear `aria-label`s) for *all* password inputs within a form, not just the primary one, to ensure a consistent and accessible user experience. Ensure they are styled appropriately and do not overlap with the input text.
