@@ -49,4 +49,36 @@ describe('ResetPassword', () => {
         render(<ResetPassword />);
         expect(screen.getByRole('button', { name: /update/i })).toBeInTheDocument();
     });
+
+    it('toggles password visibility for new password', () => {
+        render(<ResetPassword />);
+
+        const newPasswordInput = screen.getByPlaceholderText('New Password');
+        expect(newPasswordInput).toHaveAttribute('type', 'password');
+
+        const toggleBtn = screen.getByLabelText('Show new password');
+        fireEvent.click(toggleBtn);
+
+        expect(newPasswordInput).toHaveAttribute('type', 'text');
+        expect(screen.getByLabelText('Hide new password')).toBeInTheDocument();
+
+        fireEvent.click(toggleBtn);
+        expect(newPasswordInput).toHaveAttribute('type', 'password');
+    });
+
+    it('toggles password visibility for confirm password', () => {
+        render(<ResetPassword />);
+
+        const confirmPasswordInput = screen.getByPlaceholderText('Confirm Password');
+        expect(confirmPasswordInput).toHaveAttribute('type', 'password');
+
+        const toggleBtn = screen.getByLabelText('Show confirm password');
+        fireEvent.click(toggleBtn);
+
+        expect(confirmPasswordInput).toHaveAttribute('type', 'text');
+        expect(screen.getByLabelText('Hide confirm password')).toBeInTheDocument();
+
+        fireEvent.click(toggleBtn);
+        expect(confirmPasswordInput).toHaveAttribute('type', 'password');
+    });
 });
