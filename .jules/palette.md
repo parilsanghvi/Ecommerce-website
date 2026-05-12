@@ -5,3 +5,6 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+## 2024-05-12 - Added Password Visibility Toggle to Reset Password Form
+**Learning:** Adding interactive toggle elements within flex containers with static decorative SVG icons (like `@mui/icons-material`) requires setting `pointer-events: none;` on the static SVGs to prevent them from unintentionally intercepting click events and interfering with focus management.
+**Action:** Always apply `pointer-events: none;` to purely decorative icons, particularly in `position: relative` or `flex` form row layouts where absolute positioning is used.
