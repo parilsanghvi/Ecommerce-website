@@ -5,3 +5,7 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+
+## $(date +%Y-%m-%d) - Password Visibility Toggle
+**Learning:** Decorative SVG icons placed over absolute-positioned toggles must use `pointer-events: none` to prevent them from intercepting clicks meant for the toggle button.
+**Action:** When adding layered interactive elements, ensure all decorative siblings have `pointer-events: none` applied.
