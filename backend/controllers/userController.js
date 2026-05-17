@@ -67,9 +67,12 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 })
 // logout user
 exports.logout = catchAsyncErrors(async (req, res, next) => {
+    // Security Fix: Prevent CSRF and ensure logout cookie is only sent over HTTPS in production
     res.cookie("token", null, {
         expires: new Date(Date.now()),
-        httpOnly: true
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
     })
     res.status(200).json({
         success: true,

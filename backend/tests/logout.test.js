@@ -19,5 +19,11 @@ describe('Logout Security', () => {
         // Check if expires is a valid Date object
         expect(cookieOptions.expires).toBeInstanceOf(Date);
         expect(cookieOptions.expires.getTime()).not.toBeNaN(); // isValid Date
+
+        // Check security flags
+        expect(cookieOptions.httpOnly).toBe(true);
+        expect(cookieOptions.sameSite).toBe('strict');
+        // Because default NODE_ENV might not be PRODUCTION, check if it's set properly based on environment
+        expect(cookieOptions.secure).toBe(process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production');
     });
 });
