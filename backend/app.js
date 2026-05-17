@@ -32,12 +32,10 @@ app.use(securityHeaders);
 
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-// config
 
 // Enable extended query parser for bracket notation (e.g., ratings[gte]=1 -> {ratings: {gte: 1}})
 app.set('query parser', 'extended');
 
-// parsing object to json
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser())
 app.use(express.urlencoded({
@@ -70,14 +68,12 @@ app.use(cors({
 // Sanitize data to prevent NoSQL injection
 app.use(mongoSanitize);
 
-// import route from productroute
 const product = require("./routes/productRoute");
 const user = require("./routes/userRoute")
 const order = require("./routes/orderRoute")
 const payment = require("./routes/paymentRoute")
 
 
-// it will give route to product crud operations
 app.use("/api/v1", product);
 app.use("/api/v1", user);
 app.use("/api/v1", order);
@@ -86,9 +82,7 @@ app.use("/api/v1", payment);
 app.get(/^(.*)$/, (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 });
-// middleware for error
 app.use(errorMiddleware);
 
 
-// export app routes to server
 module.exports = app
