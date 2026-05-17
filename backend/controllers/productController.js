@@ -42,34 +42,27 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// get all products
-exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
-    const resultPerPage = 8;
-    // Optimized: Use estimatedDocumentCount() for faster counting of all documents
-    const productsCount = await Product.estimatedDocumentCount();
 
-    const apifeature = new Apifeatures(Product.find(), req.query || {})
-        .search()
-        .filter();
-
-    // Optimized: Only count filtered documents if filters are applied
-    let filteredProductsCountPromise;
-    const { keyword, page, limit, ...filters } = req.query || {};
+/**
+ * Helper to determine the count of products after applying filters
+ */
+const getFilteredCount = (apifeature, reqQuery, totalCount) => {
+    const { keyword, page, limit, ...filters } = reqQuery || {};
     const hasSearch = typeof keyword === 'string' && keyword.trim() !== "";
     const hasFilters = Object.keys(filters).length > 0;
 
     if (!hasSearch && !hasFilters) {
-        filteredProductsCountPromise = Promise.resolve(productsCount);
+        return Promise.resolve(totalCount);
     } else {
-        filteredProductsCountPromise = apifeature.query.clone().countDocuments();
+        return apifeature.query.clone().countDocuments();
     }
+};
 
-    apifeature.pagiNation(resultPerPage);
-
-    // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
-    // Optimized: Exclude heavy fields and reviews array to reduce payload size
-    // Explicitly exclude reviews to satisfy optimization tests
-    const productsPromise = apifeature.query
+/**
+ * Helper to generate the optimized products query
+ */
+const getOptimizedProductsQuery = (apifeature) => {
+    return apifeature.query
         .select({
             description: 0,
             user: 0,
@@ -80,6 +73,28 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
             images: { $slice: 1 }
         })
         .lean();
+};
+
+// get all products
+
+exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
+    const resultPerPage = 8;
+    // Optimized: Use estimatedDocumentCount() for faster counting of all documents
+    const productsCount = await Product.estimatedDocumentCount();
+
+    const apifeature = new Apifeatures(Product.find(), req.query || {})
+        .search()
+        .filter();
+
+    // Optimized: Only count filtered documents if filters are applied
+    const filteredProductsCountPromise = getFilteredCount(apifeature, req.query, productsCount);
+
+    apifeature.pagiNation(resultPerPage);
+
+    // Optimized: Use lean() for faster read-only performance (skips Mongoose hydration)
+    // Optimized: Exclude heavy fields and reviews array to reduce payload size
+    // Explicitly exclude reviews to satisfy optimization tests
+    const productsPromise = getOptimizedProductsQuery(apifeature);
 
     const [filteredProductsCount, products] = await Promise.all([
         filteredProductsCountPromise,
