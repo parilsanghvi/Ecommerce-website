@@ -32,7 +32,7 @@ describe('Order Security: Price Tampering', () => {
             body: {
                 shippingInfo: {},
                 orderItems: [{
-                    product: 'productid',
+                    product: '507f1f77bcf86cd799439011',
                     quantity: 1,
                     price: 1 // User claims price is 1
                 }],
@@ -54,7 +54,7 @@ describe('Order Security: Price Tampering', () => {
         Product.find.mockReturnValue({
             select: jest.fn().mockReturnValue({
                 lean: jest.fn().mockResolvedValue([{
-                    _id: 'productid',
+                    _id: '507f1f77bcf86cd799439011',
                     price: 1000,
                 }])
             })
@@ -77,7 +77,7 @@ describe('Order Security: Price Tampering', () => {
             body: {
                 shippingInfo: {},
                 orderItems: [{
-                    product: 'productid',
+                    product: '507f1f77bcf86cd799439011',
                     quantity: 1,
                     price: 1000
                 }],
@@ -99,7 +99,7 @@ describe('Order Security: Price Tampering', () => {
         Product.find.mockReturnValue({
             select: jest.fn().mockReturnValue({
                 lean: jest.fn().mockResolvedValue([{
-                    _id: 'productid',
+                    _id: '507f1f77bcf86cd799439011',
                     price: 1000,
                 }])
             })

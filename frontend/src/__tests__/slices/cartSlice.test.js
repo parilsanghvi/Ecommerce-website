@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import cartReducer, {
+    emptyCart,
     removeItemsFromCart,
     saveShippingInfo,
     clearCartErrors,
@@ -17,6 +18,29 @@ describe('cartSlice', () => {
 
     beforeEach(() => {
         localStorage.clear();
+    });
+
+    describe('emptyCart', () => {
+        it('should empty all items from the cart', () => {
+            const stateWithItems = {
+                ...initialState,
+                cartItems: [
+                    { product: 'p1', name: 'Item 1', price: 100, quantity: 1 },
+                    { product: 'p2', name: 'Item 2', price: 200, quantity: 2 },
+                ],
+            };
+            const result = cartReducer(stateWithItems, emptyCart());
+            expect(result.cartItems).toHaveLength(0);
+        });
+
+        it('should sync with localStorage after emptying', () => {
+            const stateWithItems = {
+                ...initialState,
+                cartItems: [{ product: 'p1', name: 'Item 1', price: 100, quantity: 1 }],
+            };
+            cartReducer(stateWithItems, emptyCart());
+            expect(localStorage.setItem).toHaveBeenCalledWith('cartItems', '[]');
+        });
     });
 
     describe('removeItemsFromCart', () => {

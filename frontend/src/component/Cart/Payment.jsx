@@ -12,7 +12,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { removeItemsFromCart } from "../../features/cartSlice";
+import { removeItemsFromCart, emptyCart } from "../../features/cartSlice";
 import axios from "axios";
 import "./payment.css";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
@@ -153,10 +153,7 @@ const Payment = () => {
           };
 
           dispatch(createOrder(order));
-          for (let i = 0; i < order.orderItems.length; i++) {
-            let id = order.orderItems[i].product;
-            dispatch(removeItemsFromCart(id));
-          }
+          dispatch(emptyCart());
           setIsProcessing(false);
           navigate("/success");
         } else {
@@ -169,7 +166,9 @@ const Payment = () => {
       }
     } catch (error) {
       setIsProcessing(false);
-      payBtn.current.disabled = false;
+      if (payBtn.current) {
+        payBtn.current.disabled = false;
+      }
       enqueueSnackbar(error.response?.data?.message || "Payment failed", { variant: "error" });
     }
   };
