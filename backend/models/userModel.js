@@ -72,7 +72,8 @@ userSchema.methods.getResetPasswordToken = function () {
     const resetToken = crypto.randomBytes(20).toString("hex");
     // hashing and adding to userSchema
     this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-    this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+    // Security Fix: Reduced password reset token expiry to 5 minutes to mitigate token interception or replay attacks.
+    this.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
     return resetToken;
 }
 module.exports = mongoose.model("User", userSchema)
