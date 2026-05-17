@@ -70,14 +70,12 @@ app.use(cors({
 // Sanitize data to prevent NoSQL injection
 app.use(mongoSanitize);
 
-// import route from productroute
 const product = require("./routes/productRoute");
 const user = require("./routes/userRoute")
 const order = require("./routes/orderRoute")
 const payment = require("./routes/paymentRoute")
 
 
-// it will give route to product crud operations
 app.use("/api/v1", product);
 app.use("/api/v1", user);
 app.use("/api/v1", order);
