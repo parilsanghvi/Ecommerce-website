@@ -127,27 +127,15 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
     // Optimized: Use lean() for faster read-only access to order details
     // Bolt Optimization: Removed .populate() to save a DB call. We attach req.user details manually.
-    const order = await Order.findById(req.params.id).lean();
+    const order = await Order.findById(req.params.id).populate("user", "name email").lean();
     if (!order) {
         return next(new ErrorHandler("order not found with this id", 404))
     }
 
     // Security Fix: Prevent IDOR by ensuring user owns the order or is admin
-    if (order.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
+    // If the user has been deleted, order.user will be null after populate
+    if (!order.user || (order.user._id.toString() !== req.user._id.toString() && req.user.role !== "admin")) {
         return next(new ErrorHandler("order not found with this id", 404));
-    }
-
-    // Optimized: Manually populate user info to avoid extra DB call
-    if (order.user.toString() === req.user._id.toString()) {
-        order.user = {
-            _id: req.user._id,
-            name: req.user.name,
-            email: req.user.email,
-        };
-    } else {
-        // Admin viewing another user's order
-        const user = await User.findById(order.user).select("name email").lean();
-        order.user = user;
     }
 
     res.status(200).json({

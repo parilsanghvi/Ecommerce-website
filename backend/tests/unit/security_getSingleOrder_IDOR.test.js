@@ -34,13 +34,13 @@ describe("getSingleOrder Security (IDOR)", () => {
     // Since populate is removed, user field is just the ID.
     const mockOrder = {
       _id: "orderId123",
-      user: "userA_ID",
+      user: { _id: "userA_ID", name: "User A", email: "usera@example.com" },
     };
 
     // Chainable Mongoose mocks: findById -> lean -> returns mockOrder
     const mockLean = jest.fn().mockResolvedValue(mockOrder);
     // Removed populate mock
-    Order.findById.mockReturnValue({ lean: mockLean });
+    Order.findById.mockReturnValue({ populate: jest.fn().mockReturnValue({ lean: mockLean }) });
 
     await getSingleOrder(req, res, next);
 
@@ -56,11 +56,11 @@ describe("getSingleOrder Security (IDOR)", () => {
 
     const mockOrder = {
       _id: "orderId123",
-      user: "userA_ID", // ID only
+      user: { _id: "userA_ID", name: "User A", email: "usera@example.com" }, // ID only
     };
 
     const mockLean = jest.fn().mockResolvedValue(mockOrder);
-    Order.findById.mockReturnValue({ lean: mockLean });
+    Order.findById.mockReturnValue({ populate: jest.fn().mockReturnValue({ lean: mockLean }) });
 
     await getSingleOrder(req, res, next);
 
@@ -83,7 +83,7 @@ describe("getSingleOrder Security (IDOR)", () => {
 
     const mockOrder = {
       _id: "orderId123",
-      user: "userA_ID",
+      user: { _id: "userA_ID", name: "User A", email: "usera@example.com" },
     };
 
     const mockUserA = {
@@ -93,12 +93,11 @@ describe("getSingleOrder Security (IDOR)", () => {
     };
 
     const mockLean = jest.fn().mockResolvedValue(mockOrder);
-    Order.findById.mockReturnValue({ lean: mockLean });
+    Order.findById.mockReturnValue({ populate: jest.fn().mockReturnValue({ lean: mockLean }) });
 
     // Mock User.findById for admin case
     const mockUserLean = jest.fn().mockResolvedValue(mockUserA);
-    const mockSelect = jest.fn().mockReturnValue({ lean: mockUserLean });
-    User.findById.mockReturnValue({ select: mockSelect });
+
 
     await getSingleOrder(req, res, next);
 
@@ -110,6 +109,6 @@ describe("getSingleOrder Security (IDOR)", () => {
         user: mockUserA
     }));
 
-    expect(User.findById).toHaveBeenCalledWith("userA_ID");
+
   });
 });

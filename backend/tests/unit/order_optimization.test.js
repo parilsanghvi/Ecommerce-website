@@ -29,11 +29,15 @@ describe("getSingleOrder Optimization", () => {
     jest.clearAllMocks();
   });
 
-  it("should NOT call populate and use req.user details when user accesses their own order", async () => {
+  it("should call populate when user accesses their own order", async () => {
     // Mock order belonging to User A (req.user)
     const mockOrder = {
       _id: "orderId123",
-      user: "userA_ID", // Returns just the ID because populate is removed
+      user: {
+        _id: "userA_ID",
+        name: "User A",
+        email: "usera@example.com"
+      },
       totalPrice: 100,
     };
 
@@ -44,7 +48,7 @@ describe("getSingleOrder Optimization", () => {
 
     // If populate WAS called, this mock structure would fail or be skipped
     // We mock findById to return an object with ONLY lean, not populate
-    Order.findById.mockReturnValue({ lean: mockLean });
+    Order.findById.mockReturnValue({ populate: jest.fn().mockReturnValue({ lean: mockLean }) });
 
     await getSingleOrder(req, res, next);
 
@@ -67,41 +71,33 @@ describe("getSingleOrder Optimization", () => {
     });
   });
 
-  it("should call User.findById when admin accesses another user's order", async () => {
+  it("should NOT call User.findById when admin accesses another user's order", async () => {
     req.user = { _id: "adminID", role: "admin", name: "Admin", email: "admin@example.com" };
 
     const mockOrder = {
       _id: "orderId123",
-      user: "userB_ID", // Belongs to User B
+      user: {
+        _id: "userB_ID",
+        name: "User B",
+        email: "userb@example.com"
+      },
       totalPrice: 200,
     };
 
-    const mockUserB = {
-      _id: "userB_ID",
-      name: "User B",
-      email: "userb@example.com"
-    };
-
-    // Mock Order.findById -> lean
     const mockOrderLean = jest.fn().mockResolvedValue(mockOrder);
-    Order.findById.mockReturnValue({ lean: mockOrderLean });
-
-    // Mock User.findById -> select -> lean
-    const mockUserLean = jest.fn().mockResolvedValue(mockUserB);
-    const mockSelect = jest.fn().mockReturnValue({ lean: mockUserLean });
-    User.findById.mockReturnValue({ select: mockSelect });
+    Order.findById.mockReturnValue({ populate: jest.fn().mockReturnValue({ lean: mockOrderLean }) });
 
     await getSingleOrder(req, res, next);
 
-    // Verify User.findById called with the order's user ID
-    expect(User.findById).toHaveBeenCalledWith("userB_ID");
-    expect(mockSelect).toHaveBeenCalledWith("name email");
+    expect(User.findById).not.toHaveBeenCalled();
 
-    // Verify response structure
     expect(res.status).toHaveBeenCalledWith(200);
     const responseOrder = res.json.mock.calls[0][0].order;
 
-    // Check that user details were attached from the DB fetch
-    expect(responseOrder.user).toEqual(mockUserB);
+    expect(responseOrder.user).toEqual({
+        _id: "userB_ID",
+        name: "User B",
+        email: "userb@example.com"
+      });
   });
 });
