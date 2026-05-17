@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+
+## 2025-03-05 - Avoid O(N) Reductions in Component Body Render
+**Learning:** Computations like `products.forEach` or `products.reduce` that compute a derived state (e.g., `outOfStock` count) from props inside the main body of a component execute synchronously on every re-render. In a complex Dashboard component, this degrades performance needlessly.
+**Action:** Always wrap `reduce`, `filter`, `forEach` derived-state logic in a `useMemo` hook with strict dependencies (`[products]`) so the O(N) array iteration only occurs when the actual data changes, saving CPU cycles on subsequent re-renders.
