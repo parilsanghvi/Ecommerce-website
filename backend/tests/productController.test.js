@@ -181,4 +181,44 @@ describe('Product Controller', () => {
       expect(res.status).toHaveBeenCalledWith(200);
     });
   });
+
+  describe('getProductDetails', () => {
+    it('should return product details when product is found', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+      req.params.id = 'product_id';
+
+      const mockProduct = { _id: 'product_id', name: 'Test Product' };
+      Product.findById.mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockProduct)
+      });
+
+      await productController.getProductDetails(req, res, mockNext);
+
+      expect(Product.findById).toHaveBeenCalledWith('product_id');
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        product: mockProduct
+      });
+    });
+
+    it('should call next with ErrorHandler when product is not found', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+      req.params.id = 'invalid_id';
+
+      Product.findById.mockReturnValue({
+        lean: jest.fn().mockResolvedValue(null)
+      });
+
+      await productController.getProductDetails(req, res, mockNext);
+
+      expect(Product.findById).toHaveBeenCalledWith('invalid_id');
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toBe('product not found');
+      expect(mockNext.mock.calls[0][0].statusCode).toBe(404);
+    });
+  });
+
 });
