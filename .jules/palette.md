@@ -5,3 +5,7 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+
+## 2026-05-17 - Accessible Error States
+**Learning:** Dynamic error messages in forms need 'role="alert"' and 'aria-live="assertive"' for immediate screen reader announcement.
+**Action:** Always add these attributes and hide decorative icons ('aria-hidden="true"') in custom error toasts/messages.

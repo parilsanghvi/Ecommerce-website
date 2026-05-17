@@ -148,9 +148,9 @@ const LoginSignup = () => {
                         <div className="slider-line" ref={switcherTab}></div>
                     </div >
                     {(error || localError) && (
-                        <div className="loginError">
-                            <MdErrorOutline />
-                            <span>{localError || (error === "Field value too long" ? "File is too large" : error)}</span>
+                        <div className="loginError" role="alert" aria-live="assertive">
+                            <MdErrorOutline aria-hidden="true" />
+                            <span>{localError || (error === "Field value too long" ? "File is too large (max 750KB)" : error)}</span>
                         </div>
                     )}
                     <form
