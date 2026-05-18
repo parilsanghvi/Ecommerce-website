@@ -88,4 +88,50 @@ describe('Error Middleware', () => {
             message: "Error 1, Error 2"
         });
     });
+
+    describe('Security Fix: 500 Error Information Disclosure', () => {
+        let originalEnv;
+
+        beforeEach(() => {
+            originalEnv = process.env.NODE_ENV;
+        });
+
+        afterEach(() => {
+            if (originalEnv === undefined) {
+                delete process.env.NODE_ENV;
+            } else {
+                process.env.NODE_ENV = originalEnv;
+            }
+        });
+
+        it('should leak error message in DEVELOPMENT', () => {
+            process.env.NODE_ENV = 'DEVELOPMENT';
+            const err = { statusCode: 500, message: "Sensitive Database Error: DB_HOST=127.0.0.1" };
+            errorMiddleware(err, req, res, next);
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: "Sensitive Database Error: DB_HOST=127.0.0.1"
+            });
+        });
+
+        it('should NOT leak error message in PRODUCTION', () => {
+            process.env.NODE_ENV = 'PRODUCTION';
+            const err = { statusCode: 500, message: "Sensitive Database Error: DB_HOST=127.0.0.1" };
+            errorMiddleware(err, req, res, next);
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: "internal server error"
+            });
+        });
+
+        it('should NOT leak error message in production (lowercase)', () => {
+            process.env.NODE_ENV = 'production';
+            const err = { statusCode: 500, message: "Sensitive Database Error: DB_HOST=127.0.0.1" };
+            errorMiddleware(err, req, res, next);
+            expect(res.json).toHaveBeenCalledWith({
+                success: false,
+                message: "internal server error"
+            });
+        });
+    });
 });
