@@ -5,3 +5,6 @@
 ## 2024-03-06 - Add ARIA label to 'X' icon buttons
 **Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
 **Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+## 2024-05-19 - Pointer Events on Decorative Input Icons
+**Learning:** Decorative SVG icons placed absolutely over input fields (common in authentication and profile forms) can unintentionally block mouse clicks intended for the input field beneath them, causing minor interaction friction for users.
+**Action:** Always apply `pointer-events: none` to absolute-positioned non-interactive elements (like SVG icons) that sit on top of interactive inputs to ensure clicks pass through seamlessly to the input field.
