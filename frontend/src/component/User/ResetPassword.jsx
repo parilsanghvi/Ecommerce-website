@@ -7,6 +7,8 @@ import Loader from "../layout/Loader";
 import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import LockIcon from "@mui/icons-material/Lock"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useNavigate, useParams } from 'react-router-dom';
 
 const ResetPassword = () => {
@@ -19,6 +21,8 @@ const ResetPassword = () => {
   const { error, success, loading } = useSelector((state) => state.user);
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const resetPasswordSubmit = (e) => {
     e.preventDefault();
@@ -59,21 +63,39 @@ const ResetPassword = () => {
               >
                 <div >
                   <LockOpenIcon />
-                  <input type="password"
+                  <input
+                    type={showPassword ? "text" : "password"}
                     placeholder="New Password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="password-toggle-btn"
+                    aria-label={showPassword ? "Hide new password" : "Show new password"}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
                 </div>
                 <div>
                   <LockIcon />
-                  <input type="password"
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="password-toggle-btn"
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
                 </div>
                 <button
                   type="submit"
