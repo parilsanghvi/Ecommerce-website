@@ -1,7 +1,3 @@
-## 2024-05-14 - Replace input buttons with `<button>` tags for Async operations
-**Learning:** Using `<input type="submit">` for important asynchronous actions (like payment processing) prevents the inclusion of visual feedback elements like inline spinners (`CircularProgress`). This leads to a poor user experience as the user is unsure if their action registered, and can cause anxiety during sensitive operations like payments.
-**Action:** When creating forms that trigger long-running asynchronous tasks, always use a `<button type="submit">` with an internal state (like `isProcessing`) to conditionally render an inline loading indicator and disable the button, providing immediate and clear feedback to the user.
-
-## 2024-03-06 - Add ARIA label to 'X' icon buttons
-**Learning:** Text closures like 'X' are ambiguous for screen readers and must be equipped with descriptive `aria-label` attributes to support proper screen reader functionality.
-**Action:** Always add an `aria-label` to visually-driven interactive elements or ambiguous text closures.
+## 2024-05-21 - Dynamic Error Accessibility in Auth Forms
+**Learning:** React state-driven error messages (like `loginError`) that appear dynamically after a failed interaction are completely ignored by screen readers unless explicitly marked with `role="alert"` and `aria-live="assertive"`. Furthermore, accompanying decorative icons (like `<MdErrorOutline />`) within these error blocks are read redundantly if not hidden with `aria-hidden="true"`.
+**Action:** Always add `role="alert"` and `aria-live="assertive"` to containers that render dynamic error messages, and ensure any accompanying visual-only icons have `aria-hidden="true"`.
