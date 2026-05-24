@@ -57,3 +57,7 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+
+## 2024-05-24 - Missing position relative in password wrappers
+**Learning:** Adding `.password-toggle-btn` with absolute positioning causes extreme visual regressions if the parent container doesn't have `position: relative`.
+**Action:** Always verify the CSS layout boundaries of the parent component when introducing `position: absolute` elements for new micro-UX features like toggle buttons.
