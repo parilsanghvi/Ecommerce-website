@@ -27,8 +27,15 @@ module.exports = (err, req, res, next) => {
         const message = Object.values(err.errors).map(val => val.message).join(', ');
         err = new ErrorHandler(message, 400);
     }
+    // Security Fix: Prevent leaking sensitive error details in production
+    let message = err.message;
+    if ((process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production') && err.statusCode === 500) {
+        console.error("Internal Server Error:", err);
+        message = "Internal Server Error";
+    }
+
     res.status(err.statusCode).json({
         success: false,
-        message: err.message
+        message: message
     })
 }
