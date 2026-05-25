@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2024-05-25 - Password Visibility Toggles
+**Learning:** Adding interactive icons like toggle buttons inside form inputs requires setting `position: relative` on the wrapping container to ensure absolute positioning doesn't break out of the component flow.
+**Action:** Always verify parent container positioning when nesting interactive absolutely-positioned elements within input groups.
