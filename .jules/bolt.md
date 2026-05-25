@@ -46,3 +46,7 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+
+## 2025-03-07 - O(N^2) Array Lookups in Backend Loops
+**Learning:** Performing `Array.find` or `Array.filter` on a populated array inside of an iterator (like a `for...of` loop over `orderItems`) introduces hidden O(N^2) time complexity. This was found during stock verification in order status updates, which could bottleneck the server significantly for orders with many items.
+**Action:** Whenever cross-referencing items between two arrays (e.g., fetched database records and a request payload list), first convert the fetched array into a `Map` or hash map structure using the shared identifier as the key. This allows subsequent loop iterations to perform O(1) lookups, dropping the overall complexity to O(N).
