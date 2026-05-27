@@ -242,9 +242,15 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
         const productIds = order.orderItems.map(item => item.product);
         const products = await Product.find({ _id: { $in: productIds } });
 
+        // Bolt Optimization: Use Map for O(1) product lookups inside the loop instead of O(N) array.find
+        const productMap = new Map();
+        for (const p of products) {
+            productMap.set(p._id.toString(), p);
+        }
+
         let hasInsufficientStock = false;
         for (const item of order.orderItems) {
-            const product = products.find(p => p._id.toString() === item.product.toString());
+            const product = productMap.get(item.product.toString());
             if (!product || product.stock < item.quantity) {
                 hasInsufficientStock = true;
                 break;
