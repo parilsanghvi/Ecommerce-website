@@ -52,14 +52,38 @@ afterEach(async () => {
 });
 
 describe('Security: Forgot Password Enumeration', () => {
-    const originalEnv = process.env.FRONTEND_URL;
+    let originalEnv;
 
     beforeEach(() => {
+        originalEnv = process.env.FRONTEND_URL;
         process.env.FRONTEND_URL = 'http://localhost:3000';
     });
 
     afterEach(() => {
-        process.env.FRONTEND_URL = originalEnv;
+        if (originalEnv === undefined) {
+            delete process.env.FRONTEND_URL;
+        } else {
+            process.env.FRONTEND_URL = originalEnv;
+        }
+    });
+
+    it('should return error when FRONTEND_URL is not configured', async () => {
+        delete process.env.FRONTEND_URL;
+
+        await User.create({
+            name: 'Test User',
+            email: 'test@example.com',
+            password: 'password123',
+            avatar: { public_id: 'id', url: 'url' }
+        });
+
+        const res = await request(app)
+            .post('/api/v1/password/forgot')
+            .send({ email: 'test@example.com' });
+
+        expect(res.status).toBe(500);
+        expect(res.body.success).toBe(false);
+        expect(res.body.message).toBe('FRONTEND_URL is not configured on the server.');
     });
 
     it('should return generic success message for non-existent email', async () => {
