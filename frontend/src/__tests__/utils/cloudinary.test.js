@@ -30,4 +30,11 @@ describe('getTransformedImageUrl', () => {
         const result = getTransformedImageUrl(url, { width: 100 });
         expect(result).toContain('c_scale');
     });
+
+    it('handles falsy crop option', () => {
+        const url = 'https://res.cloudinary.com/demo/image/upload/sample.jpg';
+        const result = getTransformedImageUrl(url, { crop: false });
+        expect(result).not.toContain('c_');
+        expect(result).toBe('https://res.cloudinary.com/demo/image/upload/f_auto,q_auto/sample.jpg');
+    });
 });
