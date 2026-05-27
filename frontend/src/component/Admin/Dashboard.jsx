@@ -39,7 +39,6 @@ const Dashboard = () => {
   const { totalAmount = 0, totalOrders } = useSelector((state) => state.order);
   // error
   const { totalUsers } = useSelector((state) => state.user);
-  // console.log(orders.length);
   let outOfStock = 0;
   products &&
     products.forEach((item) => {
