@@ -15,11 +15,11 @@ describe('createThunkHandler', () => {
         expect(thunkAPI.rejectWithValue).not.toHaveBeenCalled();
     });
 
-    it('should catch error and call rejectWithValue with response message', async () => {
+    it('should catch error and call rejectWithValue with response message (Axios error simulation)', async () => {
         const error = {
             response: {
                 data: {
-                    message: 'Server Error'
+                    message: 'Axios Error Simulation Message'
                 }
             }
         };
@@ -31,7 +31,7 @@ describe('createThunkHandler', () => {
         await wrappedHandler(arg, thunkAPI);
 
         expect(handler).toHaveBeenCalledWith(arg, thunkAPI);
-        expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('Server Error');
+        expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('Axios Error Simulation Message');
     });
 
     it('should catch error and call rejectWithValue with default message if response is missing', async () => {
@@ -45,5 +45,18 @@ describe('createThunkHandler', () => {
 
         expect(handler).toHaveBeenCalledWith(arg, thunkAPI);
         expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('Network Error');
+    });
+
+    it('should catch error and call rejectWithValue with stringified error as fallback', async () => {
+        const error = { toString: () => 'Stringified Error' };
+        const handler = vi.fn().mockRejectedValue(error);
+        const thunkAPI = { rejectWithValue: vi.fn() };
+        const arg = { id: 1 };
+
+        const wrappedHandler = createThunkHandler(handler);
+        await wrappedHandler(arg, thunkAPI);
+
+        expect(handler).toHaveBeenCalledWith(arg, thunkAPI);
+        expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('Stringified Error');
     });
 });
