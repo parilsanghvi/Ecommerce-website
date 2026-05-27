@@ -20,7 +20,12 @@ describe('JWT Token Utility', () => {
     });
 
     afterEach(() => {
-        process.env = originalEnv;
+        if (originalEnv.NODE_ENV === undefined) {
+            delete process.env.NODE_ENV;
+        } else {
+            process.env.NODE_ENV = originalEnv.NODE_ENV;
+        }
+        process.env.COOKIE_EXPIRE = originalEnv.COOKIE_EXPIRE;
     });
 
     it('should set secure cookie in PRODUCTION', () => {
@@ -68,5 +73,30 @@ describe('JWT Token Utility', () => {
         expect(jsonCall).not.toHaveProperty('token');
         expect(jsonCall).toHaveProperty('success', true);
         expect(jsonCall).toHaveProperty('user');
+    });
+
+    it('should NOT set secure cookie when NODE_ENV is undefined', () => {
+        delete process.env.NODE_ENV;
+
+        sendToken(user, 200, res);
+
+        const cookieCall = res.cookie.mock.calls[0];
+        const options = cookieCall[2];
+
+        expect(options).toHaveProperty('secure', false);
+    });
+
+    it('should clear password if explicitly passed', () => {
+        const userWithPassword = {
+            getJWTToken: jest.fn().mockReturnValue('mockToken'),
+            password: 'hashedpassword'
+        };
+
+        sendToken(userWithPassword, 200, res);
+
+        const jsonCall = res.json.mock.calls[0][0];
+
+        expect(jsonCall.user.password).toBeUndefined();
+        expect(jsonCall).toHaveProperty('success', true);
     });
 });
