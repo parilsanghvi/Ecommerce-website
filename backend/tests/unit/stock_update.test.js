@@ -44,7 +44,7 @@ describe('updateOrder Stock Update Security', () => {
 
         Order.findById.mockResolvedValue(mockOrder);
         // Mock Product.find to return sufficient stock for pre-verification
-        Product.find.mockResolvedValue(mockProducts);
+        Product.find.mockReturnValue({ lean: jest.fn().mockResolvedValue(mockProducts) });
         // Mock bulkWrite success (modifiedCount matches items length)
         Product.bulkWrite.mockResolvedValue({ modifiedCount: 2 });
 
@@ -91,7 +91,7 @@ describe('updateOrder Stock Update Security', () => {
         ];
 
         Order.findById.mockResolvedValue(mockOrder);
-        Product.find.mockResolvedValue(mockProducts);
+        Product.find.mockReturnValue({ lean: jest.fn().mockResolvedValue(mockProducts) });
 
         await updateOrder(req, res, next);
 

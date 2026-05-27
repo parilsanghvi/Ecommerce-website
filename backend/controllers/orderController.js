@@ -240,7 +240,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     if (req.body.status === "Shipped") {
         // Pre-verify stock to prevent partial updates and data inconsistency
         const productIds = order.orderItems.map(item => item.product);
-        const products = await Product.find({ _id: { $in: productIds } });
+        const products = await Product.find({ _id: { $in: productIds } }).lean(); // ⚡ Bolt: Used lean() for read-only Mongoose query to improve performance
 
         let hasInsufficientStock = false;
         for (const item of order.orderItems) {
