@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import cartReducer, {
     removeItemsFromCart,
     saveShippingInfo,
@@ -17,6 +17,22 @@ describe('cartSlice', () => {
 
     beforeEach(() => {
         localStorage.clear();
+    });
+
+    describe('initial state from localStorage', () => {
+        it('should load cartItems and shippingInfo from localStorage', async () => {
+            vi.resetModules();
+            localStorage.setItem('cartItems', JSON.stringify([{ product: 'p1', name: 'Item', price: 100 }]));
+            localStorage.setItem('shippingInfo', JSON.stringify({ address: '456 Ave' }));
+
+            const { default: reducer } = await import('../../features/cartSlice');
+
+            const state = reducer(undefined, { type: 'unknown' });
+
+            expect(state.cartItems).toHaveLength(1);
+            expect(state.cartItems[0].product).toBe('p1');
+            expect(state.shippingInfo.address).toBe('456 Ave');
+        });
     });
 
     describe('removeItemsFromCart', () => {
