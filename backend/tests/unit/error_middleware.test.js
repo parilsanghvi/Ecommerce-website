@@ -3,6 +3,7 @@ const ErrorHandler = require('../../utils/errorhandler');
 
 describe('Error Middleware', () => {
     let req, res, next;
+    const originalEnv = process.env.NODE_ENV;
 
     beforeEach(() => {
         req = {};
@@ -11,6 +12,11 @@ describe('Error Middleware', () => {
             json: jest.fn()
         };
         next = jest.fn();
+        process.env.NODE_ENV = 'development';
+    });
+
+    afterEach(() => {
+        process.env.NODE_ENV = originalEnv;
     });
 
     it('should handle default error with 500 status and default message', () => {
@@ -20,6 +26,42 @@ describe('Error Middleware', () => {
         expect(res.json).toHaveBeenCalledWith({
             success: false,
             message: "internal server error"
+        });
+    });
+
+    it('should return generic "Internal Server Error" for 500 status in production', () => {
+        process.env.NODE_ENV = 'production';
+        const err = new Error("Database connection failed completely with sensitive details");
+        errorMiddleware(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Internal Server Error"
+        });
+    });
+
+    it('should return generic "Internal Server Error" for 500 status in PRODUCTION', () => {
+        process.env.NODE_ENV = 'PRODUCTION';
+        const err = new Error("Database connection failed completely with sensitive details");
+        errorMiddleware(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Internal Server Error"
+        });
+    });
+
+    it('should NOT overwrite message for non-500 errors in production', () => {
+        process.env.NODE_ENV = 'production';
+        const err = new ErrorHandler("Custom Client Error", 400);
+        errorMiddleware(err, req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            success: false,
+            message: "Custom Client Error"
         });
     });
 

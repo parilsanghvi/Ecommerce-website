@@ -2,6 +2,14 @@ const ErrorHandler = require("../utils/errorhandler")
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.message = err.message || "internal server error"
+
+    // Security Fix: Do not leak error details in production for 500 errors
+    if (process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production') {
+        if (err.statusCode === 500) {
+            err.message = 'Internal Server Error';
+        }
+    }
+
     // wrong mongodb id error
     if (err.name == "CastError") {
         const message = `resource not found. invalid: ${err.path}`
