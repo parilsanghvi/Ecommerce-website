@@ -46,3 +46,6 @@
 ## 2025-03-04 - Safely parsing JSON from sessionStorage
 **Learning:** During tests or specific execution paths, `sessionStorage.getItem()` may return `undefined` (as a string) or fail to parse if the stored JSON string is corrupt or simply empty. Simply passing the result directly to `JSON.parse` (e.g., `JSON.parse(sessionStorage.getItem('key'))`) will throw a `SyntaxError` if it evaluates to `undefined`, breaking components like `Payment`.
 **Action:** Always wrap `JSON.parse` operations that source data from `sessionStorage` or `localStorage` inside a `try...catch` block, and provide a secure fallback initialization state to ensure component resilience.
+## 2025-05-27 - Fast Document Counting in Mongoose
+**Learning:** Using `countDocuments()` on a Mongoose model performs an O(N) index scan, which becomes very slow for large collections. If no query filters are applied (e.g., getting the total count of all products), using `estimatedDocumentCount()` is significantly faster as it operates in O(1) time by reading MongoDB collection metadata.
+**Action:** Always prefer `estimatedDocumentCount()` over `countDocuments()` when calculating the total size of an unfiltered collection to prevent unnecessary database load and improve response times.
