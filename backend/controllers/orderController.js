@@ -240,7 +240,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     if (req.body.status === "Shipped") {
         // Pre-verify stock to prevent partial updates and data inconsistency
         const productIds = order.orderItems.map(item => item.product);
-        const products = await Product.find({ _id: { $in: productIds } });
+        // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
+        const products = await Product.find({ _id: { $in: productIds } }).select("stock").lean();
 
         // Bolt Optimization: Use Map for O(1) product lookups inside the loop instead of O(N) array.find
         const productMap = new Map();
