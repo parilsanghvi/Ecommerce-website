@@ -44,7 +44,7 @@ describe('Security Headers', () => {
         expect(res.setHeader).toHaveBeenCalledWith('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         expect(next).toHaveBeenCalled();
 
-        process.env.NODE_ENV = originalEnv;
+        if (originalEnv === undefined) { delete process.env.NODE_ENV; } else { process.env.NODE_ENV = originalEnv; }
     });
 
     // 3. Unit Test: HSTS logic (production - lowercase)
@@ -71,7 +71,7 @@ describe('Security Headers', () => {
         expect(res.setHeader).toHaveBeenCalledWith('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         expect(next).toHaveBeenCalled();
 
-        process.env.NODE_ENV = originalEnv;
+        if (originalEnv === undefined) { delete process.env.NODE_ENV; } else { process.env.NODE_ENV = originalEnv; }
     });
 
     // 4. Unit Test: HSTS logic (Non-Production)
@@ -98,6 +98,6 @@ describe('Security Headers', () => {
         expect(res.setHeader).not.toHaveBeenCalledWith('Strict-Transport-Security', expect.anything());
         expect(next).toHaveBeenCalled();
 
-        process.env.NODE_ENV = originalEnv;
+        if (originalEnv === undefined) { delete process.env.NODE_ENV; } else { process.env.NODE_ENV = originalEnv; }
     });
 });
