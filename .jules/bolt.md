@@ -49,3 +49,6 @@
 ## 2024-05-24 - O(1) Lookup with Map instead of Array.find
 **Learning:** Using `Array.find` inside a loop results in O(N^2) time complexity which becomes a bottleneck with a large list.
 **Action:** Convert the array to a Map outside the loop to achieve O(1) lookup inside the loop.
+## 2024-05-28 - Mongoose Collection Counting Optimization
+**Learning:** `Model.countDocuments()` forces a full collection scan (or index scan) to get an exact count matching a query. When counting an entire collection without filters, this causes an O(N) performance bottleneck as the collection grows.
+**Action:** When a raw count of all documents is needed (e.g. for pagination metadata without applied filters), always use `Model.estimatedDocumentCount()` which runs in O(1) time by reading collection metadata instead of scanning documents.
