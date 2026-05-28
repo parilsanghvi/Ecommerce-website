@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2024-05-28 - Destructive Action Confirmations
+**Learning:** Destructive actions (like deleting products, users, or orders) in admin panels previously executed immediately on button click, leading to potential accidental data loss.
+**Action:** Always add a confirmation dialog (e.g., using a styled MUI Dialog component) to any icon-only delete buttons or destructive actions to prevent accidental data loss and improve user confidence.
