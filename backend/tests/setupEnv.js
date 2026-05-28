@@ -10,3 +10,4 @@ process.env.CLOUDINARY_API_SECRET = 'test_secret';
 process.env.SMPT_SERVICE = 'gmail';
 process.env.SMPT_MAIL = 'test@gmail.com';
 process.env.SMPT_PASSWORD = 'password';
+process.env.RESEND_API_KEY = 're_test_api_key_123';

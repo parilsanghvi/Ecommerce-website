@@ -1,10 +1,4 @@
 // Mock dependencies before requiring controller
-jest.mock('mongoose', () => ({}), { virtual: true });
-jest.mock('bcryptjs', () => ({}), { virtual: true });
-jest.mock('jsonwebtoken', () => ({}), { virtual: true });
-jest.mock('crypto', () => ({}), { virtual: true });
-jest.mock('validator', () => ({}), { virtual: true });
-jest.mock('nodemailer', () => ({}), { virtual: true });
 jest.mock('cloudinary', () => ({ v2: { uploader: { destroy: jest.fn(), upload: jest.fn() } } }), { virtual: true });
 jest.mock('resend', () => ({ Resend: jest.fn().mockImplementation(() => ({ emails: { send: jest.fn() } })) }), { virtual: true });
 jest.mock('../../models/userModel', () => ({

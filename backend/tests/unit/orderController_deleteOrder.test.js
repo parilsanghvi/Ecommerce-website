@@ -35,17 +35,13 @@ describe("deleteOrder Controller", () => {
     });
 
     it("should successfully delete an order and return 200", async () => {
-        const mockOrder = {
-            _id: "testOrderId123",
-            deleteOne: jest.fn().mockResolvedValue(true)
-        };
-
-        Order.findById.mockResolvedValue(mockOrder);
+        Order.findByIdAndDelete.mockReturnValue({
+            lean: jest.fn().mockResolvedValue({ _id: "testOrderId123" })
+        });
 
         await deleteOrder(req, res, next);
 
-        expect(Order.findById).toHaveBeenCalledWith("testOrderId123");
-        expect(mockOrder.deleteOne).toHaveBeenCalled();
+        expect(Order.findByIdAndDelete).toHaveBeenCalledWith("testOrderId123");
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
             success: true
@@ -54,11 +50,13 @@ describe("deleteOrder Controller", () => {
     });
 
     it("should call next with 404 ErrorHandler if order is not found", async () => {
-        Order.findById.mockResolvedValue(null);
+        Order.findByIdAndDelete.mockReturnValue({
+            lean: jest.fn().mockResolvedValue(null)
+        });
 
         await deleteOrder(req, res, next);
 
-        expect(Order.findById).toHaveBeenCalledWith("testOrderId123");
+        expect(Order.findByIdAndDelete).toHaveBeenCalledWith("testOrderId123");
         expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(next.mock.calls[0][0].statusCode).toBe(404);
         expect(next.mock.calls[0][0].message).toBe("order not found with this id");
@@ -66,32 +64,16 @@ describe("deleteOrder Controller", () => {
         expect(res.json).not.toHaveBeenCalled();
     });
 
-    it("should call next with error if Order.findById throws an error", async () => {
+    it("should call next with error if Order.findByIdAndDelete throws an error", async () => {
         const dbError = new Error("Database connection failed");
-        Order.findById.mockRejectedValue(dbError);
+        Order.findByIdAndDelete.mockReturnValue({
+            lean: jest.fn().mockRejectedValue(dbError)
+        });
 
         await deleteOrder(req, res, next);
 
-        expect(Order.findById).toHaveBeenCalledWith("testOrderId123");
+        expect(Order.findByIdAndDelete).toHaveBeenCalledWith("testOrderId123");
         expect(next).toHaveBeenCalledWith(dbError);
-        expect(res.status).not.toHaveBeenCalled();
-        expect(res.json).not.toHaveBeenCalled();
-    });
-
-    it("should call next with error if order.deleteOne throws an error", async () => {
-        const deleteError = new Error("Failed to delete document");
-        const mockOrder = {
-            _id: "testOrderId123",
-            deleteOne: jest.fn().mockRejectedValue(deleteError)
-        };
-
-        Order.findById.mockResolvedValue(mockOrder);
-
-        await deleteOrder(req, res, next);
-
-        expect(Order.findById).toHaveBeenCalledWith("testOrderId123");
-        expect(mockOrder.deleteOne).toHaveBeenCalled();
-        expect(next).toHaveBeenCalledWith(deleteError);
         expect(res.status).not.toHaveBeenCalled();
         expect(res.json).not.toHaveBeenCalled();
     });

@@ -6,7 +6,7 @@ describe('Rate Limiter Middleware', () => {
         // We do 100 requests in Promise.all to be faster
         const requests = [];
         for (let i = 0; i < 100; i++) {
-            requests.push(request(app).get('/api/v1/products'));
+            requests.push(request(app).get('/api/v1/products').set('x-test-rate-limit', 'true'));
         }
 
         const responses = await Promise.all(requests);
@@ -15,7 +15,7 @@ describe('Rate Limiter Middleware', () => {
         });
 
         // The 101st request should be rate limited
-        const rateLimitedResponse = await request(app).get('/api/v1/products');
+        const rateLimitedResponse = await request(app).get('/api/v1/products').set('x-test-rate-limit', 'true');
         expect(rateLimitedResponse.status).toBe(429);
         expect(rateLimitedResponse.text).toBe('Too many requests from this IP, please try again after 15 minutes');
     }, 30000); // 30 seconds

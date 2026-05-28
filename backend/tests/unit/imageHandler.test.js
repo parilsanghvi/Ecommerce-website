@@ -1,7 +1,4 @@
 
-const { processImagesUpdate } = require('../../utils/imageHandler');
-const cloudinary = require('cloudinary');
-
 jest.mock('cloudinary', () => ({
     v2: {
         uploader: {
@@ -10,6 +7,9 @@ jest.mock('cloudinary', () => ({
         },
     },
 }));
+
+const { processImagesUpdate } = require('../../utils/imageHandler');
+const cloudinary = require('cloudinary');
 
 describe('processImagesUpdate', () => {
     beforeEach(() => {
