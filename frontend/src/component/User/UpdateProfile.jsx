@@ -81,25 +81,29 @@ const UpdateProfile = () => {
                 onSubmit={updateProfileSubmit}
               >
                 <div className="updateProfileName">
-                  <FaceIcon />
+                  <FaceIcon aria-hidden="true" />
                   <input
                     type="text"
                     placeholder="Name"
+                    aria-label="Name"
                     required
                     name="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    disabled={loading}
                   />
                 </div>
                 <div className="updateProfileEmail">
-                  <MailOutlineIcon />
+                  <MailOutlineIcon aria-hidden="true" />
                   <input
                     type="email"
                     placeholder="Email"
+                    aria-label="Email"
                     required
                     name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
                   />
                 </div>
 
@@ -109,7 +113,9 @@ const UpdateProfile = () => {
                     type="file"
                     name="avatar"
                     accept="image/*"
+                    aria-label="Avatar Upload"
                     onChange={updateProfileDataChange}
+                    disabled={loading}
                   />
                 </div>
                 <button
