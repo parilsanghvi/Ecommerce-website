@@ -57,3 +57,7 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+
+## 2025-05-31 - Heading Copy-Paste Errors and Input State Management
+**Learning:** Found an incorrect "Update Profile" heading inside an "UpdatePassword" component, likely due to copy-pasting code during initial development. Additionally, inputs lacked `aria-label` and `disabled={loading}` props to prevent modifications mid-submission.
+**Action:** When reviewing forms, always verify that headings match the component's actual purpose and ensure all inputs have proper label associations and loading state management.
