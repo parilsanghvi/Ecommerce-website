@@ -71,14 +71,12 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 const item = action.payload;
-                const isItemExist = state.cartItems.find(
+                const itemIndex = state.cartItems.findIndex(
                     (i) => i.product === item.product
                 );
 
-                if (isItemExist) {
-                    state.cartItems = state.cartItems.map((i) =>
-                        i.product === isItemExist.product ? item : i
-                    );
+                if (itemIndex >= 0) {
+                    state.cartItems[itemIndex] = item;
                 } else {
                     state.cartItems.push(item);
                 }
