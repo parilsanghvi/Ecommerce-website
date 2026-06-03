@@ -85,9 +85,11 @@ const UpdateProfile = () => {
                   <input
                     type="text"
                     placeholder="Name"
+                    aria-label="Name"
                     required
                     name="name"
                     value={name}
+                    disabled={loading}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -96,9 +98,11 @@ const UpdateProfile = () => {
                   <input
                     type="email"
                     placeholder="Email"
+                    aria-label="Email"
                     required
                     name="email"
                     value={email}
+                    disabled={loading}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -109,6 +113,8 @@ const UpdateProfile = () => {
                     type="file"
                     name="avatar"
                     accept="image/*"
+                    aria-label="Avatar Upload"
+                    disabled={loading}
                     onChange={updateProfileDataChange}
                   />
                 </div>
