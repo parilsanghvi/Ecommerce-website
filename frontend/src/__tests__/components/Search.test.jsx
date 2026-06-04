@@ -23,7 +23,7 @@ describe('Search', () => {
     it('renders search input and button', () => {
         render(<Search />);
         expect(screen.getByPlaceholderText('Search products...')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Search')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
     });
 
     it('has accessible aria-label', () => {
