@@ -72,6 +72,7 @@ const UpdatePassword = () => {
                     aria-label="Old Password"
                     required
                     value={oldPassword}
+                    disabled={loading}
                     onChange={(e) => setOldPassword(e.target.value)}
                     disabled={loading}
                   />
@@ -93,6 +94,7 @@ const UpdatePassword = () => {
                     aria-label="New Password"
                     required
                     value={newPassword}
+                    disabled={loading}
                     onChange={(e) => setNewPassword(e.target.value)}
                     disabled={loading}
                   />
@@ -114,6 +116,7 @@ const UpdatePassword = () => {
                     aria-label="Confirm Password"
                     required
                     value={confirmPassword}
+                    disabled={loading}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={loading}
                   />
