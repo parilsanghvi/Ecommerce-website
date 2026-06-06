@@ -96,5 +96,4 @@ app.get(/^(.*)$/, (req, res) => {
 app.use(errorMiddleware);
 
 
-// export app routes to server
 module.exports = app
