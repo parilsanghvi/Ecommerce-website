@@ -114,14 +114,7 @@ describe('getProductReviews Unit Tests', () => {
     Product.findById.mockReturnValue({ select: productSelectMock });
 
     // Mock Review lookup with skip and limit
-    // let reviewQuery = Review.find().lean(); reviewQuery = reviewQuery.skip(skip).limit(limit);
     // Because it modifies the query returned by find().lean(), we must mock it carefully.
-
-    // In controller:
-    // let reviewQuery = Review.find({ product: req.query.id }).lean();
-    // reviewQuery = reviewQuery.skip(skip).limit(limit);
-    // const reviews = await reviewQuery;
-
     // So .lean() returns an object that has .skip(), which returns an object that has .limit(), which is awaitable.
 
     const limitMock = jest.fn().mockResolvedValue(mockReviews);
