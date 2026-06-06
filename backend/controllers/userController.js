@@ -265,8 +265,13 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler(`user doesnot exist with id of ${req.params.id}`, 404))
     }
     const imageId = user.avatar.public_id
-    await cloudinary.v2.uploader.destroy(imageId);
-    await user.deleteOne();
+    // ⚡ Bolt: [performance improvement] Parallelize Cloudinary destroy and database delete
+    // Previously these were sequential, taking T(destroy) + T(delete) time.
+    // Now they run concurrently, taking MAX(T(destroy), T(delete)) time.
+    await Promise.all([
+        cloudinary.v2.uploader.destroy(imageId),
+        user.deleteOne()
+    ]);
     res.status(200).json({
         success: true,
         message: "user deleted successfully"

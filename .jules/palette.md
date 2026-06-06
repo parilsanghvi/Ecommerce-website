@@ -60,3 +60,12 @@
 ## 2025-05-28 - Form Inputs Accessibility Anti-Pattern
 **Learning:** Found multiple form inputs (e.g. for profile/password updates) relying solely on placeholders and visual context rather than explicit `aria-label`s. Also, async forms lacked `disabled={loading}` on non-submit inputs, allowing users to modify fields while a submission was processing.
 **Action:** Always provide explicit accessible names using `aria-label` for form inputs without visible `<label>` elements. Apply `disabled={loading}` universally to all interactive form inputs and toggle buttons, not just the submit button, to prevent mid-submission modifications.
+
+## 2025-05-31 - Heading Copy-Paste Errors and Input State Management
+**Learning:** Found an incorrect "Update Profile" heading inside an "UpdatePassword" component, likely due to copy-pasting code during initial development. Additionally, inputs lacked `aria-label` and `disabled={loading}` props to prevent modifications mid-submission.
+**Action:** When reviewing forms, always verify that headings match the component's actual purpose and ensure all inputs have proper label associations and loading state management.
+
+## 2025-05-27 - Semantic Search Buttons
+**Learning:** Found `<input type="submit">` being used for search forms. While functional, it limits styling options (like adding an inner icon) and is less semantically clear than `<button type="submit">`.
+**Action:** When working on search interfaces or forms, proactively convert `<input type="submit">` to `<button type="submit">` to allow for richer internal content (like icons or loading spinners) and better semantic meaning. Ensure associated tests querying by `getByDisplayValue` are updated to `getByRole('button')`.
+

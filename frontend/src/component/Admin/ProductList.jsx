@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useCallback } from "react";
+import React, { Fragment, useEffect, useMemo, useCallback, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,7 +10,7 @@ import {
 } from "../../features/productSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AdminLayout from "./AdminLayout";
@@ -28,10 +28,27 @@ const ProductList = () => {
     (state) => state.product
   );
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+
+  const handleDeleteClick = useCallback((id) => {
+    setProductToDelete(id);
+    setDeleteDialogOpen(true);
+  }, []);
+
   // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
-  const deleteProductHandler = useCallback((id) => {
-    dispatch(deleteProduct(id));
-  }, [dispatch]);
+  const deleteProductHandler = useCallback(() => {
+    if (productToDelete) {
+      dispatch(deleteProduct(productToDelete));
+      setDeleteDialogOpen(false);
+      setProductToDelete(null);
+    }
+  }, [dispatch, productToDelete]);
+
+  const handleCloseDialog = useCallback(() => {
+    setDeleteDialogOpen(false);
+    setProductToDelete(null);
+  }, []);
 
   useErrorNotification(error, clearErrors);
   useErrorNotification(deleteError, clearErrors);
@@ -90,7 +107,7 @@ const ProductList = () => {
 
             <button
               onClick={() =>
-                deleteProductHandler(params.row.id)
+                handleDeleteClick(params.row.id)
               }
               aria-label="Delete product"
             >
@@ -132,6 +149,46 @@ const ProductList = () => {
           autoHeight
         />
       </div>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        sx={{
+          '& .MuiDialog-paper': {
+            backgroundColor: 'var(--color-surface)',
+            border: '2px solid var(--color-text)',
+            boxShadow: '8px 8px 0 var(--color-primary)',
+            borderRadius: 0,
+            color: 'var(--color-text)'
+          }
+        }}
+      >
+        <DialogTitle id="delete-dialog-title" sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>
+          Confirm Delete
+        </DialogTitle>
+        <DialogContent>
+          <Typography id="delete-dialog-description" sx={{ fontFamily: 'var(--font-body)', marginTop: '1rem' }}>
+            Are you sure you want to delete this product? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} sx={{ color: 'var(--color-muted)' }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={deleteProductHandler}
+            sx={{
+              color: 'var(--color-primary)',
+              fontWeight: 'bold'
+            }}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AdminLayout>
   );
 };

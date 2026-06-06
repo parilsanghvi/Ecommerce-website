@@ -57,7 +57,7 @@ const UpdatePassword = () => {
           <MetaData title="Change Password" />
           <div className="updatePasswordContainer">
             <div className="updatePasswordBox">
-              <h2 className="updatePasswordHeading">Update Profile</h2>
+              <h2 className="updatePasswordHeading">Update Password</h2>
 
               <form
                 className="updatePasswordForm"
@@ -74,6 +74,7 @@ const UpdatePassword = () => {
                     value={oldPassword}
                     disabled={loading}
                     onChange={(e) => setOldPassword(e.target.value)}
+                    disabled={loading}
                   />
                   <button
                     type="button"
@@ -95,6 +96,7 @@ const UpdatePassword = () => {
                     value={newPassword}
                     disabled={loading}
                     onChange={(e) => setNewPassword(e.target.value)}
+                    disabled={loading}
                   />
                   <button
                     type="button"
@@ -116,6 +118,7 @@ const UpdatePassword = () => {
                     value={confirmPassword}
                     disabled={loading}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={loading}
                   />
                   <button
                     type="button"
