@@ -5,3 +5,6 @@
 ## 2024-03-10 - Avoid O(N) array copies in Redux Toolkit reducers
 **Learning:** When updating an existing item in an array within a Redux Toolkit reducer, using `Array.map()` creates an unnecessary O(N) copy of the array. Because RTK uses Immer under the hood, we can safely find the index with `Array.findIndex()` and mutate the element directly (e.g., `state.cartItems[itemIndex] = item`). This avoids the O(N) copy overhead and reduces memory allocations.
 **Action:** Replaced `Array.find()` and `Array.map()` with `Array.findIndex()` and direct index mutation in `frontend/src/features/cartSlice.js` for `addItemsToCart.fulfilled`.
+## 2024-05-18 - Optimize Cart Array Updates
+**Learning:** Redux Toolkit uses Immer, allowing for direct mutations on the state draft. When updating an array item, instead of using `.map()` which creates a full O(N) copy, using `.findIndex()` and directly mutating the index (e.g., `state.items[index] = item`) is significantly faster.
+**Action:** When updating existing state items in Redux Toolkit reducers, use `.findIndex()` and direct array mutation rather than `.map()`.
