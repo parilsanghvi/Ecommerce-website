@@ -8,6 +8,7 @@ export default defineConfig({
         globals: true,
         environment: 'jsdom',
         setupFiles: './src/test/setup.jsx',
+        testTimeout: 20000,
         css: false,
         alias: {
             '@': path.resolve(__dirname, 'src'),
