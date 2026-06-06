@@ -3,7 +3,9 @@ const compression = require('compression');
 const app = express();
 
 // Enable trust proxy for rate limiting behind load balancers
-app.set('trust proxy', 1);
+if (process.env.TRUST_PROXY === 'true') {
+  app.set('trust proxy', 1);
+}
 
 const cookieParser = require("cookie-parser");
 const errorMiddleware = require('./middleware/error');
