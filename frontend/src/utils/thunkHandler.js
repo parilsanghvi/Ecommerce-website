@@ -9,9 +9,11 @@ export const createThunkHandler = (handler) => async (arg, thunkAPI) => {
         return await handler(arg, thunkAPI);
     } catch (error) {
         const message =
-            error.response && error.response.data && error.response.data.message
-                ? error.response.data.message
-                : error.message;
+            (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+            error.message ||
+            error.toString();
         return thunkAPI.rejectWithValue(message);
     }
 };

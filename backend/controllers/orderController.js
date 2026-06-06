@@ -240,7 +240,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     if (req.body.status === "Shipped") {
         // Pre-verify stock to prevent partial updates and data inconsistency
         const productIds = order.orderItems.map(item => item.product);
-        const products = await Product.find({ _id: { $in: productIds } });
+        // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
+        const products = await Product.find({ _id: { $in: productIds } }).select("stock").lean();
 
         // Bolt Optimization: Use Map for O(1) product lookups inside the loop instead of O(N) array.find
         const productMap = new Map();
@@ -292,11 +293,12 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
 
 // delete order --admin
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
-    const order = await Order.findById(req.params.id)
+    // Bolt Optimization: Use findByIdAndDelete to reduce database roundtrips from two to one
+    // and avoid Mongoose document hydration overhead since we don't need the document object.
+    const order = await Order.findByIdAndDelete(req.params.id).lean();
     if (!order) {
         return next(new ErrorHandler("order not found with this id", 404))
     }
-    await order.deleteOne()
     res.status(200).json({
         success: true,
     });

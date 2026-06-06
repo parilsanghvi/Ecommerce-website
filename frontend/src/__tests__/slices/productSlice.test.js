@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import axios from 'axios';
+import configureMockStore from 'redux-mock-store';
+import { thunk } from 'redux-thunk';
 import productReducer, {
     clearErrors,
     newProductReset,
@@ -7,6 +10,7 @@ import productReducer, {
     newReviewReset,
     deleteReviewReset,
     getProduct,
+    getAdminProduct,
     getProductDetails,
     createProduct,
     updateProduct,
@@ -15,6 +19,11 @@ import productReducer, {
     getAllReviews,
     deleteReviews,
 } from '../../features/productSlice';
+
+vi.mock('axios');
+
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
 
 const initialState = {
     products: [],
@@ -95,6 +104,71 @@ describe('productSlice', () => {
             const result = productReducer(initialState, action);
             expect(result.loading).toBe(false);
             expect(result.error).toBe('Failed to fetch');
+        });
+    });
+
+    describe('getAdminProduct async thunk behavior', () => {
+        let store;
+
+        beforeEach(() => {
+            store = mockStore({});
+            vi.clearAllMocks();
+        });
+
+        it('dispatches pending and fulfilled actions on successful API call', async () => {
+            const mockData = {
+                data: {
+                    products: [{ _id: '1', name: 'Admin Product 1' }, { _id: '2', name: 'Admin Product 2' }]
+                }
+            };
+
+            axios.get.mockResolvedValueOnce(mockData);
+
+            await store.dispatch(getAdminProduct());
+
+            const actions = store.getActions();
+
+            expect(actions[0].type).toBe(getAdminProduct.pending.type);
+            expect(actions[1].type).toBe(getAdminProduct.fulfilled.type);
+            expect(actions[1].payload).toEqual(mockData.data.products);
+        });
+
+        it('dispatches pending and rejected actions on failed API call', async () => {
+            const mockError = new Error('Network Error');
+            mockError.response = { data: { message: 'Server is down' } };
+
+            axios.get.mockRejectedValueOnce(mockError);
+
+            await store.dispatch(getAdminProduct());
+
+            const actions = store.getActions();
+
+            expect(actions[0].type).toBe(getAdminProduct.pending.type);
+            expect(actions[1].type).toBe(getAdminProduct.rejected.type);
+            expect(actions[1].payload).toBe('Server is down');
+        });
+    });
+
+    describe('getAdminProduct async thunk reducers', () => {
+        it('should set loading on pending', () => {
+            const action = { type: getAdminProduct.pending.type };
+            const result = productReducer(initialState, action);
+            expect(result.loading).toBe(true);
+        });
+
+        it('should populate products on fulfilled', () => {
+            const payload = [{ _id: '1', name: 'Admin Product' }];
+            const action = { type: getAdminProduct.fulfilled.type, payload };
+            const result = productReducer(initialState, action);
+            expect(result.loading).toBe(false);
+            expect(result.products).toEqual(payload);
+        });
+
+        it('should set error on rejected', () => {
+            const action = { type: getAdminProduct.rejected.type, payload: 'Failed to fetch admin products' };
+            const result = productReducer(initialState, action);
+            expect(result.loading).toBe(false);
+            expect(result.error).toBe('Failed to fetch admin products');
         });
     });
 

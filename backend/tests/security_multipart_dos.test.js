@@ -2,6 +2,11 @@ const request = require("supertest");
 const app = require("../app");
 const mongoose = require("mongoose");
 
+jest.mock("../models/userModel", () => ({
+    create: jest.fn().mockRejectedValue(new Error("Database connection mocked out")),
+}));
+
+
 // We don't need a real DB connection because we expect the controller to fail early (401)
 // or Multer to fail even earlier (500).
 
