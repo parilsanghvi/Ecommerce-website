@@ -245,6 +245,10 @@ exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
 })
 // update user role
 exports.updateUserRole = catchAsyncErrors(async (req, res, next) => {
+    if (req.body.role && !['user', 'admin'].includes(req.body.role)) {
+        return next(new ErrorHandler("Role can only be user or admin", 400));
+    }
+
     const newUserData = {
         name: req.body.name,
         email: req.body.email,
