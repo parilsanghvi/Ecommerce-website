@@ -165,8 +165,13 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
     if (!product) {
         return next(new ErrorHandler("product not found", 404))
     }
-    await Promise.all(product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)));
-    await product.deleteOne();
+    // ⚡ Bolt: [performance improvement] Parallelize Cloudinary destroy and database delete
+    // Previously these were sequential, taking T(destroy) + T(delete) time.
+    // Now they run concurrently, taking MAX(T(destroy), T(delete)) time.
+    await Promise.all([
+        ...product.images.map(image => cloudinary.v2.uploader.destroy(image.public_id)),
+        product.deleteOne()
+    ]);
     res.status(200).json({
         success: true,
         message: "product deleted"
