@@ -57,7 +57,7 @@ const UpdatePassword = () => {
           <MetaData title="Change Password" />
           <div className="updatePasswordContainer">
             <div className="updatePasswordBox">
-              <h2 className="updatePasswordHeading">Update Profile</h2>
+              <h2 className="updatePasswordHeading">Update Password</h2>
 
               <form
                 className="updatePasswordForm"
@@ -69,15 +69,18 @@ const UpdatePassword = () => {
                   <input
                     type={showOldPassword ? "text" : "password"}
                     placeholder="Old Password"
+                    aria-label="Old Password"
                     required
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
+                    disabled={loading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowOldPassword(!showOldPassword)}
                     className="password-toggle-btn"
                     aria-label={showOldPassword ? "Hide old password" : "Show old password"}
+                    disabled={loading}
                   >
                     {showOldPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
@@ -87,15 +90,18 @@ const UpdatePassword = () => {
                   <input
                     type={showNewPassword ? "text" : "password"}
                     placeholder="New Password"
+                    aria-label="New Password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
+                    disabled={loading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
                     className="password-toggle-btn"
                     aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+                    disabled={loading}
                   >
                     {showNewPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
@@ -105,15 +111,18 @@ const UpdatePassword = () => {
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"
+                    aria-label="Confirm Password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={loading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="password-toggle-btn"
                     aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    disabled={loading}
                   >
                     {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </button>

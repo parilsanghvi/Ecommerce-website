@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useMemo } from "react";
 import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 import { saveShippingInfo } from "../../features/cartSlice";
@@ -39,6 +39,9 @@ const Shipping = () => {
     );
     navigate("/order/confirm");
   };
+
+  const countries = useMemo(() => Country ? Country.getAllCountries() : [], []);
+  const states = useMemo(() => State && country ? State.getStatesOfCountry(country) : [], [country]);
 
   return (
     <Fragment>
@@ -114,8 +117,7 @@ const Shipping = () => {
                 onChange={(e) => setCountry(e.target.value)}
               >
                 <option value="">Country</option>
-                {Country &&
-                  Country.getAllCountries().map((item) => (
+                {countries.map((item) => (
                     <option key={item.isoCode} value={item.isoCode}>
                       {item.name}
                     </option>
@@ -134,8 +136,7 @@ const Shipping = () => {
                   onChange={(e) => setState(e.target.value)}
                 >
                   <option value="">State</option>
-                  {State &&
-                    State.getStatesOfCountry(country).map((item) => (
+                  {states.map((item) => (
                       <option key={item.isoCode} value={item.isoCode}>
                         {item.name}
                       </option>
