@@ -62,6 +62,6 @@ describe('UpdatePassword', () => {
 
     it('renders heading', () => {
         render(<UpdatePassword />);
-        expect(screen.getByText('Update Profile')).toBeInTheDocument();
+        expect(screen.getByText('Update Password')).toBeInTheDocument();
     });
 });
