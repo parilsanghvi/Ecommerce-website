@@ -10,6 +10,11 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("No items provided for payment", 400));
   }
 
+  // Security Fix: Limit array length to prevent denial of service (DoS) attacks
+  if (items.length > 100) {
+    return next(new ErrorHandler("Too many items in payment request", 400));
+  }
+
   const productIds = items.map((item) => item.product);
   // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
   const products = await Product.find({ _id: { $in: productIds } }).select("price").lean();
