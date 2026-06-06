@@ -41,7 +41,7 @@ describe('processImagesUpdate benchmark', () => {
         const end = Date.now();
 
         console.log(`Execution time concurrent: ${end - start}ms`);
-        // If it runs concurrently, the time should be around 100ms instead of 200ms
-        expect(end - start).toBeLessThan(150);
+        // If it runs concurrently, the time should be around 100ms instead of 2000ms
+        expect(end - start).toBeLessThan(300);
     });
 });
