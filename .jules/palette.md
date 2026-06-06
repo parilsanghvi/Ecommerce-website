@@ -57,3 +57,6 @@
 ## 2025-05-27 - Forms Without Buttons
 **Learning:** Legacy form submissions using `<input type="submit">` cannot display complex internal content like inline loading spinners natively without hacky CSS/background-image workarounds, leading to missing loading states during long-running async tasks.
 **Action:** When working on form UX, proactively refactor `<input type="submit">` elements to `<button type="submit">` and combine with an internal loading state to render spinners or contextual feedback. Update any associated unit tests that were targeting inputs via `getByDisplayValue` to look for button roles.
+## 2025-05-27 - Semantic Search Buttons
+**Learning:** Found `<input type="submit">` being used for search forms. While functional, it limits styling options (like adding an inner icon) and is less semantically clear than `<button type="submit">`.
+**Action:** When working on search interfaces or forms, proactively convert `<input type="submit">` to `<button type="submit">` to allow for richer internal content (like icons or loading spinners) and better semantic meaning. Ensure associated tests querying by `getByDisplayValue` are updated to `getByRole('button')`.
