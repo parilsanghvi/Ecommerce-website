@@ -34,9 +34,18 @@ vi.mock('notistack', () => ({
 
 vi.mock('../../component/layout/MetaData', () => ({ default: () => null }));
 vi.mock('../../component/Admin/Sidebar', () => ({ default: () => <div data-testid="sidebar">Sidebar</div> }));
-vi.mock('@mui/material', () => ({
-    Button: ({ children, ...props }) => <button {...props}>{children}</button>,
-}));
+vi.mock('@mui/material', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        Button: ({ children, ...props }) => <button {...props}>{children}</button>,
+        Dialog: ({ children, open, ...props }) => open ? <div role="dialog" {...props}>{children}</div> : null,
+        DialogTitle: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
+        DialogContent: ({ children, ...props }) => <div {...props}>{children}</div>,
+        DialogActions: ({ children, ...props }) => <div {...props}>{children}</div>,
+        Typography: ({ children, ...props }) => <p {...props}>{children}</p>,
+    };
+});
 vi.mock('@mui/icons-material/Edit', () => ({ default: () => <span>✏️</span> }));
 vi.mock('@mui/icons-material/Delete', () => ({ default: () => <span>🗑️</span> }));
 
@@ -99,7 +108,9 @@ describe('ProductList', () => {
         render(<ProductList />);
         const deleteButtons = screen.getAllByRole('button', { name: /Delete product/i });
         fireEvent.click(deleteButtons[0]);
-        // Dispatches deleteProduct
+        // Dispatches deleteProduct after confirmation
+        const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' });
+        fireEvent.click(confirmDeleteButton);
         expect(mockDispatch).toHaveBeenCalled();
     });
 
