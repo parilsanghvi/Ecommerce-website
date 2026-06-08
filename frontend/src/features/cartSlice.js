@@ -71,15 +71,14 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 const item = action.payload;
-
-                // ⚡ Bolt: [performance improvement] Use findIndex and direct mutation (Immer) instead of find and map
-                // This avoids an O(N) array copy when updating existing items.
-                const itemIndex = state.cartItems.findIndex(
+                const isItemExist = state.cartItems.find(
                     (i) => i.product === item.product
                 );
 
-                if (itemIndex >= 0) {
-                    state.cartItems[itemIndex] = item;
+                if (isItemExist) {
+                    state.cartItems = state.cartItems.map((i) =>
+                        i.product === isItemExist.product ? item : i
+                    );
                 } else {
                     state.cartItems.push(item);
                 }
