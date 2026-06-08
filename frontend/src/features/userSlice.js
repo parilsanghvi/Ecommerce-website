@@ -1,16 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
-
-// Custom helper to standardize thunk error handling
-export const createThunkHandler = (asyncFunction) => async (arg, thunkAPI) => {
-    try {
-        return await asyncFunction(arg, thunkAPI);
-    } catch (error) {
-        const errorMessage = error.response?.data?.message || error.message || "An error occurred";
-        return thunkAPI.rejectWithValue(errorMessage);
-    }
-};
+import { createThunkHandler } from "../utils/thunkHandler";
 
 // Async Thunks
 export const login = createAsyncThunk(
