@@ -107,6 +107,18 @@ describe("Payment Security - processPayment", () => {
         expect(next.mock.calls[0][0].message).toBe("No items provided for payment");
     });
 
+    it("should return error if items exceed maximum length of 100", async () => {
+        const mockItems = Array.from({ length: 101 }, (_, i) => ({
+            product: `prod${i}`,
+            quantity: 1,
+        }));
+        req.body.items = mockItems;
+        await processPayment(req, res, next);
+        expect(next).toHaveBeenCalledWith(expect.any(Error));
+        expect(next.mock.calls[0][0].message).toBe("Too many items in payment request");
+        expect(next.mock.calls[0][0].statusCode).toBe(400);
+    });
+
     it("should return error if product not found", async () => {
         const mockItems = [
             { product: "prod1", quantity: 1 },
