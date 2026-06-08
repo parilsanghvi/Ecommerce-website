@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import "./Products.css"
 import { useSelector, useDispatch } from 'react-redux'
 import { clearErrors, getProduct } from '../../features/productSlice'
@@ -11,49 +11,28 @@ import Button from "@mui/material/Button"
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import MetaData from "../layout/MetaData";
 import useErrorNotification from "../../hooks/useErrorNotification";
-import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-const categories = [
-    "Laptop",
-    "Footwear",
-    "Bottom",
-    "Tops",
-    "Attire",
-    "Camera",
-    "SmartPhones",
-]
-
-const MAX_PRICE = 25000;
+import useProductFilters, { categories, MAX_PRICE } from '../../hooks/useProductFilters';
 
 const Products = () => {
     const dispatch = useDispatch()
-    const [ratings, setRating] = useState(0)
-    const [sliderRatings, setSliderRatings] = useState(0); // For UI slider
-    const [currentPage, setCurrentPage] = useState(1)
-    const [price, setPrice] = useState([0, MAX_PRICE])
-    const [sliderPrice, setSliderPrice] = useState([0, MAX_PRICE]); // For UI slider
-    const [category, setCategory] = useState("")
+
     const { products, loading, error, productsCount, resultPerPage, filteredProductsCount } = useSelector((state) => state.product)
-    const { keyword } = useParams();
 
-    const setCurrentPageNo = (e, value) => {
-        setCurrentPage(value)
-    }
-    const priceHandler = (event, newPrice) => {
-        setPrice(newPrice);
-        setSliderPrice(newPrice); // Ensure sync
-        setCurrentPage(1);
-    }
+    const {
+        ratings, setRating,
+        sliderRatings, setSliderRatings,
+        currentPage, setCurrentPage,
+        price, setPrice,
+        sliderPrice, setSliderPrice,
+        category, setCategory,
+        keyword,
+        setCurrentPageNo,
+        priceHandler,
+        resetFilters,
+        isFiltered,
+    } = useProductFilters();
 
-    const resetFilters = () => {
-        setPrice([0, MAX_PRICE]);
-        setSliderPrice([0, MAX_PRICE]);
-        setCategory("");
-        setRating(0);
-        setSliderRatings(0);
-        setCurrentPage(1);
-    }
     const filteredProducts = products || [];
 
     useErrorNotification(error, clearErrors);
@@ -64,8 +43,6 @@ const Products = () => {
         }, 500);
         return () => clearTimeout(timeoutId);
     }, [dispatch, keyword, currentPage, price, category, ratings]);
-
-    const isFiltered = price[0] !== 0 || price[1] !== MAX_PRICE || category !== "" || ratings > 0;
 
     return (
         <Fragment>
