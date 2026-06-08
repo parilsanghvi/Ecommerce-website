@@ -3,8 +3,12 @@ const compression = require('compression');
 const app = express();
 
 // Enable trust proxy for rate limiting behind load balancers
+// Set to 1 only if specifically configured to run behind a proxy like Heroku/Render
+// Otherwise, keep it disabled (false) to prevent IP spoofing
 if (process.env.TRUST_PROXY === 'true') {
   app.set('trust proxy', 1);
+} else {
+  app.set('trust proxy', false);
 }
 
 const cookieParser = require("cookie-parser");
