@@ -25,7 +25,7 @@ describe('Apifeatures Security (Regex Injection)', () => {
         expect(findArgs.$text).toHaveProperty('$search', '(');
     });
 
-    it('should escape regex characters in category filter (Security Fix)', () => {
+    it('should escape regex characters in category filter', () => {
         const querystr = { category: '(' };
         const apiFeatures = new Apifeatures(mockQuery, querystr);
 
@@ -34,7 +34,7 @@ describe('Apifeatures Security (Regex Injection)', () => {
         expect(mockQuery.find).toHaveBeenCalled();
         const findArgs = mockQuery.find.mock.calls[0][0];
 
-        // This confirms the fix: the regex is escaped
+        // This confirms the regex is escaped
         expect(findArgs).toHaveProperty('category');
         expect(findArgs.category).toHaveProperty('$regex');
         expect(findArgs.category.$regex).toBe('\\(');
