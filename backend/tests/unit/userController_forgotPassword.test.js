@@ -102,6 +102,9 @@ describe('forgotPassword Controller', () => {
 
         await userController.forgotPassword(req, res, next);
 
+        // Wait for the asynchronous email promise to execute
+        await new Promise(resolve => setImmediate(resolve));
+
         expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
         expect(mockUser.getResetPasswordToken).toHaveBeenCalled();
         expect(mockUser.save).toHaveBeenCalledWith({ validateBeforeSave: false });
@@ -127,8 +130,9 @@ describe('forgotPassword Controller', () => {
 
         await userController.forgotPassword(req, res, next);
 
-        // Wait for the next tick to allow the un-awaited promise in the controller to run
-        await new Promise(resolve => process.nextTick(resolve));
+        // Wait for all asynchronous promises and callbacks in the controller to execute
+        await new Promise(resolve => setImmediate(resolve));
+        await new Promise(resolve => setImmediate(resolve));
 
         // The response should be sent immediately
         expect(res.status).toHaveBeenCalledWith(200);
