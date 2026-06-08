@@ -69,3 +69,6 @@
 **Learning:** Found `<input type="submit">` being used for search forms. While functional, it limits styling options (like adding an inner icon) and is less semantically clear than `<button type="submit">`.
 **Action:** When working on search interfaces or forms, proactively convert `<input type="submit">` to `<button type="submit">` to allow for richer internal content (like icons or loading spinners) and better semantic meaning. Ensure associated tests querying by `getByDisplayValue` are updated to `getByRole('button')`.
 
+## 2025-06-06 - Form Disabled State Consolidation
+**Learning:** Found that the `UpdateProduct` form had a submit button that was correctly disabled during loading, but the input fields, textarea, and select dropdown were still active. This allowed users to modify form values while a submission was already in progress, potentially leading to race conditions or incorrect data being sent if the submission failed and they resubmitted.
+**Action:** When working on async forms, ensure the `disabled={loading}` state is applied uniformly to ALL interactive form elements (inputs, textareas, selects), not just the submit button.

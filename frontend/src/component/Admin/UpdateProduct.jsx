@@ -161,8 +161,10 @@ const UpdateProduct = () => {
             <input
               type="text"
               placeholder="Product Name"
+              aria-label="Product Name"
               required
               value={name}
+              disabled={loading}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
@@ -171,9 +173,11 @@ const UpdateProduct = () => {
             <input
               type="number"
               placeholder="Price"
+              aria-label="Price"
               required
               onChange={(e) => setPrice(e.target.value)}
               value={price}
+              disabled={loading}
             />
           </div>
 
@@ -182,10 +186,12 @@ const UpdateProduct = () => {
 
             <textarea
               placeholder="Product Description"
+              aria-label="Product Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               cols="30"
               rows="1"
+              disabled={loading}
             ></textarea>
           </div>
 
@@ -193,7 +199,9 @@ const UpdateProduct = () => {
             <AccountTreeIcon />
             <select
               value={category}
+              aria-label="Category"
               onChange={(e) => setCategory(e.target.value)}
+              disabled={loading}
             >
               <option value="">Choose Category</option>
               {categories.map((cate) => (
@@ -209,9 +217,11 @@ const UpdateProduct = () => {
             <input
               type="number"
               placeholder="Stock"
+              aria-label="Stock"
               required
               onChange={(e) => setStock(e.target.value)}
               value={stock}
+              disabled={loading}
             />
           </div>
 
@@ -219,9 +229,11 @@ const UpdateProduct = () => {
             <input
               type="file"
               name="avatar"
+              aria-label="Product Images"
               accept="image/*"
               onChange={updateProductImagesChange}
               multiple
+              disabled={loading}
             />
           </div>
 
@@ -259,7 +271,7 @@ const UpdateProduct = () => {
           <button
             id="createProductBtn"
             type="submit"
-            disabled={loading ? true : false}
+            disabled={loading}
             className="primary-btn"
             style={{ marginTop: '2rem' }}
           >
