@@ -39,4 +39,3 @@ jest.mock('cloudinary', () => ({
         }
     }
 }));
-

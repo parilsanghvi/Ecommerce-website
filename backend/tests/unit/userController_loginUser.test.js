@@ -1,3 +1,12 @@
+jest.mock('cloudinary', () => ({
+    v2: {
+        uploader: {
+            destroy: jest.fn(),
+            upload: jest.fn(),
+        }
+    }
+}));
+
 const userController = require('../../controllers/userController');
 const User = require('../../models/userModel');
 const ErrorHandler = require('../../utils/errorhandler');

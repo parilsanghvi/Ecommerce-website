@@ -4,5 +4,6 @@ module.exports = {
     verbose: true,
     testMatch: ['<rootDir>/backend/tests/**/*.test.js'],
     forceExit: true,
-    setupFilesAfterEnv: ['<rootDir>/backend/tests/setupEnv.js'],
+    setupFiles: ['<rootDir>/backend/tests/setupEnv.js'],
+    resetModules: true,
 };

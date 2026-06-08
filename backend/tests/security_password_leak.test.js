@@ -4,7 +4,14 @@ const sendToken = require("../utils/jwtToken");
 jest.mock("../utils/jwtToken");
 jest.mock("../models/userModel");
 jest.mock("../utils/errorhandler");
-jest.mock("cloudinary");
+jest.mock("cloudinary", () => ({
+    v2: {
+        uploader: {
+            destroy: jest.fn(),
+            upload: jest.fn()
+        }
+    }
+}));
 jest.mock("../middleware/catchAsyncErrors", () => (func) => (req, res, next) => Promise.resolve(func(req, res, next)).catch(next));
 
 describe("Security: Password Hash Leak", () => {

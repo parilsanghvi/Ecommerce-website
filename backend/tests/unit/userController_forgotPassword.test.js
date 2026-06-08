@@ -102,8 +102,10 @@ describe('forgotPassword Controller', () => {
 
         await userController.forgotPassword(req, res, next);
 
-        // Wait for the asynchronous email promise to execute
-        await new Promise(resolve => setImmediate(resolve));
+        // Wait for all microtasks in the asynchronous email promise chain to execute
+        for (let i = 0; i < 10; i++) {
+            await Promise.resolve();
+        }
 
         expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
         expect(mockUser.getResetPasswordToken).toHaveBeenCalled();
@@ -130,9 +132,10 @@ describe('forgotPassword Controller', () => {
 
         await userController.forgotPassword(req, res, next);
 
-        // Wait for all asynchronous promises and callbacks in the controller to execute
-        await new Promise(resolve => setImmediate(resolve));
-        await new Promise(resolve => setImmediate(resolve));
+        // Wait for all microtasks in the asynchronous email failure and save callback chain to execute
+        for (let i = 0; i < 10; i++) {
+            await Promise.resolve();
+        }
 
         // The response should be sent immediately
         expect(res.status).toHaveBeenCalledWith(200);
