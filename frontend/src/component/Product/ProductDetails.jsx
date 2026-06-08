@@ -131,9 +131,16 @@ const ProductDetails = () => {
     dispatch(getAllReviews({ id: match.params.id, page: reviewsPage + 1, limit: reviewsLimit }));
   };
 
+  const isValidReview = () => rating > 0 && comment.trim().length > 0;
+
+  const buildReviewPayload = () => ({ rating, comment, productId: id });
+
   const reviewSubmitHandler = () => {
-    const myForm = { rating, comment, productId: id };
-    dispatch(newReview(myForm));
+    if (!isValidReview()) {
+      enqueueSnackbar("Please provide a rating and a comment", { variant: "error" });
+      return;
+    }
+    dispatch(newReview(buildReviewPayload()));
     setOpen(false);
   };
 
