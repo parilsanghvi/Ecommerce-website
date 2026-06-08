@@ -66,6 +66,6 @@ describe('Shipping', () => {
 
     it('renders continue button', () => {
         render(<Shipping />);
-        expect(screen.getByDisplayValue('Continue')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
     });
 });

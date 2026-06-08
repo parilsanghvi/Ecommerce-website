@@ -145,12 +145,13 @@ const Shipping = () => {
               </div>
             )}
 
-            <input
+            <button
               type="submit"
-              value="Continue"
               className="shippingBtn"
               disabled={state ? false : true}
-            />
+            >
+              Continue
+            </button>
           </form>
         </div>
       </div>
