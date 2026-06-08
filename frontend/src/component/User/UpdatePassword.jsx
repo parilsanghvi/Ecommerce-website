@@ -47,7 +47,7 @@ const UpdatePassword = () => {
 
     if (isUpdated) {
       navigate("/account");
-      enqueueSnackbar("Profile Updated Successfully", { variant: "success" });
+      enqueueSnackbar("Password Updated Successfully", { variant: "success" });
       dispatch(updatePasswordReset());
     }
   }, [dispatch, error, enqueueSnackbar, navigate, isUpdated]);
