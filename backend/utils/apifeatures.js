@@ -47,11 +47,11 @@ class Apifeatures {
         let queryObj = JSON.parse(queryStr);
 
         // Convert numeric strings to numbers for filtering
-        for (let key in queryObj) {
-            if (typeof queryObj[key] === 'object') {
-                for (let op in queryObj[key]) {
-                    if (!isNaN(queryObj[key][op])) {
-                        queryObj[key][op] = Number(queryObj[key][op]);
+        for (const [key, value] of Object.entries(queryObj)) {
+            if (value && typeof value === 'object') {
+                for (const [op, val] of Object.entries(value)) {
+                    if (!isNaN(val)) {
+                        queryObj[key][op] = Number(val);
                     }
                 }
             }
