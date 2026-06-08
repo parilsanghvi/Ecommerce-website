@@ -16,7 +16,8 @@ import userReducer, {
     updatePassword,
     forgotPassword,
     resetPassword,
-    getUserDetails
+    getUserDetails,
+    getAllUsers
 } from '../../features/userSlice';
 
 vi.mock('axios');
@@ -258,6 +259,88 @@ describe('userSlice', () => {
             const state = store.getState().user;
             expect(state.loading).toBe(false);
             expect(state.error).toBe('Invalid token');
+        });
+    });
+
+
+    describe('getAllUsers async thunk', () => {
+        let store;
+
+        beforeEach(() => {
+            store = configureStore({
+                reducer: {
+                    user: userReducer
+                }
+            });
+            vi.clearAllMocks();
+        });
+
+        it('should fetch all users successfully and update state', async () => {
+            const mockData = {
+                users: [{ _id: '1', name: 'User 1' }, { _id: '2', name: 'User 2' }],
+                totalUsers: 2,
+                resultPerPage: 10
+            };
+            axios.get.mockResolvedValueOnce({ data: mockData });
+
+            const result = await store.dispatch(getAllUsers(1));
+
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/admin/users?page=1');
+            expect(result.type).toBe('user/getAllUsers/fulfilled');
+            expect(result.payload).toEqual(mockData);
+
+            const state = store.getState().user;
+            expect(state.usersLoading).toBe(false);
+            expect(state.users).toEqual(mockData.users);
+            expect(state.totalUsers).toEqual(mockData.totalUsers);
+            expect(state.resultPerPage).toEqual(mockData.resultPerPage);
+            expect(state.error).toBeNull();
+        });
+
+        it('should handle API errors correctly', async () => {
+            const errorMessage = 'Failed to fetch users';
+            axios.get.mockRejectedValueOnce({
+                response: { data: { message: errorMessage } }
+            });
+
+            const result = await store.dispatch(getAllUsers(1));
+
+            expect(axios.get).toHaveBeenCalledWith('/api/v1/admin/users?page=1');
+            expect(result.type).toBe('user/getAllUsers/rejected');
+            expect(result.payload).toBe(errorMessage);
+
+            const state = store.getState().user;
+            expect(state.usersLoading).toBe(false);
+            expect(state.error).toBe(errorMessage);
+        });
+
+        describe('reducers', () => {
+            it('should set usersLoading on pending', () => {
+                const action = { type: getAllUsers.pending.type };
+                const result = userReducer(initialState, action);
+                expect(result.usersLoading).toBe(true);
+            });
+
+            it('should set users data on fulfilled', () => {
+                const payload = {
+                    users: [{ _id: '1' }],
+                    totalUsers: 1,
+                    resultPerPage: 10
+                };
+                const action = { type: getAllUsers.fulfilled.type, payload };
+                const result = userReducer({ ...initialState, usersLoading: true }, action);
+                expect(result.usersLoading).toBe(false);
+                expect(result.users).toEqual(payload.users);
+                expect(result.totalUsers).toBe(payload.totalUsers);
+                expect(result.resultPerPage).toBe(payload.resultPerPage);
+            });
+
+            it('should set error on rejected', () => {
+                const action = { type: getAllUsers.rejected.type, payload: 'Error fetching users' };
+                const result = userReducer({ ...initialState, usersLoading: true }, action);
+                expect(result.usersLoading).toBe(false);
+                expect(result.error).toBe('Error fetching users');
+            });
         });
     });
 
