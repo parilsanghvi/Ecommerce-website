@@ -12,6 +12,7 @@ jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) 
 
 const userController = require('../../controllers/userController');
 const User = require('../../models/userModel');
+const ErrorHandler = require('../../utils/errorhandler');
 
 describe('updateUserRole Controller', () => {
     let req, res, next;
@@ -58,6 +59,16 @@ describe('updateUserRole Controller', () => {
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ success: true });
+    });
+
+    it('should prevent updating to an invalid role', async () => {
+        req.body.role = 'invalid_role';
+
+        await userController.updateUserRole(req, res, next);
+
+        expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(next.mock.calls[0][0].message).toBe("Role can only be user or admin");
+        expect(User.findByIdAndUpdate).not.toHaveBeenCalled();
     });
 
     it('should handle Database errors gracefully', async () => {
