@@ -7,6 +7,17 @@ const Apifeatures = require("../utils/apifeatures");
 const { calculateOrderPrices } = require("../utils/pricing");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// Helper function to check stock availability for an entire order
+const hasSufficientStockForOrder = (orderItems, productMap) => {
+    for (const item of orderItems) {
+        const product = productMap.get(item.product.toString());
+        if (!product || product.stock < item.quantity) {
+            return false;
+        }
+    }
+    return true;
+};
+
 // get pricing details
 exports.getPricing = catchAsyncErrors(async (req, res, next) => {
     const { itemsPrice } = req.query;
@@ -249,16 +260,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
             productMap.set(p._id.toString(), p);
         }
 
-        let hasInsufficientStock = false;
-        for (const item of order.orderItems) {
-            const product = productMap.get(item.product.toString());
-            if (!product || product.stock < item.quantity) {
-                hasInsufficientStock = true;
-                break;
-            }
-        }
-
-        if (hasInsufficientStock) {
+        if (!hasSufficientStockForOrder(order.orderItems, productMap)) {
             return next(new ErrorHandler("Insufficient stock for one or more products", 400));
         }
 
