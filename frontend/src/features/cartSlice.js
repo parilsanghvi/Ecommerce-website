@@ -71,14 +71,17 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 const item = action.payload;
-                const isItemExist = state.cartItems.find(
+
+                // ⚡ Bolt: [performance improvement] Avoid O(N) array copies in Redux Toolkit reducers
+                // RTK uses Immer, allowing for direct mutations on the state draft.
+                // Using findIndex and mutating the index is significantly faster and uses less memory
+                // than using .map() which creates a full O(N) copy of the array.
+                const itemIndex = state.cartItems.findIndex(
                     (i) => i.product === item.product
                 );
 
-                if (isItemExist) {
-                    state.cartItems = state.cartItems.map((i) =>
-                        i.product === isItemExist.product ? item : i
-                    );
+                if (itemIndex >= 0) {
+                    state.cartItems[itemIndex] = item;
                 } else {
                     state.cartItems.push(item);
                 }
