@@ -72,3 +72,6 @@
 ## 2025-06-06 - Form Disabled State Consolidation
 **Learning:** Found that the `UpdateProduct` form had a submit button that was correctly disabled during loading, but the input fields, textarea, and select dropdown were still active. This allowed users to modify form values while a submission was already in progress, potentially leading to race conditions or incorrect data being sent if the submission failed and they resubmitted.
 **Action:** When working on async forms, ensure the `disabled={loading}` state is applied uniformly to ALL interactive form elements (inputs, textareas, selects), not just the submit button.
+## 2025-06-07 - Admin Forms Accessibility and Disabled States
+**Learning:** Found that internal admin forms (`NewProduct` and `UpdateUser`) lacked `aria-label`s on their input fields, relying entirely on placeholders, which causes issues for screen reader users managing the store backend. Additionally, while the submit buttons handled loading state correctly, the input fields remained active during submission.
+**Action:** When working on admin dashboard forms, ensure accessibility standards are applied just as rigorously as the public storefront. Add `aria-label` to all inputs, textareas, and selects lacking explicit labels, and uniformly apply `disabled={loading}` to all interactive form elements during submission.
