@@ -145,6 +145,7 @@ const ProductReviews = () => {
             <input
               type="text"
               placeholder="Product Id"
+              aria-label="Product Id"
               required
               value={productId}
               onChange={(e) => setProductId(e.target.value)}
