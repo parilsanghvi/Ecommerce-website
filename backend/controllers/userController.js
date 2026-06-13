@@ -92,7 +92,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save({
         validateBeforeSave: false
     });
-    // Security Fix: Enforce the use of FRONTEND_URL to prevent Host Header Injection
+    // Enforce the use of FRONTEND_URL to prevent Host Header Injection
     if (!process.env.FRONTEND_URL) {
         return next(new ErrorHandler("FRONTEND_URL is not configured on the server.", 500));
     }
