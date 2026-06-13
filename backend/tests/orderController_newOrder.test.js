@@ -276,6 +276,7 @@ describe('newOrder Controller', () => {
 
         expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(mockNext.mock.calls[0][0].message).toContain('Payment amount mismatch');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
     });
 
     it('should fail on replay attack (paymentInfo.id already used)', async () => {
