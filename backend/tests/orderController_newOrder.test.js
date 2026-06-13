@@ -224,6 +224,21 @@ describe('newOrder Controller', () => {
 
         expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(mockNext.mock.calls[0][0].message).toContain('Payment Information is missing');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
+    });
+
+    it('should fail if paymentInfo is entirely missing', async () => {
+        const req = {
+            body: getValidReqBody(),
+            user: testUser
+        };
+        delete req.body.paymentInfo;
+
+        await orderController.newOrder(req, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(mockNext.mock.calls[0][0].message).toContain('Payment Information is missing');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
     });
 
     it('should fail if stripe payment intent status is not succeeded', async () => {
