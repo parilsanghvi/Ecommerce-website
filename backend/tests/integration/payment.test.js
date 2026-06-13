@@ -1,7 +1,6 @@
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
-const app = require('../../app');
 const User = require('../../models/userModel');
 const Product = require('../../models/productModel');
 
@@ -20,14 +19,16 @@ jest.mock('cloudinary', () => ({
 }));
 
 // Mock Stripe
+var mockStripeCreate = jest.fn();
 jest.mock('stripe', () => {
-    const mStripe = {
+    return jest.fn().mockImplementation(() => ({
         paymentIntents: {
-            create: jest.fn().mockResolvedValue({ client_secret: 'default_secret' }),
+            create: mockStripeCreate,
         },
-    };
-    return jest.fn(() => mStripe);
+    }));
 });
+
+const app = require('../../app');
 
 let mongoServer;
 let userCookie;

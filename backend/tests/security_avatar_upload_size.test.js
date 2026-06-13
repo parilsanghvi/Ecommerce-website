@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
+let app;
 const cloudinary = require("cloudinary");
 const User = require("../models/userModel");
 
@@ -78,6 +78,7 @@ jest.mock("../middleware/auth", () => {
 describe("Security: Avatar Upload Size Limit", () => {
 
     beforeEach(() => {
+        app = require("../app");
         jest.clearAllMocks();
     });
 

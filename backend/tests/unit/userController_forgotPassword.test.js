@@ -1,43 +1,46 @@
-// Mock dependencies that are imported globally in controllers/userModel
-jest.mock('../../models/userModel', () => {
-    return {
-        findById: jest.fn(),
-        findOne: jest.fn(),
-        create: jest.fn(),
-        findByIdAndUpdate: jest.fn(),
-        estimatedDocumentCount: jest.fn(),
-        find: jest.fn(),
-    };
-});
-
-jest.mock('../../utils/jwtToken', () => jest.fn());
-
-jest.mock('cloudinary', () => ({
-    v2: {
-        uploader: {
-            destroy: jest.fn(),
-            upload: jest.fn(),
-        }
-    }
-}), { virtual: true });
-
-jest.mock('../../utils/sendEmail', () => jest.fn(), { virtual: true });
-jest.mock('resend', () => ({ Resend: jest.fn() }), { virtual: true });
-
-jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {
-    return Promise.resolve(func(req, res, next)).catch(next);
-});
-
-// Import after all mocks
-const userController = require('../../controllers/userController');
-const User = require('../../models/userModel');
-const ErrorHandler = require('../../utils/errorhandler');
-const sendEmail = require('../../utils/sendEmail');
+let userController;
+let User;
+let sendEmail;
+let ErrorHandler;
 
 describe('forgotPassword Controller', () => {
     let req, res, next, mockUser;
 
     beforeEach(() => {
+        jest.doMock('../../models/userModel', () => {
+            return {
+                findById: jest.fn(),
+                findOne: jest.fn(),
+                create: jest.fn(),
+                findByIdAndUpdate: jest.fn(),
+                estimatedDocumentCount: jest.fn(),
+                find: jest.fn(),
+            };
+        });
+
+        jest.doMock('../../utils/jwtToken', () => jest.fn());
+
+        jest.doMock('cloudinary', () => ({
+            v2: {
+                uploader: {
+                    destroy: jest.fn(),
+                    upload: jest.fn(),
+                }
+            }
+        }), { virtual: true });
+
+        jest.doMock('../../utils/sendEmail', () => jest.fn());
+        jest.doMock('resend', () => ({ Resend: jest.fn() }), { virtual: true });
+
+        jest.doMock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {
+            return Promise.resolve(func(req, res, next)).catch(next);
+        });
+
+        userController = require('../../controllers/userController');
+        User = require('../../models/userModel');
+        sendEmail = require('../../utils/sendEmail');
+        ErrorHandler = require('../../utils/errorhandler');
+
         req = {
             body: {
                 email: 'test@example.com'
@@ -106,7 +109,6 @@ describe('forgotPassword Controller', () => {
         for (let i = 0; i < 10; i++) {
             await Promise.resolve();
         }
-
         expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
         expect(mockUser.getResetPasswordToken).toHaveBeenCalled();
         expect(mockUser.save).toHaveBeenCalledWith({ validateBeforeSave: false });

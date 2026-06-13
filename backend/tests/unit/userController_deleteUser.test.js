@@ -31,15 +31,20 @@ jest.doMock('resend', () => ({
     Resend: jest.fn()
 }), { virtual: true });
 
-const ErrorHandler = require('../../utils/errorhandler');
-const cloudinary = require('cloudinary');
-const User = require('../../models/userModel');
-const userController = require('../../controllers/userController');
+let ErrorHandler;
+let cloudinary;
+let User;
+let userController;
 
 describe('deleteUser Controller', () => {
     let req, res, next;
 
     beforeEach(() => {
+        ErrorHandler = require('../../utils/errorhandler');
+        cloudinary = require('cloudinary');
+        User = require('../../models/userModel');
+        userController = require('../../controllers/userController');
+
         req = {
             params: {
                 id: '64f8c8d8b8e0e0a4f5f9e8a1',

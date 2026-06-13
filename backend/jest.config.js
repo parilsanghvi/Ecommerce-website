@@ -6,4 +6,5 @@ module.exports = {
     forceExit: true,
     setupFiles: ['<rootDir>/backend/tests/setupEnv.js'],
     resetModules: true,
+    testTimeout: 30000,
 };
