@@ -12,6 +12,50 @@ import { logout } from "../../../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Menu, MenuItem, Tooltip, IconButton, Avatar, ListItemIcon } from "@mui/material";
 
+const menuPaperProps = {
+    elevation: 0,
+    sx: {
+        overflow: "visible",
+        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+        mt: 1.5,
+        backgroundColor: "var(--color-surface)",
+        color: "var(--color-text)",
+        border: "1px solid var(--color-border)",
+        "& .MuiAvatar-root": {
+            width: 32,
+            height: 32,
+            ml: -0.5,
+            mr: 1,
+        },
+        "&:before": {
+            content: '""',
+            display: "block",
+            position: "absolute",
+            top: 0,
+            right: 14,
+            width: 10,
+            height: 10,
+            backgroundColor: "var(--color-surface)",
+            borderTop: "1px solid var(--color-border)",
+            borderLeft: "1px solid var(--color-border)",
+            transform: "translateY(-50%) rotate(45deg)",
+            zIndex: 0,
+        },
+    },
+};
+
+const menuItemStyles = {
+    color: "var(--color-text)",
+    fontFamily: "var(--font-body)",
+    "&:hover": {
+        backgroundColor: "var(--color-primary)",
+        color: "#000",
+        "& .MuiListItemIcon-root": {
+            color: "#000"
+        }
+    }
+};
+
 const UserOptions = ({ user }) => {
     const cartItems = useSelector(selectCartItemsArray);
 
@@ -30,9 +74,21 @@ const UserOptions = ({ user }) => {
         setAnchorEl(null);
     };
 
+    const navigateTo = (path) => {
+        navigate(path);
+        handleClose();
+    };
+
+    const logoutUser = () => {
+        dispatch(logout());
+        enqueueSnackbar("Logged out successfully", { variant: "success" });
+        navigate("/");
+        handleClose();
+    };
+
     const options = [
-        { icon: <PersonIcon />, name: "Profile", func: account },
-        { icon: <ListAltIcon />, name: "Orders", func: orders },
+        { icon: <PersonIcon />, name: "Profile", func: () => navigateTo("/account") },
+        { icon: <ListAltIcon />, name: "Orders", func: () => navigateTo("/orders") },
         {
             icon: (
                 <ShoppingCartIcon
@@ -40,7 +96,7 @@ const UserOptions = ({ user }) => {
                 />
             ),
             name: `Cart(${cartItems.length})`,
-            func: cart,
+            func: () => navigateTo("/cart"),
         },
         { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
     ];
@@ -49,35 +105,8 @@ const UserOptions = ({ user }) => {
         options.unshift({
             icon: <DashboardIcon />,
             name: "Dashboard",
-            func: dashboard,
+            func: () => navigateTo("/admin/dashboard"),
         });
-    }
-
-    function dashboard() {
-        navigate("/admin/dashboard");
-        handleClose();
-    }
-
-    function account() {
-        navigate("/account");
-        handleClose();
-    }
-
-    function cart() {
-        navigate("/cart");
-        handleClose();
-    }
-
-    function orders() {
-        navigate("/orders");
-        handleClose();
-    }
-
-    function logoutUser() {
-        dispatch(logout());
-        enqueueSnackbar("Logged out successfully", { variant: "success" });
-        navigate("/");
-        handleClose();
     }
 
     return (
@@ -105,37 +134,7 @@ const UserOptions = ({ user }) => {
                 open={open}
                 onClose={handleClose}
                 onClick={handleClose}
-                PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: "visible",
-                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                        mt: 1.5,
-                        backgroundColor: "var(--color-surface)",
-                        color: "var(--color-text)",
-                        border: "1px solid var(--color-border)",
-                        "& .MuiAvatar-root": {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        "&:before": {
-                            content: '""',
-                            display: "block",
-                            position: "absolute",
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            backgroundColor: "var(--color-surface)",
-                            borderTop: "1px solid var(--color-border)",
-                            borderLeft: "1px solid var(--color-border)",
-                            transform: "translateY(-50%) rotate(45deg)",
-                            zIndex: 0,
-                        },
-                    },
-                }}
+                PaperProps={menuPaperProps}
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
@@ -143,17 +142,7 @@ const UserOptions = ({ user }) => {
                     <MenuItem
                         key={item.name}
                         onClick={item.func}
-                        sx={{
-                            color: "var(--color-text)",
-                            fontFamily: "var(--font-body)",
-                            "&:hover": {
-                                backgroundColor: "var(--color-primary)",
-                                color: "#000",
-                                "& .MuiListItemIcon-root": {
-                                    color: "#000"
-                                }
-                            }
-                        }}
+                        sx={menuItemStyles}
                     >
                         <ListItemIcon sx={{ color: "var(--color-primary)" }}>{item.icon}</ListItemIcon>
                         {item.name}
