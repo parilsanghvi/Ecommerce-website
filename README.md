@@ -1,7 +1,3 @@
-
-Hi! My name is **Paril Sanghvi**
-
-
 # Install Dependencies
 
 **For Backend** - `npm i`
