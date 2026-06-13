@@ -8,3 +8,6 @@
 ## 2024-05-18 - Optimize Cart Array Updates
 **Learning:** Redux Toolkit uses Immer, allowing for direct mutations on the state draft. When updating an array item, instead of using `.map()` which creates a full O(N) copy, using `.findIndex()` and directly mutating the index (e.g., `state.items[index] = item`) is significantly faster.
 **Action:** When updating existing state items in Redux Toolkit reducers, use `.findIndex()` and direct array mutation rather than `.map()`.
+## 2024-10-24 - Mongoose Undefined Field Handling
+**Learning:** Mongoose automatically ignores undefined fields when creating documents, making manual property deletion loops unnecessary and inefficient.
+**Action:** Rely on Mongoose's built-in handling of undefined properties during document creation instead of manually filtering them out.

@@ -32,7 +32,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     };
 
     // Remove undefined fields to allow Mongoose defaults to kick in if not provided
-    Object.keys(productData).forEach(key => productData[key] === undefined && delete productData[key]);
+    // ⚡ Bolt: Removed manual property deletion loop. Mongoose automatically ignores undefined fields
+    // when creating documents, so this loop was unnecessary overhead.
 
     const product = await Product.create(productData);
     // returns status with success and added object in json
