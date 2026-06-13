@@ -13,6 +13,175 @@ import UserOptions from "./UserOptions";
 import { useSelector } from 'react-redux';
 import "./Header.css";
 
+const DesktopNav = ({ navLinks, location }) => (
+    <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4 }}>
+        {navLinks.map((page) => {
+            const isActive = location.pathname === page.path;
+            return (
+                <Link
+                    key={page.text}
+                    to={page.path}
+                    style={{ textDecoration: 'none' }}
+                >
+                    <motion.div
+                        whileHover={{ y: -2, color: 'var(--color-primary)' }}
+                        style={{
+                            color: isActive ? 'var(--color-primary)' : 'var(--color-text)',
+                            fontFamily: 'var(--font-heading)',
+                            fontSize: '1rem',
+                            position: 'relative'
+                        }}
+                    >
+                        {page.text}
+                        {isActive && (
+                            <motion.div
+                                layoutId="underline"
+                                style={{
+                                    position: 'absolute',
+                                    bottom: -4,
+                                    left: 0,
+                                    right: 0,
+                                    height: '2px',
+                                    backgroundColor: 'var(--color-primary)'
+                                }}
+                            />
+                        )}
+                    </motion.div>
+                </Link>
+            );
+        })}
+    </Box>
+);
+
+const MobileDrawer = ({ drawerOpen, toggleDrawer, navLinks, location }) => (
+    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+        <IconButton
+            size="large"
+            onClick={toggleDrawer(true)}
+            sx={{ color: 'var(--color-primary)' }}
+            aria-label="Open navigation menu"
+        >
+            <MenuIcon />
+        </IconButton>
+        <Drawer
+            anchor="left"
+            open={drawerOpen}
+            onClose={toggleDrawer(false)}
+        >
+            <Box
+                sx={{ width: 250, backgroundColor: 'var(--color-bg)', height: '100%', color: 'var(--color-text)', borderRight: '1px solid var(--color-primary)' }}
+                role="presentation"
+                onClick={toggleDrawer(false)}
+                onKeyDown={toggleDrawer(false)}
+            >
+                <List>
+                    {navLinks.map((item) => {
+                        const isActive = location.pathname === item.path;
+                        return (
+                            <ListItem key={item.text} disablePadding>
+                                <ListItemButton
+                                    component={Link}
+                                    to={item.path}
+                                    selected={isActive}
+                                    sx={{
+                                        '&:hover': { backgroundColor: 'var(--color-primary)', color: 'black' },
+                                        '&.Mui-selected': {
+                                            color: 'var(--color-primary)',
+                                        },
+                                        '&.Mui-selected:hover': {
+                                            backgroundColor: 'var(--color-primary)',
+                                            color: 'black'
+                                        }
+                                    }}
+                                >
+                                    <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'var(--font-heading)' }} />
+                                </ListItemButton>
+                            </ListItem>
+                        );
+                    })}
+                </List>
+            </Box>
+        </Drawer>
+    </Box>
+);
+
+const HeaderIcons = ({ theme, toggleTheme, navigate, cartItems, isAuthenticated, user }) => (
+    <Box sx={{ display: "flex", gap: { xs: 0.5, md: 2 }, alignItems: "center" }}>
+        <Tooltip title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+            <motion.div whileHover={{ scale: 1.1 }}>
+                <IconButton
+                    onClick={toggleTheme}
+                    sx={{
+                        color: 'var(--color-text)',
+                        '&:hover': { color: 'var(--color-primary)' },
+                        minWidth: { xs: '44px', md: 'auto' },
+                        minHeight: { xs: '44px', md: 'auto' }
+                    }}
+                    aria-label={theme === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                    {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+            </motion.div>
+        </Tooltip>
+        <Tooltip title="Search">
+            <motion.div whileHover={{ scale: 1.1 }}>
+                <IconButton
+                    onClick={() => navigate("/search")}
+                    sx={{
+                        color: 'var(--color-text)',
+                        '&:hover': { color: 'var(--color-primary)' },
+                        minWidth: { xs: '44px', md: 'auto' },
+                        minHeight: { xs: '44px', md: 'auto' }
+                    }}
+                    aria-label="Search"
+                >
+                    <SearchIcon />
+                </IconButton>
+            </motion.div>
+        </Tooltip>
+        <Tooltip title="Cart">
+            <motion.div whileHover={{ scale: 1.1 }}>
+                <IconButton
+                    onClick={() => navigate("/cart")}
+                    sx={{
+                        color: 'var(--color-text)',
+                        '&:hover': { color: 'var(--color-primary)' },
+                        minWidth: { xs: '44px', md: 'auto' },
+                        minHeight: { xs: '44px', md: 'auto' }
+                    }}
+                    aria-label="View cart"
+                >
+                    <Badge badgeContent={cartItems?.length || 0} color="secondary" overlap="circular">
+                        <ShoppingCartIcon />
+                    </Badge>
+                </IconButton>
+            </motion.div>
+        </Tooltip>
+        {isAuthenticated ? (
+            <UserOptions user={user} />
+        ) : (
+            <Tooltip title="Login">
+                <motion.div whileHover={{ scale: 1.1 }}>
+                    <IconButton
+                        onClick={() => navigate("/login")}
+                        sx={{
+                            color: 'var(--color-primary)',
+                            border: '1px solid var(--color-primary)',
+                            borderRadius: '4px',
+                            padding: { xs: '8px', md: '8px' },
+                            minWidth: { xs: '44px', md: 'auto' },
+                            minHeight: { xs: '44px', md: 'auto' }
+                        }}
+                        aria-label="Login"
+                    >
+                        <PersonIcon />
+                    </IconButton>
+                </motion.div>
+            </Tooltip>
+        )}
+    </Box>
+);
+
 const Header = () => {
     const { isAuthenticated, user } = useSelector((state) => state.user);
     const cartItems = useSelector(selectCartItemsArray);
@@ -44,42 +213,6 @@ const Header = () => {
         { text: 'About', path: '/about' },
     ];
 
-    const renderDrawer = () => (
-        <Box
-            sx={{ width: 250, backgroundColor: 'var(--color-bg)', height: '100%', color: 'var(--color-text)', borderRight: '1px solid var(--color-primary)' }}
-            role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
-        >
-            <List>
-                {navLinks.map((item) => {
-                    const isActive = location.pathname === item.path;
-                    return (
-                        <ListItem key={item.text} disablePadding>
-                            <ListItemButton
-                                component={Link}
-                                to={item.path}
-                                selected={isActive}
-                                sx={{
-                                    '&:hover': { backgroundColor: 'var(--color-primary)', color: 'black' },
-                                    '&.Mui-selected': {
-                                        color: 'var(--color-primary)',
-                                    },
-                                    '&.Mui-selected:hover': {
-                                        backgroundColor: 'var(--color-primary)',
-                                        color: 'black'
-                                    }
-                                }}
-                            >
-                                <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'var(--font-heading)' }} />
-                            </ListItemButton>
-                        </ListItem>
-                    );
-                })}
-            </List>
-        </Box>
-    );
-
     return (
         <motion.header
             initial={{ y: -100 }}
@@ -98,23 +231,7 @@ const Header = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '80px' }}>
 
                     {/* Mobile Menu Icon */}
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            onClick={toggleDrawer(true)}
-                            sx={{ color: 'var(--color-primary)' }}
-                            aria-label="Open navigation menu"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Drawer
-                            anchor="left"
-                            open={drawerOpen}
-                            onClose={toggleDrawer(false)}
-                        >
-                            {renderDrawer()}
-                        </Drawer>
-                    </Box>
+                    <MobileDrawer drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} navLinks={navLinks} location={location} />
 
                     {/* Logo */}
                     <Link to="/" style={{ textDecoration: 'none' }}>
@@ -128,119 +245,10 @@ const Header = () => {
                     </Link>
 
                     {/* Desktop Nav */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4 }}>
-                        {navLinks.map((page) => {
-                            const isActive = location.pathname === page.path;
-                            return (
-                                <Link
-                                    key={page.text}
-                                    to={page.path}
-                                    style={{ textDecoration: 'none' }}
-                                >
-                                    <motion.div
-                                        whileHover={{ y: -2, color: 'var(--color-primary)' }}
-                                        style={{
-                                            color: isActive ? 'var(--color-primary)' : 'var(--color-text)',
-                                            fontFamily: 'var(--font-heading)',
-                                            fontSize: '1rem',
-                                            position: 'relative'
-                                        }}
-                                    >
-                                        {page.text}
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="underline"
-                                                style={{
-                                                    position: 'absolute',
-                                                    bottom: -4,
-                                                    left: 0,
-                                                    right: 0,
-                                                    height: '2px',
-                                                    backgroundColor: 'var(--color-primary)'
-                                                }}
-                                            />
-                                        )}
-                                    </motion.div>
-                                </Link>
-                            );
-                        })}
-                    </Box>
+                    <DesktopNav navLinks={navLinks} location={location} />
 
                     {/* Icons */}
-                    <Box sx={{ display: "flex", gap: { xs: 0.5, md: 2 }, alignItems: "center" }}>
-                        <Tooltip title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
-                            <motion.div whileHover={{ scale: 1.1 }}>
-                                <IconButton
-                                    onClick={toggleTheme}
-                                    sx={{
-                                        color: 'var(--color-text)',
-                                        '&:hover': { color: 'var(--color-primary)' },
-                                        minWidth: { xs: '44px', md: 'auto' },
-                                        minHeight: { xs: '44px', md: 'auto' }
-                                    }}
-                                    aria-label={theme === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
-                                >
-                                    {theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-                                </IconButton>
-                            </motion.div>
-                        </Tooltip>
-                        <Tooltip title="Search">
-                            <motion.div whileHover={{ scale: 1.1 }}>
-                                <IconButton
-                                    onClick={() => navigate("/search")}
-                                    sx={{
-                                        color: 'var(--color-text)',
-                                        '&:hover': { color: 'var(--color-primary)' },
-                                        minWidth: { xs: '44px', md: 'auto' },
-                                        minHeight: { xs: '44px', md: 'auto' }
-                                    }}
-                                    aria-label="Search"
-                                >
-                                    <SearchIcon />
-                                </IconButton>
-                            </motion.div>
-                        </Tooltip>
-                        <Tooltip title="Cart">
-                            <motion.div whileHover={{ scale: 1.1 }}>
-                                <IconButton
-                                    onClick={() => navigate("/cart")}
-                                    sx={{
-                                        color: 'var(--color-text)',
-                                        '&:hover': { color: 'var(--color-primary)' },
-                                        minWidth: { xs: '44px', md: 'auto' },
-                                        minHeight: { xs: '44px', md: 'auto' }
-                                    }}
-                                    aria-label="View cart"
-                                >
-                                    <Badge badgeContent={cartItems.length} color="secondary" overlap="circular">
-                                        <ShoppingCartIcon />
-                                    </Badge>
-                                </IconButton>
-                            </motion.div>
-                        </Tooltip>
-                        {isAuthenticated ? (
-                            <UserOptions user={user} />
-                        ) : (
-                            <Tooltip title="Login">
-                                <motion.div whileHover={{ scale: 1.1 }}>
-                                    <IconButton
-                                        onClick={() => navigate("/login")}
-                                        sx={{
-                                            color: 'var(--color-primary)',
-                                            border: '1px solid var(--color-primary)',
-                                            borderRadius: '4px',
-                                            padding: { xs: '8px', md: '8px' },
-                                            minWidth: { xs: '44px', md: 'auto' },
-                                            minHeight: { xs: '44px', md: 'auto' }
-                                        }}
-                                        aria-label="Login"
-                                    >
-                                        <PersonIcon />
-                                    </IconButton>
-                                </motion.div>
-                            </Tooltip>
-                        )}
-                    </Box>
+                    <HeaderIcons theme={theme} toggleTheme={toggleTheme} navigate={navigate} cartItems={cartItems} isAuthenticated={isAuthenticated} user={user} />
                 </Box>
             </Container>
         </motion.header>
