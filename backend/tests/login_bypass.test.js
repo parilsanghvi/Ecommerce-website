@@ -39,18 +39,18 @@ describe('Login Authentication Bypass', () => {
 
         await userController.loginUser(req, res, next);
 
+        // Wait for async operations inside loginUser to complete
+        await new Promise(process.nextTick);
+
         // CRITICAL CHECK: sendToken should NOT be called
-        // This confirms the authentication bypass is fixed
+        // This confirms the authentication bypass is resolved
         expect(sendToken).not.toHaveBeenCalled();
 
-        // Also verify next was called (sanity check)
-        // If this fails but sendToken passed, the security fix is still valid (token not sent),
-        // but flow control might be weird.
-        try {
-             expect(next).toHaveBeenCalled();
-        } catch (e) {
-            console.log("WARN: next() spy not called, but sendToken() correctly avoided.");
-        }
+        // Also verify next was called with ErrorHandler (sanity check)
+        expect(next).toHaveBeenCalledWith(expect.objectContaining({
+            message: "Invalid email or password",
+            statusCode: 401
+        }));
     });
 
     it('should NOT call sendToken (and not crash) when user is not found', async () => {
