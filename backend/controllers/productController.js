@@ -122,7 +122,7 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
 exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     let product;
 
-    // Security Fix: Prevent Mass Assignment Vulnerability
+    // Prevent Mass Assignment Vulnerability
     // Only allow specific fields to be updated by the user/admin
     const allowedUpdates = ['name', 'price', 'description', 'category', 'stock'];
     const updateData = {};
