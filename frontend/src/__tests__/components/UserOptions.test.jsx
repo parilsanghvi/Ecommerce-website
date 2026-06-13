@@ -9,7 +9,7 @@ const mockEnqueueSnackbar = vi.fn();
 
 vi.mock('react-redux', () => ({
     useSelector: (selector) => selector({
-        cart: { cartItems: [{ product: 'p1' }, { product: 'p2' }] },
+        cart: { cartItems: { 'p1': { product: 'p1' }, 'p2': { product: 'p2' } } },
     }),
     useDispatch: () => mockDispatch,
 }));

@@ -1,12 +1,31 @@
 import { API_BASE_URL } from "../config";
-import { createSlice, createAsyncThunk, isPending, isRejected } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isPending, isRejected, createSelector } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Initial State - loaded from localStorage
+// Helper to load and migrate array cart items to object structure
+const loadCartItems = () => {
+    try {
+        const stored = localStorage.getItem("cartItems");
+        if (!stored) return {};
+        const parsed = JSON.parse(stored);
+
+        // Migrate old array storage to new object storage
+        if (Array.isArray(parsed)) {
+            const migrated = parsed.reduce((acc, item) => {
+                acc[item.product] = item;
+                return acc;
+            }, {});
+            localStorage.setItem("cartItems", JSON.stringify(migrated));
+            return migrated;
+        }
+        return parsed || {};
+    } catch (e) {
+        return {};
+    }
+};
+
 const initialState = {
-    cartItems: localStorage.getItem("cartItems")
-        ? JSON.parse(localStorage.getItem("cartItems"))
-        : [],
+    cartItems: loadCartItems(),
     shippingInfo: localStorage.getItem("shippingInfo")
         ? JSON.parse(localStorage.getItem("shippingInfo"))
         : {},
@@ -37,9 +56,7 @@ export const addItemsToCart = createAsyncThunk(
 const cartSlice = createSlice({
     name: "cart",
     initialState: {
-        cartItems: localStorage.getItem("cartItems")
-            ? JSON.parse(localStorage.getItem("cartItems"))
-            : [],
+        cartItems: loadCartItems(),
         shippingInfo: localStorage.getItem("shippingInfo")
             ? JSON.parse(localStorage.getItem("shippingInfo"))
             : {},
@@ -49,9 +66,8 @@ const cartSlice = createSlice({
     },
     reducers: {
         removeItemsFromCart: (state, action) => {
-            state.cartItems = state.cartItems.filter(
-                (i) => i.product !== action.payload
-            );
+            // O(1) Deletion instead of O(N) filter
+            delete state.cartItems[action.payload];
             localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
         },
         saveShippingInfo: (state, action) => {
@@ -71,21 +87,11 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 const item = action.payload;
-                const isItemExist = state.cartItems.find(
-                    (i) => i.product === item.product
-                );
 
-                if (isItemExist) {
-                    state.cartItems = state.cartItems.map((i) =>
-                        i.product === isItemExist.product ? item : i
-                    );
-                } else {
-                    state.cartItems.push(item);
-                }
+                // O(1) Insertion/Update
+                state.cartItems[item.product] = item;
                 localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
             })
-
-
             // Matchers for common loading and error states
             .addMatcher(isPending(addItemsToCart), (state) => {
                 state.loading = true;
@@ -96,6 +102,11 @@ const cartSlice = createSlice({
             });
     },
 });
+
+export const selectCartItemsArray = createSelector(
+    (state) => state.cart.cartItems,
+    (cartItems) => Object.values(cartItems)
+);
 
 export const { removeItemsFromCart, saveShippingInfo, clearCartErrors } = cartSlice.actions;
 export default cartSlice.reducer;

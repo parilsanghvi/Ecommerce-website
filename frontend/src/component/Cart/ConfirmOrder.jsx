@@ -1,3 +1,4 @@
+import { selectCartItemsArray } from '../../features/cartSlice';
 import { API_BASE_URL } from "../../config";
 import React, { Fragment, useState, useEffect, useMemo } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
@@ -9,7 +10,8 @@ import { Typography } from "@mui/material";
 import axios from "axios";
 
 const ConfirmOrder = () => {
-  const { shippingInfo, cartItems } = useSelector((state) => state.cart);
+  const { shippingInfo } = useSelector((state) => state.cart);
+  const cartItems = useSelector(selectCartItemsArray);
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
 

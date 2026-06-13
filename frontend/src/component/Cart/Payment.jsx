@@ -1,3 +1,4 @@
+import { selectCartItemsArray } from '../../features/cartSlice';
 import { API_BASE_URL } from "../../config";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
@@ -37,7 +38,8 @@ const Payment = () => {
   const payBtn = useRef(null);
   const navigate = useNavigate();
 
-  const { shippingInfo, cartItems } = useSelector((state) => state.cart);
+  const { shippingInfo } = useSelector((state) => state.cart);
+  const cartItems = useSelector(selectCartItemsArray);
   const { user } = useSelector((state) => state.user);
   const { error } = useSelector((state) => state.order);
   const [isProcessing, setIsProcessing] = useState(false);
