@@ -148,6 +148,7 @@ describe('Order Security: Payment Verification', () => {
 
         expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(next.mock.calls[0][0].message).toMatch(/Payment already used/);
+        expect(next.mock.calls[0][0].statusCode).toBe(400);
         expect(Order.create).not.toHaveBeenCalled();
     });
 });
