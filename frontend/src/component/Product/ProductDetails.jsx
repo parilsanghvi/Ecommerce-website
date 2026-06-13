@@ -12,7 +12,8 @@ import { useSnackbar } from "notistack";
 import useErrorNotification from "../../hooks/useErrorNotification";
 import MetaData from "../layout/MetaData";
 import { addItemsToCart } from "../../features/cartSlice";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Rating, CircularProgress, Tooltip } from "@mui/material";
+import { Rating, CircularProgress, Tooltip } from "@mui/material";
+import ReviewDialog from "./ReviewDialog";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -268,58 +269,15 @@ const ProductDetails = () => {
 
           <h3 className="reviewsHeading">REVIEWS</h3>
 
-          <Dialog
-            aria-labelledby="submit-review-dialog-title"
+          <ReviewDialog
             open={open}
-            onClose={submitReviewToggle}
-            sx={{
-              '& .MuiDialog-paper': {
-                backgroundColor: 'var(--color-surface)',
-                border: '2px solid var(--color-text)',
-                boxShadow: '8px 8px 0 var(--color-primary)',
-                borderRadius: 0,
-                color: 'var(--color-text)'
-              }
-            }}
-          >
-            <DialogTitle id="submit-review-dialog-title" sx={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontWeight: 900 }}>Submit Review</DialogTitle>
-            <DialogContent className="submitDialog">
-              <Rating
-                onChange={(e, newValue) => setRating(newValue)}
-                value={rating}
-                size="large"
-                aria-label="Rating"
-                sx={{
-                  '& .MuiRating-iconFilled': { color: 'var(--color-primary)' },
-                  '& .MuiRating-iconEmpty': { color: 'var(--color-muted)' }
-                }}
-              />
-              <textarea
-                className="submitDialogTextArea"
-                cols="30"
-                rows="5"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Write your review here..."
-                aria-label="Review comment"
-              ></textarea>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={submitReviewToggle} sx={{ color: 'var(--color-muted)' }}>
-                Cancel
-              </Button>
-              <Button
-                onClick={reviewSubmitHandler}
-                disabled={rating <= 0 || comment.trim().length === 0}
-                sx={{
-                  color: (rating <= 0 || comment.trim().length === 0) ? 'var(--color-muted)' : 'var(--color-primary)',
-                  fontWeight: 'bold'
-                }}
-              >
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
+            submitReviewToggle={submitReviewToggle}
+            rating={rating}
+            setRating={setRating}
+            comment={comment}
+            setComment={setComment}
+            reviewSubmitHandler={reviewSubmitHandler}
+          />
 
           {reviews && reviews.length > 0 ? (
             <div className="reviews-container">
