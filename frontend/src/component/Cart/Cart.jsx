@@ -1,3 +1,4 @@
+import { selectCartItemsArray } from '../../features/cartSlice';
 import React, { Fragment } from "react";
 import "./Cart.css";
 import CartItemCard from "./CartItemCard";
@@ -12,7 +13,7 @@ import { useState, useMemo } from "react";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems } = useSelector((state) => state.cart);
+  const cartItems = useSelector(selectCartItemsArray);
   const [updatingItems, setUpdatingItems] = useState({});
 
   // ⚡ Bolt: Memoize expensive array calculation to prevent re-running on every render (e.g., when updating item quantity)

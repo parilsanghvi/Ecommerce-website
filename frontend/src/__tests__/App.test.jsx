@@ -12,7 +12,7 @@ vi.mock('../store', () => ({
         dispatch: vi.fn(),
         getState: vi.fn(() => ({
             user: { isAuthenticated: false, loading: false, user: null },
-            cart: { cartItems: [] }
+            cart: { cartItems: {} }
         }))
     }
 }));

@@ -7,7 +7,7 @@ import Header from '../../component/layout/Header/Header';
 vi.mock('react-redux', () => ({
     useSelector: (selector) => selector({
         user: { isAuthenticated: false, user: null },
-        cart: { cartItems: [{ product: '1', quantity: 1 }, { product: '2', quantity: 2 }] }, // Mock cart with 2 items
+        cart: { cartItems: { '1': { product: '1', quantity: 1 }, '2': { product: '2', quantity: 2 } } }, // Mock cart with 2 items
     }),
 }));
 

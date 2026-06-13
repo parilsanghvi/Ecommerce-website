@@ -8,7 +8,7 @@ import cartReducer, {
 
 describe('cartSlice', () => {
     const initialState = {
-        cartItems: [],
+        cartItems: {},
         shippingInfo: {},
         loading: false,
         error: null,
@@ -29,8 +29,8 @@ describe('cartSlice', () => {
 
             const state = reducer(undefined, { type: 'unknown' });
 
-            expect(state.cartItems).toHaveLength(1);
-            expect(state.cartItems[0].product).toBe('p1');
+            expect(Object.keys(state.cartItems)).toHaveLength(1);
+            expect(state.cartItems['p1'].product).toBe('p1');
             expect(state.shippingInfo.address).toBe('456 Ave');
         });
     });
@@ -39,20 +39,20 @@ describe('cartSlice', () => {
         it('should remove an item by product id', () => {
             const stateWithItems = {
                 ...initialState,
-                cartItems: [
-                    { product: 'p1', name: 'Item 1', price: 100, quantity: 1 },
-                    { product: 'p2', name: 'Item 2', price: 200, quantity: 2 },
-                ],
+                cartItems: {
+                'p1': { product: 'p1', name: 'Item 1', price: 100, quantity: 1 },
+                'p2': { product: 'p2', name: 'Item 2', price: 200, quantity: 2 }
+            },
             };
             const result = cartReducer(stateWithItems, removeItemsFromCart('p1'));
-            expect(result.cartItems).toHaveLength(1);
-            expect(result.cartItems[0].product).toBe('p2');
+            expect(Object.keys(result.cartItems)).toHaveLength(1);
+            expect(Object.values(result.cartItems)[0].product).toBe('p2');
         });
 
         it('should sync with localStorage after removal', () => {
             const stateWithItems = {
                 ...initialState,
-                cartItems: [{ product: 'p1', name: 'Item 1', price: 100, quantity: 1 }],
+                cartItems: { 'p1': { product: 'p1', name: 'Item 1', price: 100, quantity: 1 } },
             };
             cartReducer(stateWithItems, removeItemsFromCart('p1'));
             expect(localStorage.setItem).toHaveBeenCalled();
@@ -98,20 +98,20 @@ describe('cartSlice', () => {
             const result = cartReducer(initialState, action);
             expect(result.loading).toBe(false);
             expect(result.success).toBe(true);
-            expect(result.cartItems).toHaveLength(1);
-            expect(result.cartItems[0].name).toBe('New Item');
+            expect(Object.keys(result.cartItems)).toHaveLength(1);
+            expect(result.cartItems['p1'].name).toBe('New Item');
         });
 
         it('should update existing item on fulfilled', () => {
             const stateWithItem = {
                 ...initialState,
-                cartItems: [{ product: 'p1', name: 'Old', price: 100, quantity: 1 }],
+                cartItems: { 'p1': { product: 'p1', name: 'Old', price: 100, quantity: 1 } },
             };
             const updated = { product: 'p1', name: 'Old', price: 100, quantity: 3 };
             const action = { type: addItemsToCart.fulfilled.type, payload: updated };
             const result = cartReducer(stateWithItem, action);
-            expect(result.cartItems).toHaveLength(1);
-            expect(result.cartItems[0].quantity).toBe(3);
+            expect(Object.keys(result.cartItems)).toHaveLength(1);
+            expect(result.cartItems['p1'].quantity).toBe(3);
         });
 
         it('should set error on rejected', () => {

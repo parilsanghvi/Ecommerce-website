@@ -1,3 +1,4 @@
+import { selectCartItemsArray } from '../../../features/cartSlice';
 import React, { useState, useEffect } from 'react';
 import { Box, Container, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Tooltip, Badge } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -14,7 +15,7 @@ import "./Header.css";
 
 const Header = () => {
     const { isAuthenticated, user } = useSelector((state) => state.user);
-    const { cartItems } = useSelector((state) => state.cart);
+    const cartItems = useSelector(selectCartItemsArray);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const navigate = useNavigate();

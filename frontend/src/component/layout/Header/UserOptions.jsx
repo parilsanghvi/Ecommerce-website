@@ -1,3 +1,4 @@
+import { selectCartItemsArray } from '../../../features/cartSlice';
 import React, { Fragment, useState } from "react";
 import "./Header.css";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -12,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Menu, MenuItem, Tooltip, IconButton, Avatar, ListItemIcon } from "@mui/material";
 
 const UserOptions = ({ user }) => {
-    const { cartItems } = useSelector((state) => state.cart);
+    const cartItems = useSelector(selectCartItemsArray);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
