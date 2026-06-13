@@ -241,6 +241,7 @@ describe('newOrder Controller', () => {
 
         expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(mockNext.mock.calls[0][0].message).toContain('Payment not verified');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
     });
 
     it('should fail if req paymentInfo.status is not succeeded', async () => {
@@ -259,6 +260,7 @@ describe('newOrder Controller', () => {
 
         expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(mockNext.mock.calls[0][0].message).toContain('Payment status mismatch');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
     });
 
     it('should fail on payment amount mismatch (Stripe amount vs calculated amount)', async () => {
