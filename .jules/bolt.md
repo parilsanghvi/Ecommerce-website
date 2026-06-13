@@ -8,3 +8,6 @@
 ## 2024-05-18 - Optimize Cart Array Updates
 **Learning:** Redux Toolkit uses Immer, allowing for direct mutations on the state draft. When updating an array item, instead of using `.map()` which creates a full O(N) copy, using `.findIndex()` and directly mutating the index (e.g., `state.items[index] = item`) is significantly faster.
 **Action:** When updating existing state items in Redux Toolkit reducers, use `.findIndex()` and direct array mutation rather than `.map()`.
+## 2024-05-15 - Unnecessary array copies during order creation
+**Learning:** During order creation mapping values explicitly into temporary variables before providing them as query parameters, and iterating arrays to construct object maps with array mapping can introduce minor but cumulative performance overhead in tight node loops processing arrays.
+**Action:** Use inline mapping directly in Mongoose queries and utilize `Array.prototype.reduce` when constructing a `Map` from an array of objects to avoid generating throw-away intermediate arrays.
