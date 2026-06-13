@@ -71,14 +71,16 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 const item = action.payload;
-                const isItemExist = state.cartItems.find(
+
+                // ⚡ Bolt: [performance improvement] Optimize cart array updates
+                // Impact: Avoids unnecessary O(N) array copy operations. Since RTK uses Immer under the hood,
+                // we can safely directly mutate an array index instead of using `.map()`, reducing memory allocations.
+                const itemIndex = state.cartItems.findIndex(
                     (i) => i.product === item.product
                 );
 
-                if (isItemExist) {
-                    state.cartItems = state.cartItems.map((i) =>
-                        i.product === isItemExist.product ? item : i
-                    );
+                if (itemIndex >= 0) {
+                    state.cartItems[itemIndex] = item;
                 } else {
                     state.cartItems.push(item);
                 }
