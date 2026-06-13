@@ -306,5 +306,6 @@ describe('newOrder Controller', () => {
 
         expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(mockNext.mock.calls[0][0].message).toContain('Payment already used');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
     });
 });
