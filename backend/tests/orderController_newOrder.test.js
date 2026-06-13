@@ -161,6 +161,20 @@ describe('newOrder Controller', () => {
         expect(mockNext.mock.calls[0][0].message).toContain('Product not found');
     });
 
+    it('should fail if itemsPrice is not a number (NaN)', async () => {
+        const req = {
+            body: getValidReqBody(),
+            user: testUser
+        };
+        req.body.itemsPrice = "invalid_price"; // Tampered price
+
+        await orderController.newOrder(req, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(mockNext.mock.calls[0][0].message).toContain('Price mismatch detected. Please refresh and try again.');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
+    });
+
     it('should fail on itemsPrice mismatch', async () => {
         const req = {
             body: getValidReqBody(),
