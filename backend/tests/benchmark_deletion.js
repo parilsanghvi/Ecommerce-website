@@ -81,7 +81,6 @@ async function runTest() {
     const res = {
         status: (code) => ({
             json: (data) => {
-                // console.log('Response received');
             }
         })
     };
