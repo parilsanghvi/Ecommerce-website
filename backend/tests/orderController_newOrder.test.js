@@ -148,6 +148,28 @@ describe('newOrder Controller', () => {
         expect(mockNext.mock.calls[0][0].message).toContain('Invalid quantity for product');
     });
 
+    it('should fail with status 404 if product is not found (using mocking)', async () => {
+        const req = {
+            body: getValidReqBody(),
+            user: testUser
+        };
+
+        // Mock Product.find to return empty array
+        const findSpy = jest.spyOn(Product, 'find').mockReturnValue({
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue([])
+            })
+        });
+
+        await orderController.newOrder(req, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(mockNext.mock.calls[0][0].message).toContain('Product not found');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(404);
+
+        findSpy.mockRestore();
+    });
+
     it('should fail if product is not found', async () => {
         const req = {
             body: getValidReqBody(),
