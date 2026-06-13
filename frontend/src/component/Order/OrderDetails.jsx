@@ -11,6 +11,108 @@ import { getOrderDetails, clearErrors } from "../../features/orderSlice";
 import Loader from "../layout/Loader";
 import { useSnackbar } from "notistack";
 
+const ShippingInfo = ({ order }) => (
+  <Fragment>
+    <Typography className="section-heading">Shipping Info</Typography>
+    <div className="orderDetailsContainerBox">
+      <div>
+        <p>Name:</p>
+        <span>{order.user && order.user.name}</span>
+      </div>
+      <div>
+        <p>Phone:</p>
+        <span>{order.shippingInfo && order.shippingInfo.phoneNo}</span>
+      </div>
+      <div>
+        <p>Address:</p>
+        <span>
+          {order.shippingInfo &&
+            `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.state}, ${order.shippingInfo.pinCode}, ${order.shippingInfo.country}`}
+        </span>
+      </div>
+    </div>
+  </Fragment>
+);
+
+const PaymentInfo = ({ order }) => {
+  const isPaid = order.paymentInfo && order.paymentInfo.status === "succeeded";
+  const colorClass = isPaid ? "greenColor" : "redColor";
+
+  return (
+    <Fragment>
+      <Typography className="section-heading">Payment</Typography>
+      <div className="orderDetailsContainerBox">
+        <div>
+          <div
+            className={colorClass}
+            style={{ display: "flex", alignItems: "center", gap: "8px" }}
+          >
+            {isPaid ? (
+              <CheckCircleIcon aria-hidden="true" />
+            ) : (
+              <ErrorIcon aria-hidden="true" />
+            )}
+            <p className={colorClass} style={{ margin: 0 }}>
+              {isPaid ? "PAID" : "NOT PAID"}
+            </p>
+          </div>
+        </div>
+        <div>
+          <p>Amount:</p>
+          <span>{order.totalPrice && order.totalPrice}</span>
+        </div>
+      </div>
+    </Fragment>
+  );
+};
+
+const OrderStatus = ({ order }) => {
+  const isDelivered = order.orderStatus && order.orderStatus === "Delivered";
+  const colorClass = isDelivered ? "greenColor" : "redColor";
+
+  return (
+    <Fragment>
+      <Typography className="section-heading">Order Status</Typography>
+      <div className="orderDetailsContainerBox">
+        <div>
+          <div
+            className={colorClass}
+            style={{ display: "flex", alignItems: "center", gap: "8px" }}
+          >
+            {isDelivered ? (
+              <CheckCircleIcon aria-hidden="true" />
+            ) : (
+              <ErrorIcon aria-hidden="true" />
+            )}
+            <p className={colorClass} style={{ margin: 0 }}>
+              {order.orderStatus && order.orderStatus}
+            </p>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  );
+};
+
+const OrderItems = ({ order }) => (
+  <div className="orderDetailsCartItems">
+    <Typography className="section-heading">Order Items:</Typography>
+    <div className="orderDetailsCartItemsContainer">
+      {order.orderItems &&
+        order.orderItems.map((item) => (
+          <div key={item.product}>
+            <img src={item.image} alt={item.name} />
+            <Link to={`/product/${item.product}`}>{item.name}</Link>{" "}
+            <span>
+              {item.quantity} X ₹{item.price} ={" "}
+              <b>₹{item.price * item.quantity}</b>
+            </span>
+          </div>
+        ))}
+    </div>
+  </div>
+);
+
 const OrderDetails = () => {
   const { orderDetails: order, error, loading } = useSelector((state) => state.order);
 
@@ -35,6 +137,7 @@ const OrderDetails = () => {
       dispatch(clearErrors());
     }
   }, [dispatch, error, enqueueSnackbar]);
+
   return (
     <Fragment>
       {loading ? (
@@ -54,109 +157,11 @@ const OrderDetails = () => {
                   </IconButton>
                 </Tooltip>
               </div>
-              <Typography className="section-heading">Shipping Info</Typography>
-              <div className="orderDetailsContainerBox">
-                <div>
-                  <p>Name:</p>
-                  <span>{order.user && order.user.name}</span>
-                </div>
-                <div>
-                  <p>Phone:</p>
-                  <span>
-                    {order.shippingInfo && order.shippingInfo.phoneNo}
-                  </span>
-                </div>
-                <div>
-                  <p>Address:</p>
-                  <span>
-                    {order.shippingInfo &&
-                      `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.state}, ${order.shippingInfo.pinCode}, ${order.shippingInfo.country}`}
-                  </span>
-                </div>
-              </div>
-              <Typography className="section-heading">Payment</Typography>
-              <div className="orderDetailsContainerBox">
-                <div>
-                  <div
-                    className={
-                      order.paymentInfo &&
-                        order.paymentInfo.status === "succeeded"
-                        ? "greenColor"
-                        : "redColor"
-                    }
-                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                  >
-                    {order.paymentInfo && order.paymentInfo.status === "succeeded" ? (
-                      <CheckCircleIcon aria-hidden="true" />
-                    ) : (
-                      <ErrorIcon aria-hidden="true" />
-                    )}
-                    <p className={
-                      order.paymentInfo &&
-                        order.paymentInfo.status === "succeeded"
-                        ? "greenColor"
-                        : "redColor"
-                    } style={{ margin: 0 }}>
-                      {order.paymentInfo &&
-                        order.paymentInfo.status === "succeeded"
-                        ? "PAID"
-                        : "NOT PAID"}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <p>Amount:</p>
-                  <span>{order.totalPrice && order.totalPrice}</span>
-                </div>
-              </div>
-
-              <Typography className="section-heading">Order Status</Typography>
-              <div className="orderDetailsContainerBox">
-                <div>
-                  <div
-                    className={
-                      order.orderStatus && order.orderStatus === "Delivered"
-                        ? "greenColor"
-                        : "redColor"
-                    }
-                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                  >
-                    {order.orderStatus && order.orderStatus === "Delivered" ? (
-                      <CheckCircleIcon aria-hidden="true" />
-                    ) : (
-                      <ErrorIcon aria-hidden="true" />
-                    )}
-                    <p className={
-                      order.orderStatus && order.orderStatus === "Delivered"
-                        ? "greenColor"
-                        : "redColor"
-                    } style={{ margin: 0 }}>
-                      {order.orderStatus && order.orderStatus}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <ShippingInfo order={order} />
+              <PaymentInfo order={order} />
+              <OrderStatus order={order} />
             </div>
-
-            <div className="orderDetailsCartItems">
-              <Typography className="section-heading">Order Items:</Typography>
-              <div className="orderDetailsCartItemsContainer">
-                {order.orderItems &&
-                  order.orderItems.map((item) => (
-                    <div key={item.product}>
-                      <img src={item.image} alt={item.name} />
-                      <Link to={`/product/${item.product}`}>
-                        {item.name}
-                      </Link>{" "}
-                      <span>
-                        {item.quantity} X ₹{item.price} ={" "}
-                        <b>₹{item.price * item.quantity}</b>
-                      </span>
-                    </div>
-                  ))}
-              </div>
-            </div>
+            <OrderItems order={order} />
           </div>
         </Fragment>
       )}
