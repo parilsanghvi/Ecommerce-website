@@ -43,6 +43,24 @@ describe("getSingleOrder Controller", () => {
     expect(next.mock.calls[0][0].message).toBe("order not found with this id");
   });
 
+  it("should fail (404) when order belongs to a different user and requester is not admin", async () => {
+    const mockOrder = {
+      _id: "orderId123",
+      user: "different_user_id",
+      totalPrice: 100,
+    };
+
+    const mockLean = jest.fn().mockResolvedValue(mockOrder);
+    Order.findById.mockReturnValue({ lean: mockLean });
+
+    await getSingleOrder(req, res, next);
+
+    expect(Order.findById).toHaveBeenCalledWith("orderId123");
+    expect(next).toHaveBeenCalledWith(expect.any(ErrorHandler));
+    expect(next.mock.calls[0][0].statusCode).toBe(404);
+    expect(next.mock.calls[0][0].message).toBe("order not found with this id");
+  });
+
   it("should pass errors from DB to next", async () => {
     const dbError = new Error("Database error");
     const mockLean = jest.fn().mockRejectedValue(dbError);
