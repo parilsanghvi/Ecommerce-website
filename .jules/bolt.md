@@ -8,3 +8,6 @@
 ## 2024-05-18 - Optimize Cart Array Updates
 **Learning:** Redux Toolkit uses Immer, allowing for direct mutations on the state draft. When updating an array item, instead of using `.map()` which creates a full O(N) copy, using `.findIndex()` and directly mutating the index (e.g., `state.items[index] = item`) is significantly faster.
 **Action:** When updating existing state items in Redux Toolkit reducers, use `.findIndex()` and direct array mutation rather than `.map()`.
+## 2025-06-13 - Testing Branch Coverage
+**Learning:** Controller actions like `getPricing` that throw errors on invalid input require explicit test coverage for those error paths to ensure reliability and maintain high coverage metrics.
+**Action:** When adding missing tests, use `jest.mock` and `mockImplementation` to simulate error conditions in dependencies and verify the error is properly caught and forwarded to the next middleware.
