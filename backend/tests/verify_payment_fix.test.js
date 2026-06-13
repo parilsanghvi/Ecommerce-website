@@ -16,7 +16,7 @@ jest.mock("stripe", () => {
   return jest.fn(() => mStripe);
 });
 
-describe("Payment Controller Security Fix", () => {
+describe("Payment Controller Limit Validation", () => {
   let req, res, next;
 
   beforeEach(() => {

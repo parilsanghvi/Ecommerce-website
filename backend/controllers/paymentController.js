@@ -10,7 +10,7 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("No items provided for payment", 400));
   }
 
-  // Security Fix: Limit array length to prevent denial of service (DoS) attacks
+  // Limit array length to prevent denial of service (DoS) attacks
   if (items.length > 100) {
     return next(new ErrorHandler("Too many items in payment request", 400));
   }
