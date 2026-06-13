@@ -91,8 +91,7 @@ describe('Security: Forgot Password Enumeration', () => {
             .post('/api/v1/password/forgot')
             .send({ email: 'nonexistent@example.com' });
 
-        // This assertion is expected to FAIL before the fix
-        // Currently it returns 404
+        // Verify the generic success response to prevent email enumeration
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(true);
         expect(res.body.message).toBe('If your email is registered, you will receive a password reset link shortly.');
