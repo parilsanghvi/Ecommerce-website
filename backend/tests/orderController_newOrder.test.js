@@ -146,6 +146,21 @@ describe('newOrder Controller', () => {
 
         expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
         expect(mockNext.mock.calls[0][0].message).toContain('Invalid quantity for product');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
+    });
+
+    it('should fail with non-integer quantity', async () => {
+        const req = {
+            body: getValidReqBody(),
+            user: testUser
+        };
+        req.body.orderItems[0].quantity = 1.5;
+
+        await orderController.newOrder(req, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(mockNext.mock.calls[0][0].message).toContain('Invalid quantity for product');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
     });
 
     it('should fail if product is not found', async () => {
