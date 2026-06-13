@@ -41,6 +41,23 @@ describe("getPricing Unit Tests", () => {
     expect(errorArg.message).toBe("Please provide itemsPrice");
   });
 
+  it("should throw an error if itemsPrice is invalid or calculateOrderPrices throws an error", async () => {
+    req.query.itemsPrice = "invalid";
+
+    // We expect calculateOrderPrices to throw or return NaN, let's just mock it to throw for this test branch
+    const errorMessage = "Invalid itemsPrice format";
+    calculateOrderPrices.mockImplementation(() => {
+      throw new Error(errorMessage);
+    });
+
+    await getPricing(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    const errorArg = next.mock.calls[0][0];
+    expect(errorArg).toBeInstanceOf(Error);
+    expect(errorArg.message).toBe(errorMessage);
+  });
+
   it("should calculate order prices and return them successfully", async () => {
     req.query.itemsPrice = "1000";
 
