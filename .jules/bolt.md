@@ -15,3 +15,7 @@
 ## 2025-06-13 - Testing Branch Coverage
 **Learning:** Controller actions like `getPricing` that throw errors on invalid input require explicit test coverage for those error paths to ensure reliability and maintain high coverage metrics.
 **Action:** When adding missing tests, use `jest.mock` and `mockImplementation` to simulate error conditions in dependencies and verify the error is properly caught and forwarded to the next middleware.
+
+## 2024-10-24 - Mongoose Undefined Field Handling
+**Learning:** Mongoose automatically ignores undefined fields when creating documents, making manual property deletion loops unnecessary and inefficient.
+**Action:** Rely on Mongoose's built-in handling of undefined properties during document creation instead of manually filtering them out.
