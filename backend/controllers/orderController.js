@@ -143,7 +143,7 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("order not found with this id", 404))
     }
 
-    // Security Fix: Prevent IDOR by ensuring user owns the order or is admin
+    // Prevent IDOR by ensuring user owns the order or is admin
     if (order.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
         return next(new ErrorHandler("order not found with this id", 404));
     }
