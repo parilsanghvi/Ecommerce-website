@@ -200,6 +200,21 @@ describe('newOrder Controller', () => {
         expect(mockNext.mock.calls[0][0].message).toContain('Shipping price mismatch detected. Please refresh and try again.');
     });
 
+    it('should fail if shippingPrice is not a number and verify status 400', async () => {
+        const req = {
+            body: getValidReqBody(),
+            user: testUser
+        };
+        req.body.shippingPrice = "invalid";
+
+        await orderController.newOrder(req, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(mockNext.mock.calls[0][0].message).toContain('Shipping price mismatch detected. Please refresh and try again.');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
+    });
+
+
     it('should fail on totalPrice mismatch', async () => {
         const req = {
             body: getValidReqBody(),
