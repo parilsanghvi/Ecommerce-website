@@ -15,3 +15,8 @@
 ## 2025-02-18 - Host Header Injection in Password Reset
 **Learning:** Hardcoding or reflecting the `Host` header from incoming HTTP requests (`req.get('host')`) to construct password reset links is dangerous. An attacker can craft a malicious HTTP request with a spoofed `Host` header (e.g., `Host: evil.com`), causing the backend to generate and email a reset link pointing to the attacker's domain, leading to token theft.
 **Action:** Always enforce the use of a statically configured environment variable (like `process.env.FRONTEND_URL`) to build sensitive absolute URLs (such as password reset links or OAuth callbacks) instead of dynamically deriving the host from client-controlled headers.
+
+## 2024-05-20 - Mass Assignment Vulnerability Prevention
+**Vulnerability:** Updating documents using unmodified request bodies (e.g. `req.body`) can allow attackers to overwrite protected fields by supplying unexpected key-value pairs in the payload.
+**Learning:** Mass assignment vulnerabilities occur when user input is blindly applied to models.
+**Action:** Always filter `req.body` using an explicit allowlist (e.g., `['name', 'price', 'description', 'category', 'stock']`) before updating documents, or use strict schema definitions, ensuring fields like user IDs or internal state flags cannot be maliciously altered.
