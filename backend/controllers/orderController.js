@@ -90,7 +90,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Total price mismatch detected. Please refresh and try again.", 400));
     }
 
-    // Security Fix: Verify payment with Stripe
+    // Verify payment with Stripe
     if (!paymentInfo || !paymentInfo.id) {
         return next(new ErrorHandler("Payment Information is missing", 400));
     }
