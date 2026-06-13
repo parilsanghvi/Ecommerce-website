@@ -92,8 +92,10 @@ const UpdateUser = () => {
               <input
                 type="text"
                 placeholder="Name"
+                aria-label="Name"
                 required
                 value={name}
+                disabled={updateLoading}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -102,15 +104,17 @@ const UpdateUser = () => {
               <input
                 type="email"
                 placeholder="Email"
+                aria-label="Email"
                 required
                 value={email}
+                disabled={updateLoading}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             <div>
               <VerifiedUserIcon />
-              <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <select aria-label="Role" value={role} onChange={(e) => setRole(e.target.value)} disabled={updateLoading}>
                 <option value="">Choose Role</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>

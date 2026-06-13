@@ -106,8 +106,10 @@ const NewProduct = () => {
             <input
               type="text"
               placeholder="Product Name"
+              aria-label="Product Name"
               required
               value={name}
+              disabled={loading}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
@@ -116,8 +118,11 @@ const NewProduct = () => {
             <input
               type="number"
               placeholder="Price"
+              aria-label="Price"
               required
               onChange={(e) => setPrice(e.target.value)}
+              value={price}
+              disabled={loading}
             />
           </div>
 
@@ -126,16 +131,18 @@ const NewProduct = () => {
 
             <textarea
               placeholder="Product Description"
+              aria-label="Product Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               cols="30"
               rows="1"
+              disabled={loading}
             ></textarea>
           </div>
 
           <div>
             <AccountTreeIcon />
-            <select onChange={(e) => setCategory(e.target.value)}>
+            <select aria-label="Category" onChange={(e) => setCategory(e.target.value)} disabled={loading}>
               <option value="">Choose Category</option>
               {categories.map((cate) => (
                 <option key={cate} value={cate}>
@@ -150,8 +157,11 @@ const NewProduct = () => {
             <input
               type="number"
               placeholder="Stock"
+              aria-label="Stock"
               required
               onChange={(e) => setStock(e.target.value)}
+              value={Stock}
+              disabled={loading}
             />
           </div>
 
@@ -159,9 +169,11 @@ const NewProduct = () => {
             <input
               type="file"
               name="avatar"
+              aria-label="Product Images"
               accept="image/*"
               onChange={createProductImagesChange}
               multiple
+              disabled={loading}
             />
           </div>
 
