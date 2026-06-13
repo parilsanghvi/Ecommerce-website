@@ -13,13 +13,17 @@ import AdminLayout from "./AdminLayout";
 import useErrorNotification from "../../hooks/useErrorNotification";
 import { useNavigate } from "react-router-dom";
 
-const NewProduct = () => {
-  const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
+const categories = [
+  "Laptop",
+  "Footwear",
+  "Bottom",
+  "Tops",
+  "Attire",
+  "Camera",
+  "SmartPhones",
+];
 
-  const { loading, error, success } = useSelector((state) => state.product);
-
+const useNewProductForm = (success, dispatch, enqueueSnackbar, navigate) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
@@ -27,18 +31,6 @@ const NewProduct = () => {
   const [Stock, setStock] = useState(0);
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
-
-  const categories = [
-    "Laptop",
-    "Footwear",
-    "Bottom",
-    "Tops",
-    "Attire",
-    "Camera",
-    "SmartPhones",
-  ];
-
-  useErrorNotification(error, clearErrors);
 
   useEffect(() => {
     if (success) {
@@ -83,6 +75,48 @@ const NewProduct = () => {
       reader.readAsDataURL(file);
     });
   };
+
+  return {
+    name,
+    setName,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    category,
+    setCategory,
+    Stock,
+    setStock,
+    imagesPreview,
+    createProductSubmitHandler,
+    createProductImagesChange,
+  };
+};
+
+const NewProduct = () => {
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  const { loading, error, success } = useSelector((state) => state.product);
+
+  useErrorNotification(error, clearErrors);
+
+  const {
+    name,
+    setName,
+    price,
+    setPrice,
+    description,
+    setDescription,
+    category,
+    setCategory,
+    Stock,
+    setStock,
+    imagesPreview,
+    createProductSubmitHandler,
+    createProductImagesChange,
+  } = useNewProductForm(success, dispatch, enqueueSnackbar, navigate);
 
   return (
     <AdminLayout title="Create Product">
