@@ -1,6 +1,9 @@
-const { loginUser, registerUser } = require("../controllers/userController");
+
+const { loginUser, registerUser, updatePassword } = require("../controllers/userController");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
+const cloudinary = require("cloudinary");
+
 jest.mock("../utils/jwtToken");
 jest.mock("../models/userModel");
 jest.mock("../utils/errorhandler");
@@ -48,7 +51,6 @@ describe("Security: Password Hash Leak", () => {
     });
 
     it("should not pass user with password to sendToken in registerUser", async () => {
-        const cloudinary = require("cloudinary");
         cloudinary.v2.uploader.upload.mockResolvedValue({
             public_id: "id",
             secure_url: "url"
@@ -69,7 +71,6 @@ describe("Security: Password Hash Leak", () => {
     });
 
     it("should not pass user with password to sendToken in updatePassword", async () => {
-        const { updatePassword } = require("../controllers/userController");
         req.user = { _id: "123" };
         req.body = { oldPassword: "oldpassword", newPassword: "newpassword", confirmPassword: "newpassword" };
         const mockUser = {

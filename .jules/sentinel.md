@@ -11,3 +11,8 @@
 **Vulnerability:** The `processPayment` controller endpoint failed to check the upper bounds of the `items` array parameter before mapping over it to collect product IDs, fetching data, and looping through it sequentially for calculation (`backend/controllers/paymentController.js`).
 **Learning:** Accepting arrays of arbitrary sizes in request payloads from unauthenticated or authenticated users opens up the endpoint to Denial of Service (DoS) attacks. An attacker could craft a payload with an enormous number of elements, causing synchronous loops or excessive database operations to consume all available memory and block the event loop, bringing down the service.
 **Prevention:** Always enforce a strict maximum length on arrays parsed from the request body or query string, particularly when array elements are mapped to database operations or iterations. Ensure an appropriate fallback validation is implemented directly within controllers to preempt massive loads (e.g., `if (items.length > 100)`).
+
+## 2024-06-13 - Security False Positives via Code Comments
+**Vulnerability:** Comments containing markers like `Security Fix:` or `TODO:` may lead automated static analysis tools to incorrectly flag resolved issues as active, producing false positives.
+**Learning:** Hardcoding trigger words within comments meant purely for descriptive purposes can clutter issue trackers and degrade the signal-to-noise ratio of automated security tooling.
+**Prevention:** When documenting the rationale for security-sensitive logic (e.g., clearing sensitive data), describe the action generically (e.g., `Prevent leaking...`) without explicit "Fix" markers that resemble unresolved task patterns.
