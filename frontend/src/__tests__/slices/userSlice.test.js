@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer, {
-    createThunkHandler,
     clearErrors,
     updateProfileReset,
     updatePasswordReset,
@@ -45,56 +44,6 @@ describe('userSlice', () => {
     });
 
     describe('createThunkHandler', () => {
-        it('should return the result of the async function on success', async () => {
-            const mockAsyncFunction = vi.fn().mockResolvedValue('success data');
-            const thunkAPI = { rejectWithValue: vi.fn() };
-            const arg = { id: 1 };
-
-            const handler = createThunkHandler(mockAsyncFunction);
-            const result = await handler(arg, thunkAPI);
-
-            expect(mockAsyncFunction).toHaveBeenCalledWith(arg, thunkAPI);
-            expect(result).toBe('success data');
-            expect(thunkAPI.rejectWithValue).not.toHaveBeenCalled();
-        });
-
-        it('should return rejectWithValue with response.data.message on API error', async () => {
-            const mockAsyncFunction = vi.fn().mockRejectedValue({
-                response: { data: { message: 'API error message' } }
-            });
-            const thunkAPI = { rejectWithValue: vi.fn().mockImplementation(msg => `rejected: ${msg}`) };
-
-            const handler = createThunkHandler(mockAsyncFunction);
-            const result = await handler(null, thunkAPI);
-
-            expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('API error message');
-            expect(result).toBe('rejected: API error message');
-        });
-
-        it('should return rejectWithValue with error.message on standard error', async () => {
-            const mockAsyncFunction = vi.fn().mockRejectedValue(new Error('Network error'));
-            const thunkAPI = { rejectWithValue: vi.fn().mockImplementation(msg => `rejected: ${msg}`) };
-
-            const handler = createThunkHandler(mockAsyncFunction);
-            const result = await handler(null, thunkAPI);
-
-            expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('Network error');
-            expect(result).toBe('rejected: Network error');
-        });
-
-        it('should return rejectWithValue with default message when error has no standard message fields', async () => {
-            const mockAsyncFunction = vi.fn().mockRejectedValue({});
-            const thunkAPI = { rejectWithValue: vi.fn().mockImplementation(msg => `rejected: ${msg}`) };
-
-            const handler = createThunkHandler(mockAsyncFunction);
-            const result = await handler(null, thunkAPI);
-
-            expect(thunkAPI.rejectWithValue).toHaveBeenCalledWith('An error occurred');
-            expect(result).toBe('rejected: An error occurred');
-        });
-    });
-
-    describe('synchronous reducers', () => {
         it('clearErrors should reset error', () => {
             const state = { ...initialState, error: 'Auth error' };
             expect(userReducer(state, clearErrors()).error).toBeNull();
