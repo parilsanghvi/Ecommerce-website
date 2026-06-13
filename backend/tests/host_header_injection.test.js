@@ -30,7 +30,7 @@ describe('Host Header Injection in forgotPassword', () => {
         delete process.env.FRONTEND_URL;
     });
 
-    it('should return error when FRONTEND_URL is not set (Security Fix)', async () => {
+    it('should return error when FRONTEND_URL is not set', async () => {
         // Mock user found
         const mockUser = {
             email: 'test@example.com',
@@ -54,7 +54,7 @@ describe('Host Header Injection in forgotPassword', () => {
         expect(errorArg.message).toBe("FRONTEND_URL is not configured on the server.");
     });
 
-    it('should use FRONTEND_URL when set (Fix Verification)', async () => {
+    it('should use FRONTEND_URL when set', async () => {
         // Set secure frontend URL
         process.env.FRONTEND_URL = 'https://myshop.com';
 
@@ -66,7 +66,7 @@ describe('Host Header Injection in forgotPassword', () => {
         };
         User.findOne.mockResolvedValue(mockUser);
 
-        // Inject malicious host (should be ignored if fix works)
+        // Inject malicious host (should be ignored)
         req.get.mockReturnValue('evil.com');
 
         await userController.forgotPassword(req, res, next);
@@ -75,8 +75,6 @@ describe('Host Header Injection in forgotPassword', () => {
         expect(sendEmail).toHaveBeenCalled();
         const emailOptions = sendEmail.mock.calls[0][0]; // Helper to get the first arg of the first call, assuming verify works.
 
-        // This expectation will FAIL until I implement the fix
-        // Once fixed, it should pass
         expect(emailOptions.message).toContain('https://myshop.com/password/reset/dummyToken');
     });
 });
