@@ -10,8 +10,6 @@ describe('Security Headers', () => {
         const res = await request(app).get('/api/v1/security-check-route-404');
 
         // We don't care about status code here, just headers
-        // But logging it might help debug if needed
-        // console.log('Status:', res.status);
 
         expect(res.headers['x-content-type-options']).toBe('nosniff');
         expect(res.headers['x-frame-options']).toBe('DENY');
