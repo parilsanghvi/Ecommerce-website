@@ -1,17 +1,10 @@
-const { loginUser, registerUser } = require("../controllers/userController");
+const { loginUser, registerUser, updatePassword } = require("../controllers/userController");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 jest.mock("../utils/jwtToken");
 jest.mock("../models/userModel");
 jest.mock("../utils/errorhandler");
-jest.mock("cloudinary", () => ({
-    v2: {
-        uploader: {
-            destroy: jest.fn(),
-            upload: jest.fn()
-        }
-    }
-}));
+jest.mock("cloudinary", () => ({ v2: { uploader: { destroy: jest.fn(), upload: jest.fn().mockResolvedValue({ public_id: "id", secure_url: "url" }) } } }));
 jest.mock("../middleware/catchAsyncErrors", () => (func) => (req, res, next) => Promise.resolve(func(req, res, next)).catch(next));
 
 describe("Security: Password Hash Leak", () => {
@@ -24,8 +17,9 @@ describe("Security: Password Hash Leak", () => {
             cookie: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        next = jest.fn();
+        next = jest.fn(err => console.log('next called with:', err));
         sendToken.mockClear();
+        jest.clearAllMocks();
     });
 
     it("should not pass user with password to sendToken in loginUser", async () => {
@@ -53,6 +47,10 @@ describe("Security: Password Hash Leak", () => {
             public_id: "id",
             secure_url: "url"
         });
+        cloudinary.v2.uploader.upload.mockResolvedValue({
+            public_id: "id",
+            secure_url: "url"
+        });
         req.body = { name: "test", email: "test@test.com", password: "password123", avatar: "base64" };
         const mockUser = {
             _id: "123",
@@ -69,7 +67,6 @@ describe("Security: Password Hash Leak", () => {
     });
 
     it("should not pass user with password to sendToken in updatePassword", async () => {
-        const { updatePassword } = require("../controllers/userController");
         req.user = { _id: "123" };
         req.body = { oldPassword: "oldpassword", newPassword: "newpassword", confirmPassword: "newpassword" };
         const mockUser = {
