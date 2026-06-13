@@ -26,6 +26,165 @@ const categories = [
 
 const MAX_PRICE = 25000;
 
+const ProductFilters = ({
+    isFiltered,
+    resetFilters,
+    sliderPrice,
+    setSliderPrice,
+    priceHandler,
+    category,
+    setCategory,
+    setCurrentPage,
+    sliderRatings,
+    setSliderRatings,
+    setRating
+}) => {
+    return (
+        <motion.div
+            className='filterBox'
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            {isFiltered && (
+                <div className="clear-filters-container">
+                    <Button
+                        variant="text"
+                        color="secondary"
+                        size="small"
+                        onClick={resetFilters}
+                        aria-label="Clear all filters"
+                        sx={{
+                            textTransform: 'none',
+                            padding: '4px 8px',
+                            fontFamily: 'var(--font-heading)',
+                            color: 'var(--color-primary)'
+                        }}
+                    >
+                        Clear Filters
+                    </Button>
+                </div>
+            )}
+            <Typography variant="h6" className="filter-heading" id="range-slider">Price Range</Typography>
+            <Slider
+                // Optimization: Use local state for value to prevent API calls on every drag event
+                value={sliderPrice}
+                onChange={(event, newPrice) => setSliderPrice(newPrice)}
+                onChangeCommitted={priceHandler}
+                valueLabelDisplay='auto'
+                aria-labelledby='range-slider'
+                min={0}
+                max={MAX_PRICE}
+                sx={{
+                    marginTop: '1rem',
+                    marginBottom: '2rem',
+                    color: 'var(--color-primary)',
+                    '& .MuiSlider-thumb': {
+                        borderRadius: '0',
+                        border: '1px solid var(--color-primary)',
+                        backgroundColor: 'var(--color-surface)',
+                        '&:hover': {
+                            boxShadow: '0 0 0 8px rgba(204, 255, 0, 0.16)'
+                        }
+                    },
+                    '& .MuiSlider-track': {
+                        border: 'none',
+                        backgroundColor: 'var(--color-primary)'
+                    },
+                    '& .MuiSlider-rail': {
+                        opacity: 0.5,
+                        backgroundColor: 'var(--color-muted)'
+                    },
+                    '& .MuiSlider-valueLabel': {
+                        backgroundColor: 'var(--color-surface)',
+                        color: 'var(--color-text)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: '0',
+                        fontFamily: 'var(--font-body)'
+                    }
+                }}
+            />
+
+            <Typography variant="h6" className="filter-heading">
+                Categories
+            </Typography>
+            <ul className='categoryBox'>
+                {categories.map((cat) => (
+                    <li className='category-link'
+                        key={cat}
+                        onClick={() => {
+                            if (category === cat) {
+                                setCategory("");
+                            } else {
+                                setCategory(cat);
+                            }
+                            setCurrentPage(1);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                if (category === cat) {
+                                    setCategory("");
+                                } else {
+                                    setCategory(cat);
+                                }
+                                setCurrentPage(1);
+                            }
+                        }}
+                        role="button"
+                        aria-label={`Select ${cat} category`}
+                        aria-pressed={category === cat}
+                        tabIndex="0"
+                        style={{ color: category === cat ? 'var(--color-primary)' : 'var(--color-text)' }}
+                    >
+                        {cat}
+                    </li>
+                ))}
+            </ul>
+
+            <fieldset style={{ border: '1px solid var(--color-border)', padding: '1rem', marginTop: '2rem' }}>
+                <Typography component="legend" variant="caption" style={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--color-text)' }}>
+                    Rating
+                </Typography>
+                <Slider
+                    // Optimization: Use local state for value to prevent API calls on every drag event
+                    value={sliderRatings}
+                    onChange={(e, newRating) => setSliderRatings(newRating)}
+                    onChangeCommitted={(e, newRating) => {
+                        setRating(newRating);
+                        setSliderRatings(newRating); // Ensure sync
+                        setCurrentPage(1);
+                    }}
+                    min={0}
+                    max={5}
+                    valueLabelDisplay='auto'
+                    aria-label="Minimum Rating"
+                    sx={{
+                        marginTop: '0.5rem',
+                        color: 'var(--color-primary)',
+                        '& .MuiSlider-thumb': {
+                            borderRadius: '0',
+                            border: '1px solid var(--color-primary)',
+                            backgroundColor: 'var(--color-surface)'
+                        },
+                        '& .MuiSlider-rail': {
+                            opacity: 0.5,
+                            backgroundColor: 'var(--color-muted)'
+                        },
+                        '& .MuiSlider-valueLabel': {
+                            backgroundColor: 'var(--color-surface)',
+                            color: 'var(--color-text)',
+                            border: '1px solid var(--color-border)',
+                            borderRadius: '0',
+                            fontFamily: 'var(--font-body)'
+                        }
+                    }}
+                />
+            </fieldset>
+        </motion.div>
+    );
+};
+
 const Products = () => {
     const dispatch = useDispatch()
     const [ratings, setRating] = useState(0)
@@ -75,148 +234,19 @@ const Products = () => {
                     <h2 className='productsHeading'>Inventory</h2>
 
                     <div className="products-container">
-                        <motion.div
-                            className='filterBox'
-                            initial={{ x: -50, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            {isFiltered && (
-                                <div className="clear-filters-container">
-                                    <Button
-                                        variant="text"
-                                        color="secondary"
-                                        size="small"
-                                        onClick={resetFilters}
-                                        aria-label="Clear all filters"
-                                        sx={{
-                                            textTransform: 'none',
-                                            padding: '4px 8px',
-                                            fontFamily: 'var(--font-heading)',
-                                            color: 'var(--color-primary)'
-                                        }}
-                                    >
-                                        Clear Filters
-                                    </Button>
-                                </div>
-                            )}
-                            <Typography variant="h6" className="filter-heading" id="range-slider">Price Range</Typography>
-                            <Slider
-                                // Optimization: Use local state for value to prevent API calls on every drag event
-                                value={sliderPrice}
-                                onChange={(event, newPrice) => setSliderPrice(newPrice)}
-                                onChangeCommitted={priceHandler}
-                                valueLabelDisplay='auto'
-                                aria-labelledby='range-slider'
-                                min={0}
-                                max={MAX_PRICE}
-                                sx={{
-                                    marginTop: '1rem',
-                                    marginBottom: '2rem',
-                                    color: 'var(--color-primary)',
-                                    '& .MuiSlider-thumb': {
-                                        borderRadius: '0',
-                                        border: '1px solid var(--color-primary)',
-                                        backgroundColor: 'var(--color-surface)',
-                                        '&:hover': {
-                                            boxShadow: '0 0 0 8px rgba(204, 255, 0, 0.16)'
-                                        }
-                                    },
-                                    '& .MuiSlider-track': {
-                                        border: 'none',
-                                        backgroundColor: 'var(--color-primary)'
-                                    },
-                                    '& .MuiSlider-rail': {
-                                        opacity: 0.5,
-                                        backgroundColor: 'var(--color-muted)'
-                                    },
-                                    '& .MuiSlider-valueLabel': {
-                                        backgroundColor: 'var(--color-surface)',
-                                        color: 'var(--color-text)',
-                                        border: '1px solid var(--color-border)',
-                                        borderRadius: '0',
-                                        fontFamily: 'var(--font-body)'
-                                    }
-                                }}
-                            />
-
-                            <Typography variant="h6" className="filter-heading">
-                                Categories
-                            </Typography>
-                            <ul className='categoryBox'>
-                                {categories.map((cat) => (
-                                    <li className='category-link'
-                                        key={cat}
-                                        onClick={() => {
-                                            if (category === cat) {
-                                                setCategory("");
-                                            } else {
-                                                setCategory(cat);
-                                            }
-                                            setCurrentPage(1);
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                if (category === cat) {
-                                                    setCategory("");
-                                                } else {
-                                                    setCategory(cat);
-                                                }
-                                                setCurrentPage(1);
-                                            }
-                                        }}
-                                        role="button"
-                                        aria-label={`Select ${cat} category`}
-                                        aria-pressed={category === cat}
-                                        tabIndex="0"
-                                        style={{ color: category === cat ? 'var(--color-primary)' : 'var(--color-text)' }}
-                                    >
-                                        {cat}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <fieldset style={{ border: '1px solid var(--color-border)', padding: '1rem', marginTop: '2rem' }}>
-                                <Typography component="legend" variant="caption" style={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: '0.9rem', color: 'var(--color-text)' }}>
-                                    Rating
-                                </Typography>
-                                <Slider
-                                    // Optimization: Use local state for value to prevent API calls on every drag event
-                                    value={sliderRatings}
-                                    onChange={(e, newRating) => setSliderRatings(newRating)}
-                                    onChangeCommitted={(e, newRating) => {
-                                        setRating(newRating);
-                                        setSliderRatings(newRating); // Ensure sync
-                                        setCurrentPage(1);
-                                    }}
-                                    min={0}
-                                    max={5}
-                                    valueLabelDisplay='auto'
-                                    aria-label="Minimum Rating"
-                                    sx={{
-                                        marginTop: '0.5rem',
-                                        color: 'var(--color-primary)',
-                                        '& .MuiSlider-thumb': {
-                                            borderRadius: '0',
-                                            border: '1px solid var(--color-primary)',
-                                            backgroundColor: 'var(--color-surface)'
-                                        },
-                                        '& .MuiSlider-rail': {
-                                            opacity: 0.5,
-                                            backgroundColor: 'var(--color-muted)'
-                                        },
-                                        '& .MuiSlider-valueLabel': {
-                                            backgroundColor: 'var(--color-surface)',
-                                            color: 'var(--color-text)',
-                                            border: '1px solid var(--color-border)',
-                                            borderRadius: '0',
-                                            fontFamily: 'var(--font-body)'
-                                        }
-                                    }}
-                                />
-                            </fieldset>
-                        </motion.div>
+                        <ProductFilters
+                            isFiltered={isFiltered}
+                            resetFilters={resetFilters}
+                            sliderPrice={sliderPrice}
+                            setSliderPrice={setSliderPrice}
+                            priceHandler={priceHandler}
+                            category={category}
+                            setCategory={setCategory}
+                            setCurrentPage={setCurrentPage}
+                            sliderRatings={sliderRatings}
+                            setSliderRatings={setSliderRatings}
+                            setRating={setRating}
+                        />
 
                         <div className='products'>
                             {filteredProducts && filteredProducts.length > 0 ? (
