@@ -4,11 +4,12 @@ import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Button, Pagination } from "@mui/material";
+import { Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AdminLayout from "./AdminLayout";
 import useErrorNotification from "../../hooks/useErrorNotification";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import {
   deleteOrder,
   getAllOrders,
@@ -28,10 +29,27 @@ const OrderList = () => {
 
   const { error: deleteError, isDeleted } = useSelector((state) => state.order);
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+
+  const handleDeleteClick = useCallback((id) => {
+    setOrderToDelete(id);
+    setDeleteDialogOpen(true);
+  }, []);
+
   // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
-  const deleteOrderHandler = useCallback((id) => {
-    dispatch(deleteOrder(id));
-  }, [dispatch]);
+  const deleteOrderHandler = useCallback(() => {
+    if (orderToDelete) {
+      dispatch(deleteOrder(orderToDelete));
+      setDeleteDialogOpen(false);
+      setOrderToDelete(null);
+    }
+  }, [dispatch, orderToDelete]);
+
+  const handleCloseDialog = useCallback(() => {
+    setDeleteDialogOpen(false);
+    setOrderToDelete(null);
+  }, []);
 
   const setCurrentPageNo = (e, value) => {
     setCurrentPage(value);
@@ -95,14 +113,14 @@ const OrderList = () => {
               <EditIcon />
             </Link>
 
-            <button onClick={() => deleteOrderHandler(params.row.id)} aria-label="Delete order">
+            <button onClick={() => handleDeleteClick(params.row.id)} aria-label="Delete order">
               <DeleteIcon />
             </button>
           </Fragment>
         );
       },
     },
-  ], [deleteOrderHandler]);
+  ], [handleDeleteClick]);
 
   // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
   const rows = useMemo(() => {
@@ -146,6 +164,8 @@ const OrderList = () => {
           </div>
         )}
       </div>
+
+      <ConfirmDeleteDialog open={deleteDialogOpen} onClose={handleCloseDialog} onConfirm={deleteOrderHandler} itemName="order" />
     </AdminLayout>
   );
 };

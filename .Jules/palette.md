@@ -1,0 +1,3 @@
+## 2024-06-15 - Add confirmation dialog to destructive admin actions
+**Learning:** Destructive actions across multiple admin list components (Products, Orders, Users, Reviews) previously triggered deletions immediately upon clicking a trash icon. This lacked friction and allowed accidental deletions. While extracting a reusable component to handle this is technically > 50 lines overall due to widespread use, abstracting UI patterns reduces risk across the board.
+**Action:** Always implement a confirmation step for destructive operations, ensuring a unified and consistent confirmation UI is used rather than building isolated implementations per view.
