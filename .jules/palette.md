@@ -72,3 +72,7 @@
 ## 2025-06-06 - Form Disabled State Consolidation
 **Learning:** Found that the `UpdateProduct` form had a submit button that was correctly disabled during loading, but the input fields, textarea, and select dropdown were still active. This allowed users to modify form values while a submission was already in progress, potentially leading to race conditions or incorrect data being sent if the submission failed and they resubmitted.
 **Action:** When working on async forms, ensure the `disabled={loading}` state is applied uniformly to ALL interactive form elements (inputs, textareas, selects), not just the submit button.
+
+## 2025-06-06 - Submit Button Loading State Visibility
+**Learning:** Found that disabled submit buttons often just change their text to indicate loading, which might be missed by users or seen as a broken disabled button.
+**Action:** Enhance the `disabled={loading}` state of submit buttons by rendering an inline `CircularProgress` component alongside the loading text to provide a clear and standard visual cue for background processing.
