@@ -12,6 +12,7 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const UpdatePassword = () => {
   const dispatch = useDispatch();
@@ -72,7 +73,6 @@ const UpdatePassword = () => {
                     aria-label="Old Password"
                     required
                     value={oldPassword}
-                    disabled={loading}
                     onChange={(e) => setOldPassword(e.target.value)}
                     disabled={loading}
                   />
@@ -94,7 +94,6 @@ const UpdatePassword = () => {
                     aria-label="New Password"
                     required
                     value={newPassword}
-                    disabled={loading}
                     onChange={(e) => setNewPassword(e.target.value)}
                     disabled={loading}
                   />
@@ -116,7 +115,6 @@ const UpdatePassword = () => {
                     aria-label="Confirm Password"
                     required
                     value={confirmPassword}
-                    disabled={loading}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={loading}
                   />
@@ -134,8 +132,16 @@ const UpdatePassword = () => {
                   type="submit"
                   className="primary-btn"
                   disabled={loading}
+                  style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}
                 >
-                  {loading ? "Changing..." : "Change"}
+                  {loading ? (
+                    <Fragment>
+                      <CircularProgress size={20} color="inherit" />
+                      Changing...
+                    </Fragment>
+                  ) : (
+                    "Change"
+                  )}
                 </button>
               </form>
             </div>

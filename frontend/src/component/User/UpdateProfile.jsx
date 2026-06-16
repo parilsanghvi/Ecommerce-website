@@ -9,6 +9,7 @@ import { useSnackbar } from "notistack";
 import { updateProfileReset } from "../../features/userSlice"; // using exported reset action
 import MetaData from "../layout/MetaData";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -122,8 +123,16 @@ const UpdateProfile = () => {
                   type="submit"
                   className="primary-btn"
                   disabled={loading}
+                  style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}
                 >
-                  {loading ? "Updating..." : "Update"}
+                  {loading ? (
+                    <Fragment>
+                      <CircularProgress size={20} color="inherit" />
+                      Updating...
+                    </Fragment>
+                  ) : (
+                    "Update"
+                  )}
                 </button>
               </form>
             </div>
