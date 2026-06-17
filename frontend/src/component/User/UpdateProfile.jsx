@@ -3,6 +3,7 @@ import "./UpdateProfile.css";
 import Loader from "../layout/Loader";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import FaceIcon from "@mui/icons-material/Face";
+import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, updateProfile, loadUser } from "../../features/userSlice";
 import { useSnackbar } from "notistack";
@@ -122,8 +123,10 @@ const UpdateProfile = () => {
                   type="submit"
                   className="primary-btn"
                   disabled={loading}
+                  aria-busy={loading}
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginTop: '2rem' }}
                 >
-                  {loading ? "Updating..." : "Update"}
+                  {loading ? <><CircularProgress size={20} color="inherit" /> Updating...</> : "Update"}
                 </button>
               </form>
             </div>

@@ -72,3 +72,11 @@
 ## 2025-06-06 - Form Disabled State Consolidation
 **Learning:** Found that the `UpdateProduct` form had a submit button that was correctly disabled during loading, but the input fields, textarea, and select dropdown were still active. This allowed users to modify form values while a submission was already in progress, potentially leading to race conditions or incorrect data being sent if the submission failed and they resubmitted.
 **Action:** When working on async forms, ensure the `disabled={loading}` state is applied uniformly to ALL interactive form elements (inputs, textareas, selects), not just the submit button.
+
+## 2025-06-06 - Form Disabled State Consolidation
+**Learning:** Found that the \`UpdateProduct\` form had a submit button that was correctly disabled during loading, but the input fields, textarea, and select dropdown were still active. This allowed users to modify form values while a submission was already in progress, potentially leading to race conditions or incorrect data being sent if the submission failed and they resubmitted.
+**Action:** When working on async forms, ensure the \`disabled={loading}\` state is applied uniformly to ALL interactive form elements (inputs, textareas, selects), not just the submit button.
+
+## $(date +%Y-%m-%d) - UX/A11y Practice: Material-UI CircularProgress inside Buttons
+**Learning:** When enhancing disabled submit buttons to show loading states during async operations, use \`<CircularProgress>\` from \`@mui/material\` alongside the button text rather than just changing the text value, and apply \`aria-busy={loading}\` to notify screen readers of the active process.
+**Action:** In Material-UI heavy projects, always use \`aria-busy={loading}\` and \`<CircularProgress>\` inside the main submit button during loading states to provide a smooth, accessible experience.

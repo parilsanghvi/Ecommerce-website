@@ -7,6 +7,7 @@ import FaceIcon from "@mui/icons-material/Face"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { MdErrorOutline } from "react-icons/md";
+import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux"
 import { clearErrors, login, register } from "../../features/userSlice";
 import { useSnackbar } from "notistack"
@@ -202,8 +203,14 @@ const LoginSignup = () => {
                             </button>
                         </div>
                         <Link to="/password/forgot">Forgot Password ?</Link>
-                        <button type="submit" className='primary-btn' disabled={loading}>
-                            {loading ? "Logging In..." : "Login"}
+                        <button
+                            type="submit"
+                            className='primary-btn'
+                            disabled={loading}
+                            aria-busy={loading}
+                            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}
+                        >
+                            {loading ? <><CircularProgress size={20} color="inherit" /> Logging In...</> : "Login"}
                         </button>
                     </form>
                     <form
@@ -275,8 +282,14 @@ const LoginSignup = () => {
                                 onChange={registerDataChange}
                             />
                         </div>
-                        <button type="submit" className='primary-btn' disabled={loading}>
-                            {loading ? "Registering..." : "Register"}
+                        <button
+                            type="submit"
+                            className='primary-btn'
+                            disabled={loading}
+                            aria-busy={loading}
+                            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}
+                        >
+                            {loading ? <><CircularProgress size={20} color="inherit" /> Registering...</> : "Register"}
                         </button>
                     </form>
                 </div >

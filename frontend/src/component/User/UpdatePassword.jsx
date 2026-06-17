@@ -9,6 +9,7 @@ import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import LockIcon from "@mui/icons-material/Lock"
 import VpnKeyIcon from "@mui/icons-material/VpnKey"
+import { CircularProgress } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useNavigate } from "react-router-dom";
@@ -134,8 +135,10 @@ const UpdatePassword = () => {
                   type="submit"
                   className="primary-btn"
                   disabled={loading}
+                  aria-busy={loading}
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginTop: '2rem' }}
                 >
-                  {loading ? "Changing..." : "Change"}
+                  {loading ? <><CircularProgress size={20} color="inherit" /> Changing...</> : "Change"}
                 </button>
               </form>
             </div>

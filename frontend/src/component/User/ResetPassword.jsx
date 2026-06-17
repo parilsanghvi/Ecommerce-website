@@ -7,6 +7,7 @@ import Loader from "../layout/Loader";
 import MetaData from "../layout/MetaData";
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import LockIcon from "@mui/icons-material/Lock"
+import { CircularProgress } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useNavigate, useParams } from 'react-router-dom';
@@ -103,10 +104,12 @@ const ResetPassword = () => {
                 </div>
                 <button
                   type="submit"
-                  className="resetPasswordBtn"
+                  className="primary-btn"
                   disabled={loading}
+                  aria-busy={loading}
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginTop: '2rem' }}
                 >
-                  {loading ? "Updating..." : "Update"}
+                  {loading ? <><CircularProgress size={20} color="inherit" /> Updating...</> : "Update"}
                 </button>
               </form>
             </div>

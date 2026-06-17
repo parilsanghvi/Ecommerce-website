@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import "./ForgotPassword.css";
 import Loader from "../layout/Loader";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, forgotPassword } from "../../features/userSlice";
 import { useSnackbar } from "notistack";
@@ -57,10 +58,12 @@ const ForgotPassword = () => {
                 </div>
                 <button
                   type="submit"
-                  className="forgotPasswordBtn"
+                  className="primary-btn"
                   disabled={loading}
+                  aria-busy={loading}
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginTop: '2rem' }}
                 >
-                  {loading ? "Sending..." : "Send"}
+                  {loading ? <><CircularProgress size={20} color="inherit" /> Sending...</> : "Send"}
                 </button>
               </form>
             </div>
