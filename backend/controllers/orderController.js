@@ -46,6 +46,14 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         totalPrice
     } = req.body;
 
+    // Security Fix: Prevent missing input errors and DoS attacks
+    if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
+        return next(new ErrorHandler("No items provided for order", 400));
+    }
+    if (orderItems.length > 100) {
+        return next(new ErrorHandler("Too many items in order", 400));
+    }
+
     // Verify itemsPrice against database
     const productIds = orderItems.map(item => item.product);
     // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
