@@ -7,6 +7,7 @@ import FaceIcon from "@mui/icons-material/Face"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { MdErrorOutline } from "react-icons/md";
+import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux"
 import { clearErrors, login, register } from "../../features/userSlice";
 import { useSnackbar } from "notistack"
@@ -202,7 +203,8 @@ const LoginSignup = () => {
                             </button>
                         </div>
                         <Link to="/password/forgot">Forgot Password ?</Link>
-                        <button type="submit" className='primary-btn' disabled={loading}>
+                        <button type="submit" className='primary-btn' disabled={loading} aria-busy={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            {loading ? <CircularProgress size={20} color="inherit" /> : null}
                             {loading ? "Logging In..." : "Login"}
                         </button>
                     </form>
@@ -275,7 +277,8 @@ const LoginSignup = () => {
                                 onChange={registerDataChange}
                             />
                         </div>
-                        <button type="submit" className='primary-btn' disabled={loading}>
+                        <button type="submit" className='primary-btn' disabled={loading} aria-busy={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            {loading ? <CircularProgress size={20} color="inherit" /> : null}
                             {loading ? "Registering..." : "Register"}
                         </button>
                     </form>

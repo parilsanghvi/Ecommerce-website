@@ -34,6 +34,15 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
+// Mock Material UI CircularProgress
+vi.mock('@mui/material', async () => {
+    const actual = await vi.importActual('@mui/material');
+    return {
+        ...actual,
+        CircularProgress: () => <span data-testid="circular-progress">Loading...</span>,
+    };
+});
+
 describe('LoginSignup Loading State', () => {
     it('shows loading state and disables inputs', () => {
         render(
