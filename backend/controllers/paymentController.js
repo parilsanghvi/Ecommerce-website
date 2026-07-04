@@ -26,7 +26,7 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
 
   let calculatedItemsPrice = 0;
   for (const item of items) {
-    // Validate quantity to prevent negative quantity exploits
+    // Ensure quantity is a valid positive integer
     if (!Number.isInteger(item.quantity) || item.quantity < 1) {
       return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
     }
