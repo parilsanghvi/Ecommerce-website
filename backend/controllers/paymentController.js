@@ -10,7 +10,7 @@ exports.processPayment = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("No items provided for payment", 400));
   }
 
-  // Limit array length to prevent denial of service (DoS) attacks
+  // Enforce maximum items limit per request
   if (items.length > 100) {
     return next(new ErrorHandler("Too many items in payment request", 400));
   }
