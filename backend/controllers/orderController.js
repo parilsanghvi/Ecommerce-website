@@ -50,7 +50,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("No order items provided", 400));
     }
 
-    // Security Fix: Limit array length to prevent denial of service (DoS) attacks
+    // Enforce maximum order items limit per request
     if (orderItems.length > 100) {
         return next(new ErrorHandler("Too many order items in request", 400));
     }
