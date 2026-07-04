@@ -20,3 +20,8 @@
 **Vulnerability:** Updating documents using unmodified request bodies (e.g. `req.body`) can allow attackers to overwrite protected fields by supplying unexpected key-value pairs in the payload.
 **Learning:** Mass assignment vulnerabilities occur when user input is blindly applied to models.
 **Action:** Always filter `req.body` using an explicit allowlist (e.g., `['name', 'price', 'description', 'category', 'stock']`) before updating documents, or use strict schema definitions, ensuring fields like user IDs or internal state flags cannot be maliciously altered.
+
+## 2025-02-28 - Denial of Service via Unbounded Arrays in Order Processing
+**Vulnerability:** The `newOrder` controller endpoint directly invoked `map` over the `orderItems` payload without verifying its type or bounding its size, exposing the endpoint to potential Denial of Service (DoS) and unhandled TypeErrors.
+**Learning:** Accepting unbounded arrays in order processing allows attackers to send massive payloads that can exhaust system memory, block the Node.js event loop during iteration, or trigger crashes if the property is incorrectly typed (e.g. as a string or object without a `.map` method). This was analogous to a similar vulnerability previously found in the payment process.
+**Prevention:** Strictly validate incoming array payloads (`Array.isArray()`) and enforce sensible length limits (`array.length > 100`) at the top of the controller function before performing iterative operations or database lookups.
