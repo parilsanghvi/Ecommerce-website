@@ -1,6 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+vi.mock('../../component/Admin/ConfirmDeleteDialog', () => ({
+            default: ({ open, onClose, onConfirm, itemName }) => open ? (
+                <div data-testid="confirm-dialog">
+                    <p>Are you sure you want to delete this {itemName}?</p>
+                    <button onClick={onClose}>Cancel</button>
+                    <button onClick={onConfirm}>Delete</button>
+                </div>
+            ) : null
+        }));
 import UsersList from '../../component/Admin/UsersList';
 
 const mockDispatch = vi.fn();
@@ -37,6 +46,7 @@ vi.mock('@mui/material', () => ({
 vi.mock('@mui/icons-material/Edit', () => ({ default: () => <span>✏️</span> }));
 vi.mock('@mui/icons-material/Delete', () => ({ default: () => <span>🗑️</span> }));
 vi.mock('@mui/x-data-grid', () => ({
+
     DataGrid: ({ rows, columns }) => (
         <table data-testid="data-grid">
             <thead>

@@ -10,11 +10,11 @@ import {
 } from "../../features/productSlice";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Star from "@mui/icons-material/Star";
 import AdminLayout from "./AdminLayout";
 import useErrorNotification from "../../hooks/useErrorNotification";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
 const ProductReviews = () => {
   const dispatch = useDispatch();
@@ -31,11 +31,27 @@ const ProductReviews = () => {
   );
 
   const [productId, setProductId] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
+
+  const handleDeleteClick = useCallback((id) => {
+    setReviewToDelete(id);
+    setDeleteDialogOpen(true);
+  }, []);
 
   // ⚡ Bolt: [performance improvement] Memoize the delete handler to prevent inline function recreation inside columns
-  const deleteReviewHandler = useCallback((reviewId) => {
-    dispatch(deleteReviews(reviewId, productId));
-  }, [dispatch, productId]);
+  const deleteReviewHandler = useCallback(() => {
+    if (reviewToDelete) {
+      dispatch(deleteReviews(reviewToDelete, productId));
+      setDeleteDialogOpen(false);
+      setReviewToDelete(null);
+    }
+  }, [dispatch, reviewToDelete, productId]);
+
+  const handleCloseDialog = useCallback(() => {
+    setDeleteDialogOpen(false);
+    setReviewToDelete(null);
+  }, []);
 
   const productReviewsSubmitHandler = (e) => {
     e.preventDefault();
@@ -103,7 +119,7 @@ const ProductReviews = () => {
           <Fragment>
             <button
               onClick={() =>
-                deleteReviewHandler(params.row.id)
+                handleDeleteClick(params.row.id)
               }
               aria-label="Delete review"
             >
@@ -113,7 +129,7 @@ const ProductReviews = () => {
         );
       },
     },
-  ], [deleteReviewHandler]);
+  ], [handleDeleteClick]);
 
   // ⚡ Bolt: [performance improvement] Memoize rows array construction to prevent O(N) execution on every component render
   const rows = useMemo(() => {
@@ -176,6 +192,8 @@ const ProductReviews = () => {
           <h1 className="productReviewsFormHeading">No Reviews Found</h1>
         )}
       </div>
+
+      <ConfirmDeleteDialog open={deleteDialogOpen} onClose={handleCloseDialog} onConfirm={deleteReviewHandler} itemName="review" />
     </AdminLayout>
   );
 };
