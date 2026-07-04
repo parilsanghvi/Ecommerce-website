@@ -155,4 +155,31 @@ describe('forgotPassword Controller', () => {
             testError
         );
     });
+
+    it('should log error if saving user fails after email sending failure', async () => {
+        User.findOne.mockResolvedValue(mockUser);
+
+        const testError = new Error('Email failed');
+        sendEmail.mockRejectedValue(testError);
+
+        const saveError = new Error('Save failed');
+        mockUser.save
+            .mockResolvedValueOnce(true)
+            .mockRejectedValueOnce(saveError);
+
+        await userController.forgotPassword(req, res, next);
+
+        for (let i = 0; i < 10; i++) {
+            await Promise.resolve();
+        }
+
+        expect(console.error).toHaveBeenCalledWith(
+            "Failed to send password reset email asynchronously:",
+            testError
+        );
+        expect(console.error).toHaveBeenCalledWith(
+            "Failed to clear reset token after email failure:",
+            saveError
+        );
+    });
 });
