@@ -106,7 +106,7 @@ describe('Order Security: Price Tampering', () => {
         });
 
         // Mock Replay Attack check (Order not found)
-        Order.findOne.mockResolvedValue(null);
+        Order.findOne.mockReturnValue({ lean: jest.fn().mockResolvedValue(null) });
 
         // Mock Order.create success
         Order.create.mockResolvedValue({

@@ -56,6 +56,7 @@ describe('newOrder optimization', () => {
             })
         });
 
+        Order.findOne.mockReturnValue({ lean: jest.fn().mockResolvedValue(null) });
         Order.create.mockResolvedValue({ _id: 'order1', ...req.body });
 
         await newOrder(req, res, next);
