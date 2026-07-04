@@ -50,7 +50,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("No order items provided", 400));
     }
 
-    // Security Fix: Limit array length to prevent denial of service (DoS) attacks
+    // Security: Limit array length to prevent denial of service (DoS) attacks
     if (orderItems.length > 100) {
         return next(new ErrorHandler("Too many order items in request", 400));
     }
@@ -64,7 +64,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
     let calculatedItemsPrice = 0;
     for (const item of orderItems) {
-        // Validate quantity to prevent negative quantity exploits
+        // Ensure quantity is a valid positive integer
         if (!Number.isInteger(item.quantity) || item.quantity < 1) {
             return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
         }
