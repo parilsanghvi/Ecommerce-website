@@ -75,12 +75,12 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         calculatedItemsPrice += product.price * item.quantity;
     }
 
-    // Ensure all price fields are numbers and match calculations
+    // Verify all price fields are numbers and match calculations
     if (isNaN(itemsPrice) || Math.abs(Number(itemsPrice) - calculatedItemsPrice) > 0.01) {
         return next(new ErrorHandler("Price mismatch detected. Please refresh and try again.", 400));
     }
 
-    // Validate all price components to prevent tampering
+    // Verify all price components to prevent tampering
     const {
         taxPrice: calculatedTaxPrice,
         shippingPrice: calculatedShippingPrice,
