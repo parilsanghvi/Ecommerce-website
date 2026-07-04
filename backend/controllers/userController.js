@@ -37,7 +37,11 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             url: myCloud.secure_url,
         }
     });
+<<<<<<< HEAD
     // Do not leak password hash in API response
+=======
+    // Ensure we do not leak password hash in API response
+>>>>>>> origin/jules-16794084777579435155-2c133e06
     user.password = undefined;
     sendToken(user, 201, res)
 })
@@ -61,7 +65,11 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
+<<<<<<< HEAD
     // Do not leak password hash in API response
+=======
+    // Ensure we do not leak password hash in API response
+>>>>>>> origin/jules-16794084777579435155-2c133e06
     user.password = undefined;
     sendToken(user, 200, res)
 })
