@@ -3,7 +3,7 @@ module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.message = err.message || "internal server error"
 
-    // Security Fix: Do not leak error details in production for 500 errors
+    // Do not leak error details in production for 500 errors
     if (process.env.NODE_ENV === 'PRODUCTION' || process.env.NODE_ENV === 'production') {
         if (err.statusCode === 500) {
             err.message = 'Internal Server Error';
@@ -36,10 +36,10 @@ module.exports = (err, req, res, next) => {
         err = new ErrorHandler(message, 400);
     }
 
-    // Security Fix: Prevent Information Disclosure in production for 500 errors
+    // Prevent Information Disclosure in production for 500 errors
     let finalMessage = err.message;
     if (err.statusCode === 500 && (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'PRODUCTION')) {
-        console.error("Internal Server Error:", err); // Log actual error for debugging
+        console.error("Internal Server Error:", err); // Log actual error for troubleshooting
         finalMessage = "Internal Server Error";
     }
 
