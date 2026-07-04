@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const Product = require('../../models/productModel');
 
-describe('Benchmark: Product Reviews Race Condition Resolution', () => {
+describe('Benchmark: Product Reviews Concurrency Issue Resolution', () => {
     let mongoServer;
 
     beforeAll(async () => {
@@ -30,7 +30,7 @@ describe('Benchmark: Product Reviews Race Condition Resolution', () => {
 
         const users = Array.from({ length: 50 }, () => new mongoose.Types.ObjectId());
 
-        // Simulating the race condition resolution in the controller
+        // Simulating the concurrency issue resolution in the controller
         const addReview = async (user, rating) => {
             const p = await Product.findOne(
                 { _id: product._id },
