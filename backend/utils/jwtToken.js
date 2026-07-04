@@ -11,7 +11,7 @@ const sendToken = (user, statusCode, res) => {
         sameSite: 'strict',
     }
 
-    // Security Fix: Prevent leaking hashed password when user object is passed
+    // Ensure we avoid leaking hashed password when user object is passed
     // explicitly via .select("+password") in the controller (e.g. login, updatePassword)
     if (user && user.password) {
         user.password = undefined;
