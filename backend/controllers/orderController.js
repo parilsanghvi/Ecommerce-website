@@ -121,7 +121,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Check if payment is already used (Replay Attack Prevention)
-    const existingOrder = await Order.findOne({ "paymentInfo.id": paymentInfo.id });
+    const existingOrder = await Order.findOne({ "paymentInfo.id": paymentInfo.id }).lean();
     if (existingOrder) {
         return next(new ErrorHandler("Payment already used", 400));
     }

@@ -64,6 +64,7 @@ describe('Order Security: Payment Verification', () => {
         Order.create.mockResolvedValue({ _id: 'orderid' });
         // Reset findOne to ensure no leakage between tests
         if (Order.findOne && Order.findOne.mockReset) Order.findOne.mockReset();
+        Order.findOne.mockReturnValue({ lean: jest.fn().mockResolvedValue(null) });
     });
 
     it('should REJECT order creation when actual payment status is invalid', async () => {
@@ -142,7 +143,7 @@ describe('Order Security: Payment Verification', () => {
         // Mock Order.findOne to find an existing order with the same payment ID
         // Note: Order model is mocked, so findOne is a jest.fn()
         // We simulate finding a document
-        Order.findOne.mockResolvedValue({ _id: 'existing_order_id' });
+        Order.findOne.mockReturnValue({ lean: jest.fn().mockResolvedValue({ _id: 'existing_order_id' }) });
 
         await orderController.newOrder(req, res, next);
 
