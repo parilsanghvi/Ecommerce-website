@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 const { loginUser, registerUser, updatePassword } = require("../controllers/userController");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
+=======
+
+const { loginUser, registerUser, updatePassword } = require("../controllers/userController");
+const User = require("../models/userModel");
+const sendToken = require("../utils/jwtToken");
+const cloudinary = require("cloudinary");
+>>>>>>> origin/jules-fix-false-positive-comment-171509572896788994
 
 jest.mock("../utils/jwtToken");
 jest.mock("../models/userModel");

@@ -25,3 +25,8 @@
 **Vulnerability:** The `newOrder` controller endpoint directly invoked `map` over the `orderItems` payload without verifying its type or bounding its size, exposing the endpoint to potential Denial of Service (DoS) and unhandled TypeErrors.
 **Learning:** Accepting unbounded arrays in order processing allows attackers to send massive payloads that can exhaust system memory, block the Node.js event loop during iteration, or trigger crashes if the property is incorrectly typed (e.g. as a string or object without a `.map` method). This was analogous to a similar vulnerability previously found in the payment process.
 **Prevention:** Strictly validate incoming array payloads (`Array.isArray()`) and enforce sensible length limits (`array.length > 100`) at the top of the controller function before performing iterative operations or database lookups.
+
+## 2024-06-13 - Security False Positives via Code Comments
+**Vulnerability:** Comments containing markers like `Security Fix:` or `TODO:` may lead automated static analysis tools to incorrectly flag resolved issues as active, producing false positives.
+**Learning:** Hardcoding trigger words within comments meant purely for descriptive purposes can clutter issue trackers and degrade the signal-to-noise ratio of automated security tooling.
+**Prevention:** When documenting the rationale for security-sensitive logic (e.g., clearing sensitive data), describe the action generically (e.g., `Prevent leaking...`) without explicit "Fix" markers that resemble unresolved task patterns.

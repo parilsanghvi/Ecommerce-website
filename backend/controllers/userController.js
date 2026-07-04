@@ -39,6 +39,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     });
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Do not leak password hash in API response
 =======
     // Ensure we do not leak password hash in API response
@@ -46,6 +47,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 =======
     // Ensure password hash is not leaked in API response
 >>>>>>> origin/jules-8830192837094504007-748c3702
+=======
+    // Prevent leaking password hash in API response
+>>>>>>> origin/jules-fix-false-positive-comment-171509572896788994
     user.password = undefined;
     sendToken(user, 201, res)
 })
@@ -71,6 +75,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Do not leak password hash in API response
 =======
     // Ensure we do not leak password hash in API response
@@ -78,6 +83,9 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 =======
     // Ensure password hash is not leaked in API response
 >>>>>>> origin/jules-8830192837094504007-748c3702
+=======
+    // Prevent leaking password hash in API response
+>>>>>>> origin/jules-fix-false-positive-comment-171509572896788994
     user.password = undefined;
     sendToken(user, 200, res)
 })
