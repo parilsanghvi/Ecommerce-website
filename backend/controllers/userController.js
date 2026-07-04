@@ -79,7 +79,7 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
 // forgot password
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findOne({
-        email: req.body.email,
+        email: String(req.body.email),
     })
     if (!user) {
         return res.status(200).json({
