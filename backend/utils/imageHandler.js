@@ -53,7 +53,6 @@ const processImages = async (files, bodyImages) => {
                 const uploadStream = cloudinary.v2.uploader.upload_stream(
                     {
                         folder: "products",
-                        // crop: "scale",
                     },
                     (error, result) => {
                         if (error) return reject(error);
@@ -78,7 +77,6 @@ const processImages = async (files, bodyImages) => {
             imagesLink = await Promise.all(images.map(async (image) => {
                 const result = await cloudinary.v2.uploader.upload(image, {
                     folder: "products",
-                    // crop: "scale",
                 });
                 return {
                     public_id: result.public_id,
