@@ -30,3 +30,7 @@
 **Vulnerability:** Comments containing markers like `Security Fix:` or `TODO:` may lead automated static analysis tools to incorrectly flag resolved issues as active, producing false positives.
 **Learning:** Hardcoding trigger words within comments meant purely for descriptive purposes can clutter issue trackers and degrade the signal-to-noise ratio of automated security tooling.
 **Prevention:** When documenting the rationale for security-sensitive logic (e.g., clearing sensitive data), describe the action generically (e.g., `Prevent leaking...`) without explicit "Fix" markers that resemble unresolved task patterns.
+
+## 2024-07-04 - Fix NoSQL Injection in Login
+**Learning:** Type confusion NoSQL injection occurs when user input like an email is unexpectedly parsed as an object (e.g. `{ "$ne": null }`) instead of a string, bypassing authentication if passed directly to database queries.
+**Action:** Always strictly enforce type checking (e.g., `typeof email === 'string'`) on parameters passed directly into MongoDB query objects, especially authentication endpoints, even when global sanitizers are present to provide defense in depth.
