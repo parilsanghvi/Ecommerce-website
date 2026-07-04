@@ -225,9 +225,6 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         });
     }
 
-    // ⚡ Bolt: [Performance/Stability] Resolved Race Condition in Product Reviews Rating Calculation
-    // Instead of doing math in the application layer based on potentially stale data,
-    // we use an aggregation pipeline to recalculate true average from the source of truth.
     const stats = await Review.aggregate([
         { $match: { product: new mongoose.Types.ObjectId(productId) } },
         {
@@ -320,8 +317,6 @@ exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
     // Delete review document
     await Review.findByIdAndDelete(queryParams.id);
 
-    // ⚡ Bolt: [Performance/Stability] Resolved Race Condition in Product Reviews Rating Calculation
-    // Use aggregation to recalculate true average after deletion
     const stats = await Review.aggregate([
         { $match: { product: new mongoose.Types.ObjectId(queryParams.productId) } },
         {
