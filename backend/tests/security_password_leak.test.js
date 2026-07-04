@@ -28,8 +28,9 @@ describe("Security: Password Hash Leak", () => {
             cookie: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        next = jest.fn();
+        next = jest.fn(err => console.log('next called with:', err));
         sendToken.mockClear();
+        jest.clearAllMocks();
     });
 
     it("should not pass user with password to sendToken in loginUser", async () => {
@@ -52,6 +53,7 @@ describe("Security: Password Hash Leak", () => {
     });
 
     it("should not pass user with password to sendToken in registerUser", async () => {
+
         req.body = { name: "test", email: "test@test.com", password: "password123", avatar: "base64" };
         const mockUser = {
              _id: "123",

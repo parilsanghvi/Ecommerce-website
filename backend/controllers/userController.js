@@ -38,10 +38,14 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
         }
     });
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Do not leak password hash in API response
 =======
     // Ensure we do not leak password hash in API response
 >>>>>>> origin/jules-16794084777579435155-2c133e06
+=======
+    // Ensure password hash is not leaked in API response
+>>>>>>> origin/jules-8830192837094504007-748c3702
     user.password = undefined;
     sendToken(user, 201, res)
 })
@@ -66,10 +70,14 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Do not leak password hash in API response
 =======
     // Ensure we do not leak password hash in API response
 >>>>>>> origin/jules-16794084777579435155-2c133e06
+=======
+    // Ensure password hash is not leaked in API response
+>>>>>>> origin/jules-8830192837094504007-748c3702
     user.password = undefined;
     sendToken(user, 200, res)
 })
