@@ -238,6 +238,20 @@ describe('newOrder Controller', () => {
         expect(mockNext.mock.calls[0][0].message).toContain('Tax price mismatch detected. Please refresh and try again.');
     });
 
+    it('should fail when taxPrice is NaN', async () => {
+        const req = {
+            body: getValidReqBody(),
+            user: testUser
+        };
+        req.body.taxPrice = 'invalid_number';
+
+        await orderController.newOrder(req, mockRes, mockNext);
+
+        expect(mockNext).toHaveBeenCalledWith(expect.any(ErrorHandler));
+        expect(mockNext.mock.calls[0][0].message).toContain('Tax price mismatch detected. Please refresh and try again.');
+        expect(mockNext.mock.calls[0][0].statusCode).toBe(400);
+    });
+
     it('should fail on shippingPrice mismatch', async () => {
         const req = {
             body: getValidReqBody(),
