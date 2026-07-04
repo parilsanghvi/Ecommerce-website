@@ -37,19 +37,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             url: myCloud.secure_url,
         }
     });
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     // Do not leak password hash in API response
-=======
-    // Ensure we do not leak password hash in API response
->>>>>>> origin/jules-16794084777579435155-2c133e06
-=======
-    // Ensure password hash is not leaked in API response
->>>>>>> origin/jules-8830192837094504007-748c3702
-=======
-    // Prevent leaking password hash in API response
->>>>>>> origin/jules-fix-false-positive-comment-171509572896788994
     user.password = undefined;
     sendToken(user, 201, res)
 })
@@ -73,19 +61,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     // Do not leak password hash in API response
-=======
-    // Ensure we do not leak password hash in API response
->>>>>>> origin/jules-16794084777579435155-2c133e06
-=======
-    // Ensure password hash is not leaked in API response
->>>>>>> origin/jules-8830192837094504007-748c3702
-=======
-    // Prevent leaking password hash in API response
->>>>>>> origin/jules-fix-false-positive-comment-171509572896788994
     user.password = undefined;
     sendToken(user, 200, res)
 })

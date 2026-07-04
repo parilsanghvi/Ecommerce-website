@@ -1,30 +1,17 @@
-let userController;
-let User;
-let cloudinary;
-let ErrorHandler;
+const userController = require('../../controllers/userController');
+const User = require('../../models/userModel');
+const cloudinary = require('cloudinary');
+const ErrorHandler = require('../../utils/errorhandler');
+
+jest.mock('../../models/userModel');
+jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {
+    return Promise.resolve(func(req, res, next)).catch(next);
+});
 
 describe('updateProfile Controller', () => {
     let req, res, next;
 
     beforeEach(() => {
-        jest.doMock('../../models/userModel');
-        jest.doMock('cloudinary', () => ({
-            v2: {
-                uploader: {
-                    destroy: jest.fn(),
-                    upload: jest.fn(),
-                }
-            }
-        }));
-        jest.doMock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {
-            return Promise.resolve(func(req, res, next)).catch(next);
-        });
-
-        userController = require('../../controllers/userController');
-        User = require('../../models/userModel');
-        cloudinary = require('cloudinary');
-        ErrorHandler = require('../../utils/errorhandler');
-
         req = {
             user: {
                 id: 'user123',
