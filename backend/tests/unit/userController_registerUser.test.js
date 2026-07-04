@@ -6,6 +6,13 @@ const sendToken = require('../../utils/jwtToken');
 
 // Mock dependencies
 jest.mock('../../models/userModel');
+jest.mock('cloudinary', () => ({
+    v2: {
+        uploader: {
+            upload: jest.fn()
+        }
+    }
+}));
 jest.mock('../../utils/jwtToken');
 // Mock catchAsyncErrors
 jest.mock('../../middleware/catchAsyncErrors', () => (func) => (req, res, next) => {

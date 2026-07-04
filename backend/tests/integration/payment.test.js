@@ -135,6 +135,21 @@ describe('Payment Integration Tests', () => {
             expect(res.body.message).toBe('Stripe Error');
         });
 
+        it('should return 400 if items array length exceeds 100', async () => {
+            const mockItems = Array.from({ length: 101 }, (_, i) => ({
+                product: testProduct._id.toString(),
+                quantity: 1
+            }));
+
+            const res = await request(app)
+                .post('/api/v1/payment/process')
+                .set('Cookie', userCookie)
+                .send({ items: mockItems });
+
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe('Too many items in payment request');
+        });
+
         it('should return 401 without authentication', async () => {
             const res = await request(app)
                 .post('/api/v1/payment/process')
