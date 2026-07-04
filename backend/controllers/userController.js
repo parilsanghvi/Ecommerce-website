@@ -4,6 +4,8 @@ const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail")
 const crypto = require("crypto")
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 const cloudinary = require("cloudinary")
 const Apifeatures = require("../utils/apifeatures");
 
@@ -53,16 +55,23 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     }
     const user = await User.findOne({
         email
-    }).select("+password");
+    }).select("+password").lean();
     if (!user) {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
-    const isPasswordMatched = await user.comparePassword(password);
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password", 401))
     }
     // Do not leak password hash in API response
-    user.password = undefined;
+    delete user.password;
+
+    // Attach getJWTToken for sendToken utility compatibility
+    user.getJWTToken = function () {
+        return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRE,
+        });
+    };
     sendToken(user, 200, res)
 })
 // logout user

@@ -1,4 +1,6 @@
 const { loginUser, registerUser, updatePassword } = require("../controllers/userController");
+const bcrypt = require("bcryptjs");
+jest.mock("bcryptjs");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 
@@ -42,9 +44,12 @@ describe("Security: Password Hash Leak", () => {
             comparePassword: jest.fn().mockResolvedValue(true)
         };
         User.findOne.mockReturnValue({
-            select: jest.fn().mockResolvedValue(mockUser)
+            select: jest.fn().mockReturnValue({
+                lean: jest.fn().mockResolvedValue(mockUser)
+            })
         });
 
+        bcrypt.compare.mockResolvedValue(true);
         await loginUser(req, res, next);
 
         expect(sendToken).toHaveBeenCalled();
