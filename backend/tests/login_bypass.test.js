@@ -9,6 +9,33 @@ jest.mock('../utils/sendEmail');
 jest.mock('cloudinary');
 
 describe('Login Authentication Bypass', () => {
+    it('should reject non-string email or password (NoSQL Injection mitigation)', async () => {
+        let req2 = {
+            body: {
+                email: { $ne: null },
+                password: "password123"
+            }
+        };
+        let res2 = {};
+        let next2 = jest.fn();
+
+        await userController.loginUser(req2, res2, next2);
+        expect(next2).toHaveBeenCalledWith(expect.objectContaining({
+            message: "Invalid email or password format",
+            statusCode: 400
+        }));
+
+        req2.body = {
+            email: "test@example.com",
+            password: { $ne: null }
+        };
+        next2.mockClear();
+        await userController.loginUser(req2, res2, next2);
+        expect(next2).toHaveBeenCalledWith(expect.objectContaining({
+            message: "Invalid email or password format",
+            statusCode: 400
+        }));
+    });
     let req, res, next;
 
     beforeEach(() => {

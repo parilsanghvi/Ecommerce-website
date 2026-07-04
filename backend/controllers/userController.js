@@ -51,6 +51,11 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!email || !password) {
         return next(new ErrorHandler("Please enter email and password", 401))
     }
+
+    // Validate that email and password are strings to prevent NoSQL injection / type confusion
+    if (typeof email !== "string" || typeof password !== "string") {
+        return next(new ErrorHandler("Invalid email or password format", 400))
+    }
     const user = await User.findOne({
         email
     }).select("+password");
