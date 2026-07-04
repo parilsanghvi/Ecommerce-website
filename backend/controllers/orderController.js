@@ -56,11 +56,11 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Verify itemsPrice against database
-    const productIds = orderItems.map(item => item.product);
     // ⚡ Bolt: [performance improvement] Select only required fields and use lean() to skip Mongoose hydration
-    const products = await Product.find({ _id: { $in: productIds } }).select("price").lean();
+    const products = await Product.find({ _id: { $in: orderItems.map(item => item.product) } }).select("price").lean();
 
-    const productMap = new Map(products.map(p => [p._id.toString(), p]));
+    // Bolt Optimization: Eliminate intermediate array mapping and use reduce for O(1) inserts
+    const productMap = products.reduce((acc, p) => acc.set(p._id.toString(), p), new Map());
 
     let calculatedItemsPrice = 0;
     for (const item of orderItems) {

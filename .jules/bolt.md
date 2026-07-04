@@ -19,3 +19,7 @@
 ## 2024-10-24 - Mongoose Undefined Field Handling
 **Learning:** Mongoose automatically ignores undefined fields when creating documents, making manual property deletion loops unnecessary and inefficient.
 **Action:** Rely on Mongoose's built-in handling of undefined properties during document creation instead of manually filtering them out.
+
+## 2024-05-15 - Unnecessary array copies during order creation
+**Learning:** During order creation mapping values explicitly into temporary variables before providing them as query parameters, and iterating arrays to construct object maps with array mapping can introduce minor but cumulative performance overhead in tight node loops processing arrays.
+**Action:** Use inline mapping directly in Mongoose queries and utilize `Array.prototype.reduce` when constructing a `Map` from an array of objects to avoid generating throw-away intermediate arrays.
