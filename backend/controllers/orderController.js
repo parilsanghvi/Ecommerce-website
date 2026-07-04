@@ -80,7 +80,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Price mismatch detected. Please refresh and try again.", 400));
     }
 
-    // Security Fix: Validate all price components to prevent tampering
+    // Validate all price components to prevent tampering
     const {
         taxPrice: calculatedTaxPrice,
         shippingPrice: calculatedShippingPrice,
