@@ -64,7 +64,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
 
     let calculatedItemsPrice = 0;
     for (const item of orderItems) {
-        // Security Fix: Validate quantity to prevent negative quantity exploits
+        // Validate quantity to prevent negative quantity exploits
         if (!Number.isInteger(item.quantity) || item.quantity < 1) {
             return next(new ErrorHandler(`Invalid quantity for product: ${item.product}`, 400));
         }
@@ -75,7 +75,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
         calculatedItemsPrice += product.price * item.quantity;
     }
 
-    // Security Fix: Ensure all price fields are numbers and match calculations
+    // Ensure all price fields are numbers and match calculations
     if (isNaN(itemsPrice) || Math.abs(Number(itemsPrice) - calculatedItemsPrice) > 0.01) {
         return next(new ErrorHandler("Price mismatch detected. Please refresh and try again.", 400));
     }
