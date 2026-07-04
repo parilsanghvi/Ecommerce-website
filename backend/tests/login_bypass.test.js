@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+jest.mock('bcryptjs');
 const userController = require('../controllers/userController');
 const User = require('../models/userModel');
 const sendToken = require('../utils/jwtToken');
@@ -33,10 +35,9 @@ describe('Login Authentication Bypass', () => {
             comparePassword: jest.fn().mockResolvedValue(false), // Password mismatch
             select: jest.fn().mockReturnThis()
         };
-        User.findOne.mockReturnValue({
-            select: jest.fn().mockResolvedValue(mockUser)
-        });
+        User.findOne.mockReturnValue({ select: jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(mockUser) }) });
 
+        bcrypt.compare.mockResolvedValue(false);
         await userController.loginUser(req, res, next);
 
         // CRITICAL CHECK: sendToken should NOT be called
@@ -54,9 +55,7 @@ describe('Login Authentication Bypass', () => {
     });
 
     it('should NOT call sendToken (and not crash) when user is not found', async () => {
-        User.findOne.mockReturnValue({
-            select: jest.fn().mockResolvedValue(null)
-        });
+        User.findOne.mockReturnValue({ select: jest.fn().mockReturnValue({ lean: jest.fn().mockResolvedValue(null) }) });
 
         await userController.loginUser(req, res, next);
 
